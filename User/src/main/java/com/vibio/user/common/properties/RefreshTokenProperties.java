@@ -8,5 +8,5 @@ package com.vibio.user.common.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "jwt.key.access-token")
-public record AccessTokenProperties(String publicKey, String privateKey, Long expireIn) {}
+@ConfigurationProperties(prefix = "jwt.key.refresh-token")
+public record RefreshTokenProperties(String publicKey, String privateKey, Long expireIn) {}

@@ -7,11 +7,14 @@
 package com.vibio.user.service;
 
 import com.vibio.user.domain.Token;
-import org.springframework.security.core.Authentication;
+import com.vibio.user.dto.response.TokenResponse;
+import com.vibio.user.model.Account;
 
 public interface TokenService {
-    Token generateAccessToken(Authentication authentication);
 
-    Token generateRefreshToken(Authentication authentication);
-    
+	TokenResponse generateTokenPair(Account account);
+
+	Token generateAccessToken(Account account);
+
+	Token generateRefreshToken(Token accessToken);
 }
