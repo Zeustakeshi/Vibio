@@ -23,6 +23,7 @@ import com.vibio.user.model.Profile;
 import com.vibio.user.repository.AccountRepository;
 import com.vibio.user.service.AuthService;
 import com.vibio.user.service.OtpService;
+import com.vibio.user.service.TokenService;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +42,7 @@ public class AuthServiceImpl implements AuthService {
 	private final OtpService otpService;
 	private final AccountMapper accountMapper;
 	private final PasswordEncoder passwordEncoder;
+	private final TokenService tokenService;
 
 	@Override
 	public String createAccountWithUsernameAndPassword(CreateAccountRequest request) {
@@ -127,9 +129,7 @@ public class AuthServiceImpl implements AuthService {
 		account.setRoles(List.of(Role.USER));
 		account.setProfile(Profile.builder().build());
 
-		accountRepository.save(account);
-
-		return TokenResponse.builder().build();
+		return tokenService.generateTokenPair(accountRepository.save(account));
 	}
 
 	@Override
