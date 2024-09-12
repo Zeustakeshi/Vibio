@@ -9,19 +9,21 @@ package com.vibio.user.domain;
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccountConfirmation {
-	@Builder.Default
-	@Setter(AccessLevel.PRIVATE)
-	private String code = NanoIdUtils.randomNanoId();
+    @Builder.Default
+    @Setter(AccessLevel.PRIVATE)
+    private String code = NanoIdUtils.randomNanoId();
 
-	private String email;
-	private String password;
-	private String username;
-	private String otpCode;
-	private int resendCount;
+    private String email;
+    private String password;
+    private String username;
+    private String otpCode;
+    private LocalDateTime expireIn;
 }
