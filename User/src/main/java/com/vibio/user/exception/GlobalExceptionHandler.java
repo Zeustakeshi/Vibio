@@ -20,6 +20,12 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(response, exception.getStatus());
 	}
 
+	@ExceptionHandler(TokenException.class)
+	public ResponseEntity<ApiResponse<?>> handleException(TokenException exception) {
+		ApiResponse<?> response = ApiResponse.success(exception.getMessage());
+		return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+	}
+
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ApiResponse<?>> handleException(Exception exception) {
 		ApiResponse<?> response = ApiResponse.success(exception.getMessage());

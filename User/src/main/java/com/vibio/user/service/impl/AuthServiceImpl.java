@@ -11,6 +11,7 @@ import com.vibio.user.common.enums.Role;
 import com.vibio.user.domain.AccountConfirmation;
 import com.vibio.user.domain.OTP;
 import com.vibio.user.dto.request.CreateAccountRequest;
+import com.vibio.user.dto.request.RefreshTokenRequest;
 import com.vibio.user.dto.request.ResendOtpRequest;
 import com.vibio.user.dto.request.VerifyOtpRequest;
 import com.vibio.user.dto.response.TokenResponse;
@@ -130,6 +131,11 @@ public class AuthServiceImpl implements AuthService {
 		account.setProfile(Profile.builder().build());
 
 		return tokenService.generateTokenPair(accountRepository.save(account));
+	}
+
+	@Override
+	public TokenResponse refreshToken(RefreshTokenRequest request) {
+		return tokenService.refreshToken(request.getToken());
 	}
 
 	@Override

@@ -41,7 +41,7 @@ public class Account implements UserDetails {
 	private String password;
 
 	@Enumerated(EnumType.STRING)
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	private List<Role> roles;
 
 	@Builder.Default

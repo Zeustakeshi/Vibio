@@ -14,7 +14,9 @@ public interface TokenService {
 
 	TokenResponse generateTokenPair(Account account);
 
+	TokenResponse refreshToken(String refreshToken);
+
 	Token generateAccessToken(Account account);
 
-	Token generateRefreshToken(Token accessToken);
+	Token generateRefreshToken(String accessTokenId, Account account);
 }
