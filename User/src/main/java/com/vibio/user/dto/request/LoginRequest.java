@@ -4,7 +4,6 @@
  *  @created 9/12/2024 9:54 AM
  * */
 
-
 package com.vibio.user.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
@@ -14,11 +13,9 @@ import lombok.Data;
 @Data
 public class LoginRequest {
 
-    @NotBlank
-    @NotNull
-    private String email;
+	@NotBlank
+	@NotNull private String email;
 
-    @NotBlank
-    @NotNull
-    private String password;
+	@NotBlank
+	@NotNull private String password;
 }

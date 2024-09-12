@@ -11,14 +11,17 @@ import com.vibio.user.dto.response.OtpResponse;
 import com.vibio.user.dto.response.TokenResponse;
 
 public interface AuthService {
-    OtpResponse createAccountWithUsernameAndPassword(CreateAccountRequest request);
+	OtpResponse createAccountWithUsernameAndPassword(CreateAccountRequest request);
 
-    Object login(LoginRequest request);
+	Object login(LoginRequest request);
 
-    String resendOTP(ResendOtpRequest request);
+	OtpResponse resendCreateAccountOtp(ResendOtpRequest request);
 
-    TokenResponse verifyOTP(VerifyOtpRequest request);
+	OtpResponse resendMfaOtp(ResendOtpRequest request);
 
+	TokenResponse verifyMfaOtp(VerifyOtpRequest request);
 
-    TokenResponse refreshToken(RefreshTokenRequest request);
+	TokenResponse verifyCreateAccountOtp(VerifyOtpRequest request);
+
+	TokenResponse refreshToken(RefreshTokenRequest request);
 }

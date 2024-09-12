@@ -10,15 +10,15 @@ import com.vibio.user.domain.OTP;
 
 public interface OtpService {
 
-    OTP createAccountConfirmationOTP();
+	OTP createAccountConfirmationOTP();
 
-    OTP generateMultiFactorAuthenticationOTP();
+	OTP createMultiFactorAuthenticationOTP();
 
-    void sendOtp(String key, String email, OTP plainOtp);
+	void sendOtp(String key, String email, OTP plainOtp);
 
-    void clearOtp(String otpCode);
+	void clearOtp(String otpCode);
 
-    OTP hashOtp(OTP plainOtp);
+	OTP hashOtp(OTP plainOtp);
 
-    String toOtpString(OTP otp);
+	String toOtpString(OTP otp);
 }

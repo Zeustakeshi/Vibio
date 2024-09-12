@@ -1,7 +1,7 @@
 /*
- *  AccountConfirmation
+ *  AccountMFAConfirmation
  *  @author: Minhhieuano
- *  @created 9/8/2024 9:25 PM
+ *  @created 9/12/2024 2:31 PM
  * */
 
 package com.vibio.user.domain;
@@ -14,13 +14,11 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountConfirmation {
+public class AccountMFA {
 	@Builder.Default
 	@Setter(AccessLevel.PRIVATE)
 	private String code = NanoIdUtils.randomNanoId();
 
 	private String email;
-	private String password;
-	private String username;
 	private String otpCode;
 }
