@@ -12,6 +12,7 @@ api.interceptors.request.use((request) => {
 api.interceptors.response.use(
     (response) => response.data.data,
     async (error) => {
+        console.log({ error });
         return Promise.reject(error?.response?.data?.errors);
     }
 );

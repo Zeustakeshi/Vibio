@@ -38,6 +38,8 @@ public class Account implements UserDetails {
 
 	private String username;
 
+	private String avatar;
+
 	private String password;
 
 	@Enumerated(EnumType.STRING)

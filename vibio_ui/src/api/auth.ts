@@ -19,3 +19,11 @@ export const verifyCreateAccountOtp = async (
 export const resendCreateAccountOtp = async (code: string) => {
     return await api.post("/auth/new-account/resend-otp", { code });
 };
+
+export const verifyMfaOtp = async (data: z.infer<typeof otpSchema>) => {
+    return await api.post("/auth/mfa/verify-otp", data);
+};
+
+export const resendMfaOtp = async (code: string) => {
+    return await api.post("/auth/mfa/resend-otp", { code });
+};

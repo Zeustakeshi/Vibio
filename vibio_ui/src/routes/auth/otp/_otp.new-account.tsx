@@ -48,12 +48,12 @@ function CreateAccountOtp() {
     const verifyOtpMutation = useMutation({
         mutationFn: (data: z.infer<typeof otpSchema>) =>
             verifyCreateAccountOtp(data),
-        mutationKey: ["validate otp"],
+        mutationKey: ["validate", "otp", "create-account"],
     });
 
     const resendOtpMutation = useMutation({
         mutationFn: () => resendCreateAccountOtp(code),
-        mutationKey: ["resend otp"],
+        mutationKey: ["resend", "otp", "create account"],
     });
 
     const onSubmit = async (value: z.infer<typeof otpSchema>) => {
@@ -93,7 +93,7 @@ function CreateAccountOtp() {
                     Xác thực OTP
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                    Chúng tôi đã gửi một mã OTP đến địa chỉ email bạn đã đăng ký
+                    Hoàn tất xác thực OTP để tạo tài khoản
                 </p>
             </div>
             <div className="w-full">

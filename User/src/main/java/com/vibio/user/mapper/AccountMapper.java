@@ -9,6 +9,7 @@ package com.vibio.user.mapper;
 import com.vibio.user.domain.AccountConfirmation;
 import com.vibio.user.domain.AccountMFA;
 import com.vibio.user.dto.request.CreateAccountRequest;
+import com.vibio.user.dto.response.AccountResponse;
 import com.vibio.user.model.Account;
 import org.mapstruct.Mapper;
 
@@ -19,4 +20,6 @@ public interface AccountMapper {
 	Account accountConfirmationToAccount(AccountConfirmation accountConfirmation);
 
 	AccountMFA accountToAccountMFAConfirmation(Account account);
+
+	AccountResponse accountToAccountResponse(Account account);
 }
