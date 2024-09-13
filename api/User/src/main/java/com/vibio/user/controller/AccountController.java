@@ -17,10 +17,4 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
 
 	private final AccountServiceImpl accountService;
-
-	//    @GetMapping("/me")
-	//    @ResponseStatus(HttpStatus.OK)
-	//    public ApiResponse<?> getUserInfo() {
-	//
-	//    }
 }

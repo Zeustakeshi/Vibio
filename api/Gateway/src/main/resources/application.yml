@@ -1,0 +1,26 @@
+server:
+  port: 8080
+api:
+  prefix: /api/v1
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        #        ======== AUTH ===========
+        - id: auth_route
+          uri: ${USER_SERVICE_URL}
+          predicates:
+            - Path= ${api.prefix}/auth/**
+          filters:
+            - StripPrefix=2
+            - RewritePath=/auth/, /user/auth/
+        #        ======== USER ===========
+        - id: user_route
+          uri: ${USER_SERVICE_URL}
+          predicates:
+            - Path= ${api.prefix}/user/**
+          filters:
+            - StripPrefix=2
+

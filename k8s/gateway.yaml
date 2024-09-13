@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vibio-gateway
+  labels:
+    app: vibio-gateway
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vibio-gateway
+  template:
+    metadata:
+      name: vibio-gateway
+      labels:
+        app: vibio-gateway
+    spec:
+      containers:
+        - name: vibio-gateway
+          image: zeustakeshi/vibio-gateway
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          env:
+            - name: NOTIFICATION_SERVICE_URL
+              value: 172.16.12.164:8084
+          resources:
+            limits:
+              cpu: 50m
+              memory: 200Mi
+              ephemeral-storage: 200Mi
+            requests:
+              cpu: 20m
+              memory: 64Mi
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vibio-gateway-service
+  labels:
+    name: assignment
+spec:
+  type: ClusterIP
+  selector:
+    app: vibio-gateway
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+

@@ -30,7 +30,7 @@ spring:
 server:
   port: 8082
   servlet:
-    context-path: /api/user
+    context-path: /user
 
 jwt:
   key:
