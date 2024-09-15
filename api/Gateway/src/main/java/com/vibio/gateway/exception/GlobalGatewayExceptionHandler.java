@@ -6,9 +6,11 @@
 
 package com.vibio.gateway.exception;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vibio.gateway.dto.response.ApiResponse;
+import com.vibio.gateway.utils.JsonConvertor;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,35 +23,30 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class GlobalGatewayExceptionHandler implements ErrorWebExceptionHandler {
 
-	private final ObjectMapper objectMapper;
+    private static final Logger log = LoggerFactory.getLogger(GlobalGatewayExceptionHandler.class);
+    private final JsonConvertor jsonConvertor;
 
-	@Override
-	public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
+    @Override
+    public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
+        log.error(ex.getMessage());
+        HttpStatus status;
+        String message;
+        if (ex instanceof ApiException) {
+            status = ((ApiException) ex).getStatus();
+            message = ex.getMessage();
+        } else {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            message = "An unexpected error occurred.";
+        }
 
-		HttpStatus status;
-		String message;
-		if (ex instanceof ApiException) {
-			status = ((ApiException) ex).getStatus();
-			message = ex.getMessage();
-		} else {
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-			message = "An unexpected error occurred.";
-		}
+        exchange.getResponse().setStatusCode(status);
+        exchange.getResponse().getHeaders().set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
-		exchange.getResponse().setStatusCode(status);
-		exchange.getResponse().getHeaders().set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        byte[] bytes = jsonConvertor.convertObjectToJsonBytes(ApiResponse.error(message));
 
-		byte[] bytes = convertObjectToJsonBytes(ApiResponse.error(message));
+        return exchange.getResponse()
+                .writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(bytes)));
+    }
 
-		return exchange.getResponse()
-				.writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(bytes)));
-	}
 
-	private byte[] convertObjectToJsonBytes(Object object) {
-		try {
-			return objectMapper.writeValueAsBytes(object);
-		} catch (Exception e) {
-			throw new RuntimeException("Error converting object to JSON", e);
-		}
-	}
 }

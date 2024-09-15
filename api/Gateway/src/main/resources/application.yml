@@ -10,7 +10,7 @@ spring:
       routes:
         #        ======== AUTH ===========
         - id: auth_route
-          uri: ${USER_SERVICE_URL}
+          uri: ${services.user-service}
           predicates:
             - Path= ${api.prefix}/auth/**
           filters:
@@ -18,9 +18,12 @@ spring:
             - RewritePath=/auth/, /user/auth/
         #        ======== USER ===========
         - id: user_route
-          uri: ${USER_SERVICE_URL}
+          uri: ${services.user-service}
           predicates:
             - Path= ${api.prefix}/user/**
           filters:
             - StripPrefix=2
+            - AuthorizationFilter
 
+services:
+  user-service: ${USER_SERVICE_URL}

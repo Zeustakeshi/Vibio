@@ -7,16 +7,22 @@
 package com.vibio.user.service;
 
 import com.vibio.user.domain.Token;
+import com.vibio.user.dto.request.IntrospectTokenRequest;
+import com.vibio.user.dto.request.RefreshTokenRequest;
 import com.vibio.user.dto.response.TokenResponse;
 import com.vibio.user.model.Account;
 
 public interface TokenService {
 
-	TokenResponse generateTokenPair(Account account);
+    TokenResponse generateTokenPair(Account account);
 
-	TokenResponse refreshToken(String refreshToken);
+    TokenResponse refreshToken(RefreshTokenRequest request);
 
-	Token generateAccessToken(Account account);
+    Boolean introspectToken(IntrospectTokenRequest request);
 
-	Token generateRefreshToken(String accessTokenId, Account account);
+    Token generateAccessToken(Account account);
+
+    Token generateRefreshToken(String accessTokenId, Account account);
+
+
 }
