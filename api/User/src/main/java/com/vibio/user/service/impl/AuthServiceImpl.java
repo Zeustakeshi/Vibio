@@ -128,6 +128,8 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public TokenResponse verifyCreateAccountOtp(VerifyOtpRequest request) {
 
+        final String DEFAULT_AVATAR_URL = "https://th.bing.com/th/id/R.69b6c7c1419fedc585d4aac2958c5ae4?rik=Ti4lNMU9Co54jg&pid=ImgRaw&r=0";
+
         // Retrieve the AccountConfirmation object from Redis using the provided code
         String confirmationJson = Optional.ofNullable(jedis.get(request.getCode()))
                 .orElseThrow(() -> new BadRequestException("Invalid OTP code"));
@@ -141,6 +143,7 @@ public class AuthServiceImpl implements AuthService {
         Account account = accountMapper.accountConfirmationToAccount(confirmation);
         account.setRoles(List.of(Role.USER));
         account.setProfile(Profile.builder().build());
+        account.setAvatar(DEFAULT_AVATAR_URL);
 
         return tokenService.generateTokenPair(accountRepository.save(account));
     }

@@ -6,6 +6,9 @@
 
 package com.vibio.user.service;
 
+import com.vibio.user.dto.response.AccountResponse;
+import com.vibio.user.model.Account;
+
 public interface AccountService {
-	//    AccountResponse getAccountInfo ()
+    AccountResponse getAccountInfo(Account account);
 }

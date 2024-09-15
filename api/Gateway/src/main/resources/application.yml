@@ -16,6 +16,14 @@ spring:
           filters:
             - StripPrefix=2
             - RewritePath=/auth/, /user/auth/
+        #        ======== TOKEN ===========
+        - id: token_route
+          uri: ${services.user-service}
+          predicates:
+            - Path= ${api.prefix}/token/**
+          filters:
+            - StripPrefix=2
+            - RewritePath=/token/, /user/token/
         #        ======== USER ===========
         - id: user_route
           uri: ${services.user-service}

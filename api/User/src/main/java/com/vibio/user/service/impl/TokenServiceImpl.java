@@ -116,6 +116,7 @@ public class TokenServiceImpl implements TokenService {
         JwtClaimsSet claimsSet = JwtClaimsSet.builder()
                 .subject(account.getId())
                 .claim("email", account.getEmail())
+                .claim("avatar", account.getAvatar())
                 .claim("scope", account.getAuthorities()) // Add account's authorities/roles
                 .claim(TOKEN_TYPE_KEY, TokenType.ACCESS_TOKEN)
                 .claim(TOKEN_ID_KEY, tokenId)
