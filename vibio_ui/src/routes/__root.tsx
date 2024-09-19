@@ -1,8 +1,13 @@
+import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import * as React from "react";
-import { Outlet, createRootRoute } from "@tanstack/react-router";
 import Header from "../components/header/Header";
+import { AuthContext } from "../context/AuthContext";
 
-export const Route = createRootRoute({
+interface AppRouterContext {
+    auth: AuthContext;
+}
+
+export const Route = createRootRouteWithContext<AppRouterContext>()({
     component: () => (
         <React.Fragment>
             <Header></Header>

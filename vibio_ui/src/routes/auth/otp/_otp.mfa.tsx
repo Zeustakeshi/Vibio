@@ -18,6 +18,7 @@ import {
     InputOTPGroup,
     InputOTPSlot,
 } from "../../../components/ui/input-otp";
+import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../hooks/use-toast";
 import { otpSchema } from "../../../schema/auth.schema";
 
@@ -41,6 +42,7 @@ function MfaOtp() {
     });
 
     const { toast } = useToast();
+    const { login } = useAuth();
 
     const verifyOtpMutation = useMutation({
         mutationFn: (data: z.infer<typeof otpSchema>) => verifyMfaOtp(data),
@@ -54,8 +56,8 @@ function MfaOtp() {
 
     const onSubmit = async (value: z.infer<typeof otpSchema>) => {
         try {
-            const data = await verifyOtpMutation.mutateAsync(value);
-            // handle save access token and refresh token
+            const data: any = await verifyOtpMutation.mutateAsync(value);
+            login(data);
         } catch (error: any) {
             toast({
                 title: "Xác thực thất bại",

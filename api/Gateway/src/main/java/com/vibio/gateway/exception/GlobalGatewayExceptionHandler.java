@@ -28,7 +28,9 @@ public class GlobalGatewayExceptionHandler implements ErrorWebExceptionHandler {
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
-        log.error(ex.getMessage());
+
+        log.error("Prefix= {} error: {}", exchange.getRequest().getPath(), ex.getMessage());
+
         HttpStatus status;
         String message;
         if (ex instanceof ApiException) {

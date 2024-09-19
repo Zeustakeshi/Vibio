@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -143,7 +144,7 @@ public class TokenServiceImpl implements TokenService {
                 .id(tokenId)
                 .type(TokenType.ACCESS_TOKEN)
                 .value(token)
-                .expiresIn(expireTime)
+                .expiresIn(expireTime.atZone(ZoneId.systemDefault()).toEpochSecond())
                 .build();
     }
 
@@ -186,7 +187,7 @@ public class TokenServiceImpl implements TokenService {
         return Token.builder()
                 .type(TokenType.REFRESH_TOKEN)
                 .value(token)
-                .expiresIn(expireTime)
+                .expiresIn(expireTime.atZone(ZoneId.systemDefault()).toEpochSecond())
                 .build();
     }
 

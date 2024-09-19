@@ -1,8 +1,35 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import {
+    createFileRoute,
+    Outlet,
+    redirect,
+    useNavigate,
+} from "@tanstack/react-router";
+import { useEffect } from "react";
 import OauthLogin from "../../components/auth/OauthLogin";
+import { useAuth } from "../../context/AuthContext";
 
 export const Route = createFileRoute("/auth/_auth")({
-    component: () => (
+    beforeLoad({ context }) {
+        const { auth } = context;
+        if (!auth.authLoading && auth.isAuthenticated) {
+            throw redirect({
+                to: "/",
+            });
+        }
+    },
+    component: AuthLayout,
+});
+
+function AuthLayout() {
+    const { authLoading, isAuthenticated } = useAuth();
+    const navigation = useNavigate();
+
+    useEffect(() => {
+        if (authLoading) return;
+        if (isAuthenticated) navigation({ to: "/" });
+    }, [authLoading, isAuthenticated]);
+
+    return (
         <div className="min-h-[90svh] flex justify-center items-center">
             <div className="shadow-xl p-5 border rounded-xl min-w-[400px] min-h-[500px] flex flex-col justify-start items-center">
                 <div className="flex-1 w-full">
@@ -20,5 +47,5 @@ export const Route = createFileRoute("/auth/_auth")({
                 </div>
             </div>
         </div>
-    ),
-});
+    );
+}

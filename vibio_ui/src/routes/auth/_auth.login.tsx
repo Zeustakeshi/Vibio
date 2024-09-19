@@ -14,6 +14,7 @@ import {
     FormMessage,
 } from "../../components/ui/form";
 import { Input } from "../../components/ui/input";
+import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../hooks/use-toast";
 import { loginSchema } from "../../schema/auth.schema";
 export const Route = createFileRoute("/auth/_auth/login")({
@@ -27,6 +28,7 @@ function Login() {
 
     const { toast } = useToast();
     const navigation = useNavigate();
+    const { login } = useAuth();
 
     const { isPending, mutateAsync } = useMutation({
         mutationFn: (data: z.infer<typeof loginSchema>) => basicLogin(data),
@@ -36,14 +38,11 @@ function Login() {
     const onSubmit = async (value: z.infer<typeof loginSchema>) => {
         try {
             const data: any = await mutateAsync(value);
+            login(data);
             if (data.code) {
                 navigation({
                     to: "/auth/otp/mfa",
                     search: { code: data.code },
-                });
-            } else {
-                navigation({
-                    to: "/",
                 });
             }
         } catch (error: any) {
