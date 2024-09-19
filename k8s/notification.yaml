@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vibio-notification
+  labels:
+    app: vibio-notification
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vibio-notification
+  template:
+    metadata:
+      name: vibio-notification
+      labels:
+        app: vibio-notification
+    spec:
+      containers:
+        - name: vibio-notification
+          image: zeustakeshi/vibio-notification-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8084
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 50m
+              memory: 200Mi
+              ephemeral-storage: 200Mi
+            requests:
+              cpu: 20m
+              memory: 64Mi
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vibio-notification-service
+  labels:
+    name: assignment
+spec:
+  type: ClusterIP
+  selector:
+    app: vibio-notification
+  ports:
+    - protocol: TCP
+      port: 8084
+      targetPort: 8084
+
+  

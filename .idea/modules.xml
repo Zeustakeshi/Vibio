@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/User/User.iml" filepath="$PROJECT_DIR$/User/User.iml" />
+      <module fileurl="file://$PROJECT_DIR$/api/User/User.iml" filepath="$PROJECT_DIR$/api/User/User.iml" />
       <module fileurl="file://$PROJECT_DIR$/Vibio.iml" filepath="$PROJECT_DIR$/Vibio.iml" />
     </modules>
   </component>

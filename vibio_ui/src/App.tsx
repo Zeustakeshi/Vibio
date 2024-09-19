@@ -1,12 +1,11 @@
 // Import the generated route tree
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
 import { createRouter, RouterProvider } from "@tanstack/react-router";
-import { Toaster } from "./components/ui/toaster";
+import { useAuth } from "./context/AuthContext";
 import { routeTree } from "./routeTree.gen";
 
 // Create a new router instance
-const router = createRouter({ routeTree });
+const router = createRouter({ routeTree, context: { auth: undefined! } });
 
 // Register the router instance for type safety
 declare module "@tanstack/react-router" {
@@ -15,17 +14,9 @@ declare module "@tanstack/react-router" {
     }
 }
 
-// Create a client
-const queryClient = new QueryClient();
-
 const App = () => {
-    return (
-        <QueryClientProvider client={queryClient}>
-            <RouterProvider router={router} />;
-            <ReactQueryDevtools initialIsOpen={false} position="bottom" />
-            <Toaster />
-        </QueryClientProvider>
-    );
+    const auth = useAuth();
+    return <RouterProvider router={router} context={{ auth: auth }} />;
 };
 
 export default App;

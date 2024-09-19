@@ -21,6 +21,7 @@ import {
     InputOTPGroup,
     InputOTPSlot,
 } from "../../../components/ui/input-otp";
+import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../hooks/use-toast";
 import { otpSchema } from "../../../schema/auth.schema";
 
@@ -43,6 +44,7 @@ function CreateAccountOtp() {
         resolver: zodResolver(otpSchema),
     });
 
+    const { login } = useAuth();
     const { toast } = useToast();
 
     const verifyOtpMutation = useMutation({
@@ -58,8 +60,8 @@ function CreateAccountOtp() {
 
     const onSubmit = async (value: z.infer<typeof otpSchema>) => {
         try {
-            const data = await verifyOtpMutation.mutateAsync(value);
-            // handle save access token and refresh token
+            const data: any = await verifyOtpMutation.mutateAsync(value);
+            login(data);
         } catch (error: any) {
             toast({
                 title: "Xác thực thất bại",
