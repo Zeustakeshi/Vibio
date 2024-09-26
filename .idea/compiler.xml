@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Gateway" />
+        <module name="Channel" />
       </profile>
       <profile name="Annotation profile for User" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -28,6 +29,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="Channel" options="-parameters" />
       <module name="Gateway" options="-parameters" />
       <module name="Notification" options="-parameters" />
       <module name="User" options="-parameters -Amapstruct.defaultComponentModel=spring" />

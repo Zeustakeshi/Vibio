@@ -12,6 +12,8 @@ import com.vibio.user.dto.request.RefreshTokenRequest;
 import com.vibio.user.dto.response.TokenResponse;
 import com.vibio.user.model.Account;
 
+import java.util.Map;
+
 public interface TokenService {
 
     TokenResponse generateTokenPair(Account account);
@@ -24,5 +26,5 @@ public interface TokenService {
 
     Token generateRefreshToken(String accessTokenId, Account account);
 
-
+    Map<String, Object> getJwkSets();
 }

@@ -16,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/token")
 @RequiredArgsConstructor
@@ -35,4 +37,9 @@ public class TokenController {
         return ApiResponse.success(tokenService.introspectToken(request));
     }
 
+    @GetMapping("/.well-known/jwks.json")
+    @ResponseStatus(HttpStatus.OK)
+    public Map<String, Object> getJwkSet() {
+        return tokenService.getJwkSets();
+    }
 }

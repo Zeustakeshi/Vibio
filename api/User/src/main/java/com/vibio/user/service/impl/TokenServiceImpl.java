@@ -8,6 +8,8 @@ package com.vibio.user.service.impl;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.google.gson.Gson;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
 import com.vibio.user.common.enums.TokenType;
 import com.vibio.user.common.properties.AccessTokenProperties;
 import com.vibio.user.common.properties.RefreshTokenProperties;
@@ -20,6 +22,7 @@ import com.vibio.user.exception.InvalidTokenException;
 import com.vibio.user.exception.NotfoundException;
 import com.vibio.user.model.Account;
 import com.vibio.user.repository.AccountRepository;
+import com.vibio.user.service.KeyService;
 import com.vibio.user.service.TokenService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.oauth2.jwt.*;
@@ -29,6 +32,7 @@ import redis.clients.jedis.Jedis;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -48,10 +52,12 @@ public class TokenServiceImpl implements TokenService {
     private final JwtDecoder accessTokenDecoder;
     private final AccessTokenProperties accessTokenProperties;
     private final RefreshTokenProperties refreshTokenProperties;
+    private final KeyService keyService;
 
     public TokenServiceImpl(
             Jedis jedis,
             Gson gson,
+            KeyService keyService,
             AccountRepository accountRepository,
             AccessTokenProperties accessTokenProperties,
             RefreshTokenProperties refreshTokenProperties,
@@ -66,6 +72,7 @@ public class TokenServiceImpl implements TokenService {
         this.accessTokenProperties = accessTokenProperties;
         this.refreshTokenProperties = refreshTokenProperties;
         this.accountRepository = accountRepository;
+        this.keyService = keyService;
         this.jedis = jedis;
         this.gson = gson;
     }
@@ -200,6 +207,15 @@ public class TokenServiceImpl implements TokenService {
         } catch (Exception ex) {
             return false;
         }
+    }
+
+    @Override
+    public Map<String, Object> getJwkSets() {
+        RSAKey rsaKey = new RSAKey.Builder(keyService.getAccessTokenPublicKey())
+                .privateKey(keyService.getAccessTokenPrivateKey())
+                .build();
+        JWKSet jwkSet = new JWKSet(rsaKey);
+        return jwkSet.toJSONObject();
     }
 
     private Jwt validateRefreshToken(Jwt jwt) {
