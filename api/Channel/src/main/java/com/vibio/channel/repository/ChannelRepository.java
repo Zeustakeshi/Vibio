@@ -7,8 +7,11 @@
 package com.vibio.channel.repository;
 
 import com.vibio.channel.model.Channel;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ChannelRepository extends JpaRepository<Channel, String> {}
+public interface ChannelRepository extends JpaRepository<Channel, String> {
+	Optional<Channel> findByAccountId(String accountId);
+}
