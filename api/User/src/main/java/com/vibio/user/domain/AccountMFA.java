@@ -6,19 +6,13 @@
 
 package com.vibio.user.domain;
 
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class AccountMFA {
-	@Builder.Default
-	@Setter(AccessLevel.PRIVATE)
-	private String code = NanoIdUtils.randomNanoId();
-
-	private String email;
-	private String otpCode;
+public class AccountMFA extends AccountOtpInformation {
+    private String email;
 }
