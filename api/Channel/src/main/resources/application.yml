@@ -27,6 +27,14 @@ spring:
       write-date-keys-as-timestamps: false
     deserialization:
       fail-on-unknown-properties: false
+  kafka:
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}
+      group-id: channel_group
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: '*'
+
 server:
   port: 8084
   servlet:
@@ -35,9 +43,8 @@ server:
 services-url:
   user: ${USER_SERVICE_URL:http://localhost:8082/user}
 
-
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        security: DEBUG

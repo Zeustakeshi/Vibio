@@ -4,7 +4,6 @@
  *  @created 9/26/2024 10:42 PM
  * */
 
-
 package com.vibio.channel.config;
 
 import com.vibio.channel.common.properties.ServiceUrl;
@@ -13,5 +12,4 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties({ServiceUrl.class})
-public class AppConfig {
-}
+public class AppConfig {}

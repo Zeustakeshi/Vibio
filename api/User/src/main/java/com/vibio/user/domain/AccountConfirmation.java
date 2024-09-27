@@ -6,19 +6,22 @@
 
 package com.vibio.user.domain;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AccountConfirmation extends AccountOtpInformation {
 
-    private String email;
-    private String password;
-    private String username;
+	private String email;
+	private String password;
+	private String username;
 
-    private String otpCode;
-
+	private String otpCode;
 }

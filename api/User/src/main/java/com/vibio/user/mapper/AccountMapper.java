@@ -10,8 +10,10 @@ import com.vibio.user.domain.AccountConfirmation;
 import com.vibio.user.domain.AccountMFA;
 import com.vibio.user.dto.request.CreateAccountRequest;
 import com.vibio.user.dto.response.AccountResponse;
+import com.vibio.user.event.eventModel.NewChannelEvent;
 import com.vibio.user.model.Account;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface AccountMapper {
@@ -22,4 +24,11 @@ public interface AccountMapper {
 	AccountMFA accountToAccountMFAConfirmation(Account account);
 
 	AccountResponse accountToAccountResponse(Account account);
+
+	@Mapping(source = "id", target = "accountId")
+	@Mapping(source = "username", target = "name")
+	@Mapping(source = "avatar", target = "defaultAvatar")
+	@Mapping(source = "email", target = "defaultEmail")
+	@Mapping(target = "id", ignore = true)
+	NewChannelEvent accountToNewChannelEvent(Account account);
 }

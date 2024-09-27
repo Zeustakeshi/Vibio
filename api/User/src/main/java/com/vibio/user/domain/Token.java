@@ -14,9 +14,10 @@ import lombok.Data;
 @Data
 @Builder
 public class Token {
-    @Builder.Default
-    private String id = NanoIdUtils.randomNanoId();
-    private String value;
-    private TokenType type;
-    private Long expiresIn;
+	@Builder.Default
+	private String id = NanoIdUtils.randomNanoId();
+
+	private String value;
+	private TokenType type;
+	private Long expiresIn;
 }

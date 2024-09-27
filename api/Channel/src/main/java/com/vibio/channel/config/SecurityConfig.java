@@ -4,7 +4,6 @@
  *  @created 9/19/2024 2:34 PM
  * */
 
-
 package com.vibio.channel.config;
 
 import com.vibio.channel.security.JwtAuthenticationConverter;
@@ -26,20 +25,20 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final JwtAuthenticationConverter jwtAuthenticationConverter;
-    private final AuthenticationEntryPoint authenticationEntryPoint;
-    private final AccessDeniedHandler accessDeniedHandler;
+	private final JwtAuthenticationConverter jwtAuthenticationConverter;
+	private final AuthenticationEntryPoint authenticationEntryPoint;
+	private final AccessDeniedHandler accessDeniedHandler;
 
-    @Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(handler -> handler.accessDeniedHandler(accessDeniedHandler).authenticationEntryPoint(authenticationEntryPoint))
-                .authorizeHttpRequests(request -> request.anyRequest().authenticated())
-                .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
+	@Bean
+	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.csrf(AbstractHttpConfigurer::disable)
+				.sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.exceptionHandling(handler -> handler.accessDeniedHandler(accessDeniedHandler)
+						.authenticationEntryPoint(authenticationEntryPoint))
+				.authorizeHttpRequests(request -> request.anyRequest().authenticated())
+				.oauth2ResourceServer(
+						oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
 
-        return http.build();
-    }
-
-
+		return http.build();
+	}
 }

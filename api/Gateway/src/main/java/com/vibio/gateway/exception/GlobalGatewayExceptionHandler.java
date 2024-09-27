@@ -23,32 +23,30 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class GlobalGatewayExceptionHandler implements ErrorWebExceptionHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(GlobalGatewayExceptionHandler.class);
-    private final JsonConvertor jsonConvertor;
+	private static final Logger log = LoggerFactory.getLogger(GlobalGatewayExceptionHandler.class);
+	private final JsonConvertor jsonConvertor;
 
-    @Override
-    public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
+	@Override
+	public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
 
-        log.error("Prefix= {} error: {}", exchange.getRequest().getPath(), ex.getMessage());
+		log.error("Prefix= {} error: {}", exchange.getRequest().getPath(), ex.getMessage());
 
-        HttpStatus status;
-        String message;
-        if (ex instanceof ApiException) {
-            status = ((ApiException) ex).getStatus();
-            message = ex.getMessage();
-        } else {
-            status = HttpStatus.INTERNAL_SERVER_ERROR;
-            message = "An unexpected error occurred.";
-        }
+		HttpStatus status;
+		String message;
+		if (ex instanceof ApiException) {
+			status = ((ApiException) ex).getStatus();
+			message = ex.getMessage();
+		} else {
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+			message = "An unexpected error occurred.";
+		}
 
-        exchange.getResponse().setStatusCode(status);
-        exchange.getResponse().getHeaders().set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+		exchange.getResponse().setStatusCode(status);
+		exchange.getResponse().getHeaders().set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
-        byte[] bytes = jsonConvertor.convertObjectToJsonBytes(ApiResponse.error(message));
+		byte[] bytes = jsonConvertor.convertObjectToJsonBytes(ApiResponse.error(message));
 
-        return exchange.getResponse()
-                .writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(bytes)));
-    }
-
-
+		return exchange.getResponse()
+				.writeWith(Mono.just(exchange.getResponse().bufferFactory().wrap(bytes)));
+	}
 }

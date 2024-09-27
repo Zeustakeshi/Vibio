@@ -9,7 +9,7 @@ package com.vibio.channel.exception;
 import org.springframework.http.HttpStatus;
 
 public class NotfoundException extends ApiException {
-    public NotfoundException(String message) {
-        super(HttpStatus.NOT_FOUND, message);
-    }
+	public NotfoundException(String message) {
+		super(HttpStatus.NOT_FOUND, message);
+	}
 }
