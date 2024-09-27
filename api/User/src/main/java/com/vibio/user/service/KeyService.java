@@ -10,11 +10,11 @@ import java.security.PrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
 public interface KeyService {
-	/**
-	 * Retrieves the public key for access token verification.
-	 *
-	 * @return the RSAPublicKey for access tokens
-	 */
+	//	/**
+	//	 * Retrieves the public key for access token verification.
+	//	 *
+	//	 * @return the RSAPublicKey for access tokens
+	//	 */
 	RSAPublicKey getAccessTokenPublicKey();
 
 	/**

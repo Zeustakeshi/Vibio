@@ -10,5 +10,5 @@ import com.vibio.user.dto.response.AccountResponse;
 import com.vibio.user.model.Account;
 
 public interface AccountService {
-    AccountResponse getAccountInfo(Account account);
+	AccountResponse getAccountInfo(Account account);
 }

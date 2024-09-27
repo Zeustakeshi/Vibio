@@ -27,6 +27,18 @@ spring:
       write-date-keys-as-timestamps: false
     deserialization:
       fail-on-unknown-properties: false
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}
+      group-id: user_group
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: '*'
+
 server:
   port: 8082
   servlet:
@@ -45,3 +57,7 @@ jwt:
 
 cache:
   redis_url: ${REDIS_URL}
+
+default:
+  account:
+    avatar: https://th.bing.com/th/id/R.69b6c7c1419fedc585d4aac2958c5ae4?rik=Ti4lNMU9Co54jg&pid=ImgRaw&r=0

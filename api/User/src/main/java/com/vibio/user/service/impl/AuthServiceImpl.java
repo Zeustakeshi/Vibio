@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vibio.user.common.enums.Role;
 import com.vibio.user.domain.AccountConfirmation;
 import com.vibio.user.domain.AccountMFA;
+import com.vibio.user.domain.AccountOtpInformation;
 import com.vibio.user.domain.OTP;
 import com.vibio.user.dto.request.CreateAccountRequest;
 import com.vibio.user.dto.request.LoginRequest;
@@ -18,8 +19,10 @@ import com.vibio.user.dto.request.ResendOtpRequest;
 import com.vibio.user.dto.request.VerifyOtpRequest;
 import com.vibio.user.dto.response.OtpResponse;
 import com.vibio.user.dto.response.TokenResponse;
+import com.vibio.user.event.producer.ChannelProducer;
 import com.vibio.user.exception.BadRequestException;
 import com.vibio.user.exception.ConflictException;
+import com.vibio.user.exception.ForbiddenException;
 import com.vibio.user.exception.NotfoundException;
 import com.vibio.user.mapper.AccountMapper;
 import com.vibio.user.model.Account;
@@ -29,205 +32,254 @@ import com.vibio.user.service.AuthService;
 import com.vibio.user.service.OtpService;
 import com.vibio.user.service.TokenService;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
 
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final AccountRepository accountRepository;
-    private final Jedis jedis;
-    private final OtpService otpService;
-    private final AccountMapper accountMapper;
-    private final PasswordEncoder passwordEncoder;
-    private final TokenService tokenService;
-    private final ObjectMapper objectMapper;
+	private static final Integer MAXIMUM_NUMBER_OF_VALIDATE_OTP_REQUEST = 3;
+	private static final Integer CONFIRMATION_CODE_EXPIRED_TIME = 5; // 5 minutes
+	private final AccountRepository accountRepository;
+	private final Jedis jedis;
+	private final OtpService otpService;
+	private final AccountMapper accountMapper;
+	private final PasswordEncoder passwordEncoder;
+	private final TokenService tokenService;
+	private final ObjectMapper objectMapper;
+	private final ChannelProducer channelProducer;
 
-    @SneakyThrows
-    @Override
-    public OtpResponse createAccountWithUsernameAndPassword(CreateAccountRequest request) {
-        // Check if the email already exists in the database
-        if (accountRepository.existsByEmail(request.getEmail())) {
-            throw new ConflictException("Email already existed!");
-        }
+	@Value("${default.account.avatar}")
+	private String accountDefaultAvatar;
 
-        // Create an OTP for account confirmation
-        OTP otp = otpService.createAccountConfirmationOTP();
+	@SneakyThrows
+	@Override
+	public OtpResponse createAccountWithUsernameAndPassword(CreateAccountRequest request) {
+		// Check if the email already exists in the database
+		if (accountRepository.existsByEmail(request.getEmail())) {
+			throw new ConflictException("Email already existed!");
+		}
 
-        // Create an AccountConfirmation object from the CreateAccountRequest (encode password)
-        AccountConfirmation confirmation = accountMapper.createAccountRequestToAccountConfirmation(request);
-        confirmation.setPassword(passwordEncoder.encode(confirmation.getPassword()));
-        confirmation.setOtpCode(otp.getCode());
+		// Create an OTP for account confirmation
+		OTP otp = otpService.createAccountConfirmationOTP();
 
-        // Store the AccountConfirmation object in Redis with a specified expiration time
-        jedis.setex(
-                confirmation.getCode(), TimeUnit.MINUTES.toSeconds(5), objectMapper.writeValueAsString(confirmation));
+		// Create an AccountConfirmation object from the CreateAccountRequest (encode password)
+		AccountConfirmation confirmation = accountMapper.createAccountRequestToAccountConfirmation(request);
+		confirmation.setPassword(passwordEncoder.encode(confirmation.getPassword()));
+		confirmation.setOtpCode(otp.getCode());
 
-        // send otp to user via email
-        otpService.sendOtp(confirmation.getCode(), confirmation.getEmail(), otp);
+		// Store the AccountConfirmation object in Redis with a specified expiration time
+		jedis.setex(
+				confirmation.getCode(),
+				TimeUnit.MINUTES.toSeconds(CONFIRMATION_CODE_EXPIRED_TIME),
+				objectMapper.writeValueAsString(confirmation));
 
-        return OtpResponse.builder().code(confirmation.getCode()).build();
-    }
+		// send otp to user via email
+		otpService.sendOtp(confirmation.getCode(), confirmation.getEmail(), otp);
 
-    @Override
-    public Object login(LoginRequest request) {
+		return OtpResponse.builder().code(confirmation.getCode()).build();
+	}
 
-        String incorrectEmailOrPasswordMessage = "Incorrect email name or password";
+	@Override
+	public Object login(LoginRequest request) {
 
-        // Get account information form database
-        Account account = accountRepository
-                .findByEmail(request.getEmail())
-                .orElseThrow(() -> new BadRequestException(incorrectEmailOrPasswordMessage));
+		String incorrectEmailOrPasswordMessage = "Incorrect email name or password";
 
-        // Check account password
-        if (!passwordEncoder.matches(request.getPassword(), account.getPassword())) {
-            throw new BadRequestException(incorrectEmailOrPasswordMessage);
-        }
+		// Get account information form database
+		Account account = accountRepository
+				.findByEmail(request.getEmail())
+				.orElseThrow(() -> new BadRequestException(incorrectEmailOrPasswordMessage));
 
-        // Check account Multi-factor Authentication (MFA)
-        if (account.getMfa()) return multiFactorAuthenticationLogin(account);
-        return basicAuthenticationLogin(account);
-    }
+		// Check account password
+		if (!passwordEncoder.matches(request.getPassword(), account.getPassword())) {
+			throw new BadRequestException(incorrectEmailOrPasswordMessage);
+		}
 
-    @SneakyThrows
-    @Override
-    public OtpResponse resendCreateAccountOtp(ResendOtpRequest request) {
+		// Check account Multi-factor Authentication (MFA)
+		if (account.getMfa()) return multiFactorAuthenticationLogin(account);
+		return basicAuthenticationLogin(account);
+	}
 
-        // Retrieve the AccountConfirmation object from Redis using the provided code
-        String confirmationJson = Optional.ofNullable(jedis.get(request.getCode()))
-                .orElseThrow(() -> new BadRequestException("Invalid OTP code"));
-        AccountConfirmation confirmation = objectMapper.readValue(confirmationJson, AccountConfirmation.class);
-        // Generate a new OTP
-        OTP otp = otpService.createAccountConfirmationOTP();
+	@SneakyThrows
+	@Override
+	public OtpResponse resendCreateAccountOtp(ResendOtpRequest request) {
 
-        // Delete the old OTP from Redis
-        jedis.del(confirmation.getOtpCode());
+		// Retrieve the AccountConfirmation object from Redis using the provided code
+		String confirmationJson = Optional.ofNullable(jedis.get(request.getCode()))
+				.orElseThrow(() -> new BadRequestException("Invalid OTP code"));
+		AccountConfirmation confirmation = objectMapper.readValue(confirmationJson, AccountConfirmation.class);
+		// Generate a new OTP
+		OTP otp = otpService.createAccountConfirmationOTP();
 
-        // Update the AccountConfirmation object with the new OTP
-        confirmation.setOtpCode(otp.getCode());
+		// Delete the old OTP from Redis
+		jedis.del(confirmation.getOtpCode());
 
-        // Save account confirmation to cache
-        jedis.setex(
-                confirmation.getCode(), TimeUnit.MINUTES.toSeconds(30), objectMapper.writeValueAsString(confirmation));
+		// Update the AccountConfirmation object with the new OTP
+		confirmation.setOtpCode(otp.getCode());
+		confirmation.setValidateCount(0);
 
-        // Resend OTP
-        otpService.sendOtp(confirmation.getCode(), confirmation.getEmail(), otp);
+		// Save account confirmation to cache
+		jedis.setex(
+				confirmation.getCode(),
+				jedis.ttl(confirmation.getCode()),
+				objectMapper.writeValueAsString(confirmation));
 
-        return OtpResponse.builder().code(confirmation.getCode()).build();
-    }
+		// Resend OTP
+		otpService.sendOtp(confirmation.getCode(), confirmation.getEmail(), otp);
 
-    @SneakyThrows
-    @Override
-    public TokenResponse verifyCreateAccountOtp(VerifyOtpRequest request) {
+		return OtpResponse.builder().code(confirmation.getCode()).build();
+	}
 
-        final String DEFAULT_AVATAR_URL = "https://th.bing.com/th/id/R.69b6c7c1419fedc585d4aac2958c5ae4?rik=Ti4lNMU9Co54jg&pid=ImgRaw&r=0";
+	@SneakyThrows
+	@Override
+	public TokenResponse verifyCreateAccountOtp(VerifyOtpRequest request) {
 
-        // Retrieve the AccountConfirmation object from Redis using the provided code
-        String confirmationJson = Optional.ofNullable(jedis.get(request.getCode()))
-                .orElseThrow(() -> new BadRequestException("Invalid OTP code"));
-        AccountConfirmation confirmation = objectMapper.readValue(confirmationJson, AccountConfirmation.class);
+		// Verify OTP and retrieve AccountConfirmation object
+		AccountConfirmation confirmation = verifyOtpAndRetrieveData(request, AccountConfirmation.class);
 
-        verifyOtp(confirmation.getOtpCode(), request);
+		// If OTP verification succeeds, proceed with account creation
+		Account account = accountMapper.accountConfirmationToAccount(confirmation);
+		account.setRoles(List.of(Role.USER)); // Assign default user role
+		account.setProfile(Profile.builder().build()); // Create an empty profile
+		account.setAvatar(accountDefaultAvatar); // Set default avatar
 
-        jedis.del(confirmation.getCode());
-        jedis.del(confirmation.getOtpCode());
+		// Clean up the OTP and confirmation data from Redis
+		jedis.del(confirmation.getCode());
+		jedis.del(confirmation.getOtpCode());
 
-        Account account = accountMapper.accountConfirmationToAccount(confirmation);
-        account.setRoles(List.of(Role.USER));
-        account.setProfile(Profile.builder().build());
-        account.setAvatar(DEFAULT_AVATAR_URL);
+		// persist account to database
+		Account newAccount = accountRepository.save(account);
 
-        return tokenService.generateTokenPair(accountRepository.save(account));
-    }
+		// create channel
+		channelProducer.createNewChannel(accountMapper.accountToNewChannelEvent(newAccount));
 
-    @SneakyThrows
-    @Override
-    public OtpResponse resendMfaOtp(ResendOtpRequest request) {
-        // Retrieve the MfaConfirmation object from Redis using the provided code
-        String confirmationJson = Optional.ofNullable(jedis.get(request.getCode()))
-                .orElseThrow(() -> new BadRequestException("Invalid OTP code"));
+		// Save the new account and generate a token pair for the account
+		return tokenService.generateTokenPair(newAccount);
+	}
 
-        AccountMFA confirmation = objectMapper.readValue(confirmationJson, AccountMFA.class);
+	@SneakyThrows
+	@Override
+	public OtpResponse resendMfaOtp(ResendOtpRequest request) {
 
-        // Generate a new OTP
-        OTP otp = otpService.createMultiFactorAuthenticationOTP();
+		// Retrieve the MfaConfirmation object from Redis using the provided code
+		String confirmationJson = Optional.ofNullable(jedis.get(request.getCode()))
+				.orElseThrow(() -> new BadRequestException("Invalid OTP code"));
 
-        // Delete the old OTP from Redis
-        jedis.del(confirmation.getOtpCode());
+		AccountMFA confirmation = objectMapper.readValue(confirmationJson, AccountMFA.class);
 
-        // Update the MfaConfirmation object with the new OTP
-        confirmation.setOtpCode(otp.getCode());
+		// Generate a new OTP
+		OTP otp = otpService.createMultiFactorAuthenticationOTP();
 
-        // Save MfaConfirmation to cache
-        jedis.setex(
-                confirmation.getCode(), TimeUnit.MINUTES.toSeconds(20), objectMapper.writeValueAsString(confirmation));
+		// Delete the old OTP from Redis
+		jedis.del(confirmation.getOtpCode());
 
-        // Resend OTP
-        otpService.sendOtp(confirmation.getCode(), confirmation.getEmail(), otp);
+		// Update the MfaConfirmation object with the new OTP
+		confirmation.setOtpCode(otp.getCode());
 
-        return OtpResponse.builder().code(confirmation.getCode()).build();
-    }
+		// Save MfaConfirmation to cache
+		jedis.setex(
+				confirmation.getCode(),
+				jedis.ttl(confirmation.getCode()),
+				objectMapper.writeValueAsString(confirmation));
 
-    @SneakyThrows
-    @Override
-    @Transactional
-    public TokenResponse verifyMfaOtp(VerifyOtpRequest request) {
-        // Retrieve the accountMfaJson object from Redis using the provided code
-        String accountMfaJson = Optional.ofNullable(jedis.get(request.getCode()))
-                .orElseThrow(() -> new BadRequestException("Invalid OTP code"));
-        AccountMFA accountMFA = objectMapper.readValue(accountMfaJson, AccountMFA.class);
+		// Resend OTP
+		otpService.sendOtp(confirmation.getCode(), confirmation.getEmail(), otp);
 
-        verifyOtp(accountMFA.getOtpCode(), request);
+		return OtpResponse.builder().code(confirmation.getCode()).build();
+	}
 
-        jedis.del(accountMFA.getCode());
-        jedis.del(accountMFA.getOtpCode());
+	@SneakyThrows
+	@Override
+	@Transactional
+	public TokenResponse verifyMfaOtp(VerifyOtpRequest request) {
 
-        Account account = accountRepository
-                .findByEmail(accountMFA.getEmail())
-                .orElseThrow(() -> new NotfoundException("Account not found"));
+		// Verify OTP and retrieve AccountMFA object
+		AccountMFA accountMFA = verifyOtpAndRetrieveData(request, AccountMFA.class);
 
-        return tokenService.generateTokenPair(account);
-    }
+		// Find the associated account
+		Account account = accountRepository
+				.findByEmail(accountMFA.getEmail())
+				.orElseThrow(() -> new NotfoundException("Account not found"));
 
-    private void verifyOtp(String otpCode, VerifyOtpRequest request) throws JsonProcessingException {
-        String otpJson = Optional.ofNullable(jedis.get(otpCode))
-                .orElseThrow(() -> new BadRequestException("Your OTP has been expired!"));
-        OTP otp = objectMapper.readValue(otpJson, OTP.class);
+		// Clean up the OTP and MFA data from Redis
+		jedis.del(accountMFA.getCode());
+		jedis.del(accountMFA.getOtpCode());
 
-        if (!passwordEncoder.matches(request.getOtp(), otp.getValue())) {
-            throw new BadRequestException("Invalid OTP code");
-        }
-    }
+		// Generate and return a token pair for the account
+		return tokenService.generateTokenPair(account);
+	}
 
+	private boolean verifyOtp(String otpCode, VerifyOtpRequest request) throws JsonProcessingException {
+		Optional<String> otpJsonOptional = Optional.ofNullable(jedis.get(otpCode));
+		if (otpJsonOptional.isEmpty()) return false;
+		OTP otp = objectMapper.readValue(otpJsonOptional.get(), OTP.class);
+		return passwordEncoder.matches(request.getOtp(), otp.getValue());
+	}
 
-    @SneakyThrows
-    private OtpResponse multiFactorAuthenticationLogin(Account account) {
-        // Generate an OTP for Multi-Factor Authentication (MFA)
-        OTP otp = otpService.createMultiFactorAuthenticationOTP();
+	@SneakyThrows
+	private OtpResponse multiFactorAuthenticationLogin(Account account) {
+		// Generate an OTP for Multi-Factor Authentication (MFA)
+		OTP otp = otpService.createMultiFactorAuthenticationOTP();
 
-        // create account accountMFAConfirmation object from account
-        AccountMFA confirmation = accountMapper.accountToAccountMFAConfirmation(account);
-        confirmation.setEmail(account.getEmail());
-        confirmation.setOtpCode(otp.getCode());
+		// create account accountMFAConfirmation object from account
+		AccountMFA confirmation = accountMapper.accountToAccountMFAConfirmation(account);
+		confirmation.setEmail(account.getEmail());
+		confirmation.setOtpCode(otp.getCode());
 
-        jedis.setex(
-                confirmation.getCode(), TimeUnit.MINUTES.toSeconds(5), objectMapper.writeValueAsString(confirmation));
+		jedis.setex(
+				confirmation.getCode(), TimeUnit.MINUTES.toSeconds(5), objectMapper.writeValueAsString(confirmation));
 
-        // send otp to user via email
-        otpService.sendOtp(confirmation.getCode(), confirmation.getEmail(), otp);
+		// send otp to user via email
+		otpService.sendOtp(confirmation.getCode(), confirmation.getEmail(), otp);
 
-        return OtpResponse.builder().code(confirmation.getCode()).build();
-    }
+		return OtpResponse.builder().code(confirmation.getCode()).build();
+	}
 
-    private TokenResponse basicAuthenticationLogin(Account account) {
-        return tokenService.generateTokenPair(account);
-    }
+	private TokenResponse basicAuthenticationLogin(Account account) {
+		return tokenService.generateTokenPair(account);
+	}
+
+	@SneakyThrows
+	private <T extends AccountOtpInformation> T verifyOtpAndRetrieveData(VerifyOtpRequest request, Class<T> clazz) {
+		// Retrieve the object from Redis using the provided code
+		String otpDataJson = Optional.ofNullable(jedis.get(request.getCode()))
+				.orElseThrow(() -> new BadRequestException("Invalid or expired OTP code. Please request a new OTP."));
+
+		// Deserialize the JSON string to the desired class (AccountConfirmation, AccountMFA, etc.)
+		T otpData = objectMapper.readValue(otpDataJson, clazz);
+
+		// Check OTP validity
+		String storedOtpCode = otpData.getOtpCode();
+
+		if (!verifyOtp(storedOtpCode, request)) {
+			int validateCount = otpData.getValidateCount();
+
+			// Check if the maximum number of OTP validation attempts has been exceeded
+			if (validateCount > MAXIMUM_NUMBER_OF_VALIDATE_OTP_REQUEST) {
+				jedis.del(storedOtpCode);
+				throw new ForbiddenException("OTP validation limit exceeded. Please request a new OTP.");
+			}
+
+			// Increment validation count and update Redis
+			otpData.setValidateCount(validateCount + 1);
+
+			jedis.setex(
+					request.getCode(),
+					jedis.ttl(request.getCode()), // Preserve the current TTL
+					objectMapper.writeValueAsString(otpData) // Save the updated object
+					);
+
+			throw new BadRequestException("Invalid OTP. Please try again.");
+		}
+
+		return otpData;
+	}
 }

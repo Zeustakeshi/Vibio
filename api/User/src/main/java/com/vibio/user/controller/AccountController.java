@@ -22,13 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AccountController {
 
-    private final AccountServiceImpl accountService;
+	private final AccountServiceImpl accountService;
 
-    @GetMapping("/me")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> getAccountInfo(
-            @AuthenticationPrincipal Account account
-    ) {
-        return ApiResponse.success(accountService.getAccountInfo(account));
-    }
+	@GetMapping("/me")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> getAccountInfo(@AuthenticationPrincipal Account account) {
+		return ApiResponse.success(accountService.getAccountInfo(account));
+	}
 }

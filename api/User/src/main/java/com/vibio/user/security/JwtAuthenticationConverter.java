@@ -4,7 +4,6 @@
  *  @created 9/15/2024 2:46 PM
  * */
 
-
 package com.vibio.user.security;
 
 import lombok.RequiredArgsConstructor;
@@ -20,12 +19,12 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
-    private final UserDetailsService userDetailsService;
+	private final UserDetailsService userDetailsService;
 
-    @Override
-    public AbstractAuthenticationToken convert(Jwt jwt) {
-        String email = jwt.getClaim("email");
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-    }
+	@Override
+	public AbstractAuthenticationToken convert(Jwt jwt) {
+		String email = jwt.getClaim("email");
+		UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+		return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+	}
 }

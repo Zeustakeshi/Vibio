@@ -32,6 +32,15 @@ spring:
           filters:
             - StripPrefix=2
             - AuthorizationFilter
+        #        ======== CHANNEL ===========
+        - id: channel_route
+          uri: ${services.channel-service}
+          predicates:
+            - Path= ${api.prefix}/channel/**
+          filters:
+            - StripPrefix=2
+            - AuthorizationFilter
 
 services:
   user-service: ${USER_SERVICE_URL}
+  channel-service: ${CHANNEL_SERVICE_URL}

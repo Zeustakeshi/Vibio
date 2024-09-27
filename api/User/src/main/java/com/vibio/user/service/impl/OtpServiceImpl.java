@@ -10,6 +10,8 @@ import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vibio.user.common.enums.OTPType;
 import com.vibio.user.domain.OTP;
+import com.vibio.user.event.eventModel.SendOtpEvent;
+import com.vibio.user.event.producer.NotificationProducer;
 import com.vibio.user.exception.TooManyRequestsException;
 import com.vibio.user.service.OtpService;
 import java.util.Optional;
@@ -26,11 +28,12 @@ import redis.clients.jedis.Jedis;
 public class OtpServiceImpl implements OtpService {
 
 	private static final Integer MAXIMUM_NUMBER_OF_SEND_OTP_REQUEST = 3;
-	private static final Integer MAXIMUM_TIME_LIMIT_SEND_OTP_REQUEST = 1; // 3 minutes
+	private static final Integer MAXIMUM_TIME_LIMIT_SEND_OTP_REQUEST = 1; // 1 minutes
 
 	private final PasswordEncoder passwordEncoder;
 	private final Jedis jedis;
 	private final ObjectMapper objectMapper;
+	private final NotificationProducer notificationProducer;
 
 	@Override
 	public OTP createAccountConfirmationOTP() {
@@ -84,10 +87,8 @@ public class OtpServiceImpl implements OtpService {
 		}
 
 		// Send OTP to user via email
-
-		// TODO: send kafka message
-
-		System.out.println("Start send OTP email = " + plainOtp.getValue());
+		notificationProducer.sendOtp(
+				SendOtpEvent.builder().email(email).otpCode(plainOtp.getValue()).build());
 	}
 
 	@Override

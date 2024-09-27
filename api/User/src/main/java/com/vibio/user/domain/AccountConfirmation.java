@@ -6,21 +6,22 @@
 
 package com.vibio.user.domain;
 
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AccountConfirmation {
-	@Builder.Default
-	@Setter(AccessLevel.PRIVATE)
-	private String code = NanoIdUtils.randomNanoId();
+public class AccountConfirmation extends AccountOtpInformation {
 
 	private String email;
 	private String password;
 	private String username;
+
 	private String otpCode;
 }

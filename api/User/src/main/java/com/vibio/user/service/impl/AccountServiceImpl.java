@@ -17,11 +17,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
-    private final AccountRepository accountRepository;
-    private final AccountMapper accountMapper;
+	private final AccountRepository accountRepository;
+	private final AccountMapper accountMapper;
 
-    @Override
-    public AccountResponse getAccountInfo(Account account) {
-        return accountMapper.accountToAccountResponse(account);
-    }
+	@Override
+	public AccountResponse getAccountInfo(Account account) {
+		return accountMapper.accountToAccountResponse(account);
+	}
 }

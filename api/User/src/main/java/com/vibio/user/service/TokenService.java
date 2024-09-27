@@ -11,18 +11,19 @@ import com.vibio.user.dto.request.IntrospectTokenRequest;
 import com.vibio.user.dto.request.RefreshTokenRequest;
 import com.vibio.user.dto.response.TokenResponse;
 import com.vibio.user.model.Account;
+import java.util.Map;
 
 public interface TokenService {
 
-    TokenResponse generateTokenPair(Account account);
+	TokenResponse generateTokenPair(Account account);
 
-    TokenResponse refreshToken(RefreshTokenRequest request);
+	TokenResponse refreshToken(RefreshTokenRequest request);
 
-    Boolean introspectToken(IntrospectTokenRequest request);
+	Boolean introspectToken(IntrospectTokenRequest request);
 
-    Token generateAccessToken(Account account);
+	Token generateAccessToken(Account account);
 
-    Token generateRefreshToken(String accessTokenId, Account account);
+	Token generateRefreshToken(String accessTokenId, Account account);
 
-
+	Map<String, Object> getJwkSets();
 }
