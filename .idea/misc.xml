@@ -12,6 +12,7 @@
         <option value="$PROJECT_DIR$/api/Notification/pom.xml" />
         <option value="$PROJECT_DIR$/api/User/pom.xml" />
         <option value="$PROJECT_DIR$/api/Channel/pom.xml" />
+        <option value="$PROJECT_DIR$/api/Video/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

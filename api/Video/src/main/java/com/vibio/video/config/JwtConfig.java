@@ -1,12 +1,13 @@
 /*
- *  JwtConfifg
+ *  JwtConfig
  *  @author: Minhhieuano
- *  @created 9/26/2024 10:25 PM
+ *  @created 9/29/2024 3:28 PM
  * */
 
-package com.vibio.channel.config;
 
-import com.vibio.channel.common.properties.ServiceUrl;
+package com.vibio.video.config;
+
+import com.vibio.video.properties.ServiceUrl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +17,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 @Configuration
 @RequiredArgsConstructor
 public class JwtConfig {
-
     private final ServiceUrl serviceUrl;
 
     @Bean
