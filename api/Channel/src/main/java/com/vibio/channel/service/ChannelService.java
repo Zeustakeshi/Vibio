@@ -9,5 +9,7 @@ package com.vibio.channel.service;
 import com.vibio.channel.event.eventModel.NewChannelEvent;
 
 public interface ChannelService {
-	void createChannel(NewChannelEvent event);
+    void createChannel(NewChannelEvent event);
+
+
 }

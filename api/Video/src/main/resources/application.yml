@@ -27,7 +27,11 @@ spring:
       write-date-keys-as-timestamps: false
     deserialization:
       fail-on-unknown-properties: false
-
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 1026MB
+      max-request-size: 1026MB
 server:
   port: 8086
   servlet:
@@ -35,7 +39,14 @@ server:
 
 services-url:
   user: ${USER_SERVICE_URL:http://localhost:8082/user}
+  channel: ${CHANNEL_SERVICE_URL:http://localhost:8084/channel}
 
+cloudinary:
+  cloud-name: ${CLOUDINARY_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
+  dir-prefix: "vibio/videos"
+  secure-url-expire-in: 2 # 2 hour
 #logging:
 #  level:
 #    org:

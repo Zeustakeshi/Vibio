@@ -6,7 +6,16 @@
 
 package com.vibio.channel.controller;
 
+import com.vibio.channel.service.ChannelService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ChannelController {}
+@RequestMapping
+@RequiredArgsConstructor
+public class ChannelController {
+    private final ChannelService channelService;
+
+
+}
