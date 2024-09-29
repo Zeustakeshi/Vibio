@@ -6,6 +6,10 @@
 
 package com.vibio.video.security;
 
+import com.vibio.video.dto.common.AuthenticatedUser;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,28 +21,24 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
-    @Override
-    public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {
-//        AuthenticatedUser user = AuthenticatedUser.builder()
-//                .id(jwt.getSubject())
-//                .email(jwt.getClaim("email"))
-//                .build();
-        return new UsernamePasswordAuthenticationToken(null, null, null);
-    }
+	@Override
+	public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {
+		AuthenticatedUser user = AuthenticatedUser.builder()
+				.id(jwt.getSubject())
+				.email(jwt.getClaim("email"))
+				.build();
+		return new UsernamePasswordAuthenticationToken(user, null, getAuthorities(jwt));
+	}
 
-    private Collection<? extends GrantedAuthority> getAuthorities(Jwt jwt) {
-        List<Map<String, String>> scope = jwt.getClaim("scope");
-        return scope.stream()
-                .map(r -> new SimpleGrantedAuthority(r.get("role")))
-                .toList();
-    }
+	private Collection<? extends GrantedAuthority> getAuthorities(Jwt jwt) {
+		List<Map<String, String>> scope = jwt.getClaim("scope");
+		return scope.stream()
+				.map(r -> new SimpleGrantedAuthority(r.get("role")))
+				.toList();
+	}
 }

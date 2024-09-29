@@ -18,12 +18,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class ChannelServiceImpl implements ChannelService {
-	private final ChannelRepository channelRepository;
-	private final ChannelMapper channelMapper;
+    private final ChannelRepository channelRepository;
+    private final ChannelMapper channelMapper;
 
-	@Override
-	public void createChannel(NewChannelEvent event) {
-		channelRepository.save(channelMapper.newChannelEventToChannel(event));
-		log.info("Create new channel successfully!");
-	}
+    @Override
+    public void createChannel(NewChannelEvent event) {
+        channelRepository.save(channelMapper.newChannelEventToChannel(event));
+        log.info("Create new channel successfully!");
+    }
+
 }

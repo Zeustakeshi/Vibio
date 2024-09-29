@@ -47,6 +47,7 @@ spring:
             - Path= ${api.prefix}/video/**
           filters:
             - StripPrefix=2
+            - AuthorizationFilter
 
 services:
   user-service: ${USER_SERVICE_URL}
