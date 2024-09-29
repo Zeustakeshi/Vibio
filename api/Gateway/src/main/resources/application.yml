@@ -40,7 +40,15 @@ spring:
           filters:
             - StripPrefix=2
             - AuthorizationFilter
+        #        ======== VIDEO ===========
+        - id: channel_route
+          uri: ${services.video-service}
+          predicates:
+            - Path= ${api.prefix}/video/**
+          filters:
+            - StripPrefix=2
 
 services:
   user-service: ${USER_SERVICE_URL}
   channel-service: ${CHANNEL_SERVICE_URL}
+  video-service: ${VIDEO_SERVICE_URL}
