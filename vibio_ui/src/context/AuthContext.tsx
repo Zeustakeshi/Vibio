@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     React.useEffect(() => {
-        loadUser();
+        if (!isAuthenticated) loadUser();
     }, [isAuthenticated]);
 
     const logout = React.useCallback(async () => {
@@ -73,9 +73,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsAuthenticated(true);
         Cookies.set(ACCESS_TOKEN_KEY, tokens.accessToken.value, {
             expires: new Date(tokens.accessToken.expiresIn * 1000),
+            domain: ".vibio.com",
         });
         Cookies.set(REFRESH_TOKEN_KEY, tokens.refreshToken.value, {
             expires: new Date(tokens.refreshToken.expiresIn * 1000),
+            domain: ".vibio.com",
         });
         loadUser();
     }, []);
