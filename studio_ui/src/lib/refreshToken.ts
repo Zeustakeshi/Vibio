@@ -12,7 +12,7 @@ const refreshToken = async () => {
 
     if (!refreshToken) {
         sessionStorage.removeItem(CHANNEL_INFO_KEY);
-        window.location.href = "http://vibio.com";
+        window.location.href = "http://vibio.com:5173/auth/login";
         return;
     }
     alert("Refresh token");

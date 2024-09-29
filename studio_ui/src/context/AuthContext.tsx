@@ -49,7 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         clearSessionStorage();
         Cookies.remove(ACCESS_TOKEN_KEY);
         Cookies.remove(REFRESH_TOKEN_KEY);
-        window.location.href = "http://vibio.com";
+        window.location.href = "http://vibio.com:5173/auth/login";
     }, []);
 
     const loadUser = useCallback(async () => {
