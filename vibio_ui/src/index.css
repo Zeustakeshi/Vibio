@@ -58,3 +58,13 @@
         --chart-5: 340 75% 55%;
     }
 }
+
+@layer base {
+    .hidden-scroll {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .hidden-scroll::-webkit-scrollbar {
+        display: none;
+    }
+}

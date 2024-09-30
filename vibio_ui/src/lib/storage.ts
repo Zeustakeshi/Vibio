@@ -10,7 +10,7 @@ export function getSessionStorageValue<T>(key: string) {
     return JSON.parse(valueString) as T;
 }
 
-export function saveSesstionStorage(key: string, value: any) {
+export function saveSessionStorage(key: string, value: any) {
     sessionStorage.setItem(key, JSON.stringify(value));
 }
 

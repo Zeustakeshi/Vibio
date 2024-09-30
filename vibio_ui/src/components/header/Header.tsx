@@ -1,4 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
+import { TbMenu2 } from "react-icons/tb";
 import { useAuth } from "../../context/AuthContext";
 import { Button } from "../ui/button";
 import Logo from "../ui/logo";
@@ -13,9 +14,14 @@ const Header = (props: Props) => {
     const navigation = useNavigate();
     const { isAuthenticated } = useAuth();
     return (
-        <div className="border-b border-b-slate-200 bg-white/20 backdrop-blur-md top-0 sticky">
-            <MaxWidthWrapper className="py-4 flex justify-between items-center gap-3">
-                <Logo></Logo>
+        <div className=" bg-white/20 backdrop-blur-md top-0 sticky">
+            <MaxWidthWrapper className="py-3 flex justify-between items-center gap-3">
+                <div className="flex justify-start items-center gap-3">
+                    <Button variant="ghost">
+                        <TbMenu2 size={20} />
+                    </Button>
+                    <Logo></Logo>
+                </div>
                 <GlobalSearch></GlobalSearch>
                 <div className="flex justify-end items-center gap-3">
                     <Notification></Notification>
