@@ -1,7 +1,7 @@
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import * as React from "react";
 import Header from "../components/header/Header";
-import Sidebar from "../components/sidebar/Sidebar";
+import Navbar from "../components/navbar/Navbar";
 import MaxWidthWrapper from "../components/wrapper/MaxWidthWrapper";
 import { AuthContext } from "../context/AuthContext";
 
@@ -14,7 +14,7 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
         <React.Fragment>
             <Header></Header>
             <MaxWidthWrapper className="flex w-full ">
-                <Sidebar></Sidebar>
+                <Navbar></Navbar>
                 <div className="flex-1">
                     <Outlet />
                 </div>

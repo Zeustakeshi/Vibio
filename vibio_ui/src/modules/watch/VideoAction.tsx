@@ -5,7 +5,7 @@ import { TbShare3 } from "react-icons/tb";
 import { Button } from "../../components/ui/button";
 type Props = {};
 
-const VideoAction = (props: Props) => {
+const VideoAction = ({}: Props) => {
     return (
         <div className="flex justify-end items-center gap-2">
             <div className="rounded-full overflow-hidden flex">

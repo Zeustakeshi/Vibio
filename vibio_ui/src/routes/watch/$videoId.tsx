@@ -1,14 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
+import Comment from "../../components/video/comment/Comment";
+import VideoPlayer from "../../components/video/VideoPlayer";
 import ChannelAction from "../../modules/watch/ChannelAction";
-import Comment from "../../modules/watch/comment/Comment";
 import RecommendVideo from "../../modules/watch/RecommendVideo";
 import VideoAction from "../../modules/watch/VideoAction";
 import VideoDescription from "../../modules/watch/VideoDescription";
-import VideoPlayer from "../../modules/watch/VideoPlayer";
 
 export const Route = createFileRoute("/watch/$videoId")({
     component: () => (
-        <div className="p-4 flex w-full h-full items-start gap-2">
+        <div className="p-4 flex w-full h-full items-start gap-5">
             <div className="flex-1">
                 <VideoPlayer></VideoPlayer>
                 <h2 className="text-xl font-medium my-2 line-clamp-2">
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/watch/$videoId")({
                 <VideoDescription></VideoDescription>
                 <Comment></Comment>
             </div>
-            <div className="xl:block hidden w-[30%] h-full">
+            <div className="xl:block hidden w-[28%] h-full">
                 <RecommendVideo></RecommendVideo>
             </div>
         </div>

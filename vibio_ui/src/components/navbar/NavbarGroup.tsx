@@ -6,7 +6,7 @@ type Props = {
     headerLabel?: string;
 };
 
-const SidebarGroup = ({ children, headerLabel }: Props) => {
+const NavbarGroup = ({ children, headerLabel }: Props) => {
     return (
         <div className={cn("space-y-1 px-1")}>
             {headerLabel && (
@@ -18,4 +18,4 @@ const SidebarGroup = ({ children, headerLabel }: Props) => {
     );
 };
 
-export default SidebarGroup;
+export default NavbarGroup;
