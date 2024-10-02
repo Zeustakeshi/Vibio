@@ -14,7 +14,7 @@ const Header = (props: Props) => {
     const navigation = useNavigate();
     const { isAuthenticated } = useAuth();
     return (
-        <div className=" bg-white/20 backdrop-blur-md top-0 sticky">
+        <div className=" bg-white/90 h-[60px] z-20 backdrop-blur-md top-0 sticky">
             <MaxWidthWrapper className="py-3 flex justify-between items-center gap-3">
                 <div className="flex justify-start items-center gap-3">
                     <Button variant="ghost">

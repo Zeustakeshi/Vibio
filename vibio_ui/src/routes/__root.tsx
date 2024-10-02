@@ -13,7 +13,7 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
     component: () => (
         <React.Fragment>
             <Header></Header>
-            <MaxWidthWrapper className="flex w-full h-[calc(100svh-62px)]">
+            <MaxWidthWrapper className="flex w-full ">
                 <Sidebar></Sidebar>
                 <div className="flex-1">
                     <Outlet />

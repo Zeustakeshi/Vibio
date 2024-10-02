@@ -20,7 +20,7 @@ type Props = {};
 
 const Sidebar = (props: Props) => {
     return (
-        <div className="w-[200px] pr-2 py-3 overflow-y-scroll hidden-scroll">
+        <div className=" h-[calc(100svh-62px)] top-[62px] sticky w-[200px] pr-2 py-3 overflow-y-scroll hidden-scroll">
             <SidebarGroup headerLabel="">
                 <SidebarItem to="/" icon={<GrHomeRounded size={16} />}>
                     Trang chủ
