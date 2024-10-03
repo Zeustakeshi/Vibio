@@ -15,17 +15,19 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/context/AuthContext";
 import { useTheme } from "@/context/ThemeContext";
 type Props = {};
 
 const Profile = (props: Props) => {
     const { setTheme } = useTheme();
+    const { channel } = useAuth();
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Avatar className="w-[35px] h-[35px]">
-                    <AvatarImage src="https://images.unsplash.com/photo-1727365179327-b69df6a52fed?q=80&w=1767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"></AvatarImage>
+                    <AvatarImage src={channel?.thumbnail}></AvatarImage>
                 </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">

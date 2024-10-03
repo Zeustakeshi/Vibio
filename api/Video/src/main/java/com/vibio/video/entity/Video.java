@@ -11,7 +11,7 @@ import com.vibio.video.common.enums.UploadStatus;
 import com.vibio.video.common.enums.Visibility;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,6 +41,8 @@ public class Video {
 
 	private String url;
 
+	private String thumbnail;
+
 	@Builder.Default
 	private Integer viewCount = 0;
 
@@ -50,8 +52,8 @@ public class Video {
 	@Builder.Default
 	private Integer dislikeCount = 0;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Tag> tags;
+	@ElementCollection
+	private Set<String> tags;
 
 	@Builder.Default
 	@Enumerated(EnumType.STRING)

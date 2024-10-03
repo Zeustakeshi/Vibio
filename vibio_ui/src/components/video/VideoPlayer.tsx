@@ -8,7 +8,7 @@ const VideoPlayer = (props: Props) => {
                 width="100%"
                 height="100%"
                 controls
-                url="https://res.cloudinary.com/dymmvrufy/video/authenticated/s--mI62PmbN--/v1727629038/vibio/videos/dMqVnWamWaviJb80QkR3t.mp4"
+                url="http://localhost:8080/stream"
             />
         </div>
     );

@@ -6,6 +6,7 @@
 
 package com.vibio.video.event.eventModel;
 
+import com.vibio.video.dto.response.ChannelResponse;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,5 +15,6 @@ import lombok.Data;
 public class UploadVideoEvent {
 	private byte[] video;
 	private String videoId;
-	private String channelId;
+	private ChannelResponse channel;
+	private String accountId;
 }

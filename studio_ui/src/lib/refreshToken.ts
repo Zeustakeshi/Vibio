@@ -6,6 +6,7 @@ import {
     REFRESH_TOKEN_KEY,
 } from "../common/constant/auth";
 import { api } from "./api";
+import { clearLocalStorage, clearSessionStorage } from "./storage";
 
 const refreshToken = async () => {
     const refreshToken = Cookies.get(REFRESH_TOKEN_KEY);
@@ -34,8 +35,12 @@ const refreshToken = async () => {
             domain: ".vibio.com",
         });
     } catch (error) {
-        sessionStorage.removeItem(CHANNEL_INFO_KEY);
         console.log("Refresh token error " + error);
+        clearLocalStorage();
+        clearSessionStorage();
+        Cookies.remove(REFRESH_TOKEN_KEY);
+        Cookies.remove(ACCESS_TOKEN_KEY);
+        window.location.href = "http://vibio.com:5173/auth/login";
     }
 };
 

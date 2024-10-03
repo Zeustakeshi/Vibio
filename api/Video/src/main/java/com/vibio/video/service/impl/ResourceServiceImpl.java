@@ -39,7 +39,7 @@ public class ResourceServiceImpl implements ResourceService {
 				"type",
 				"authenticated",
 				"allowed_formats",
-				"jpg,png,gif");
+				"jpg,png,gif,webp");
 
 		return upload(file, configs);
 	}
@@ -70,11 +70,13 @@ public class ResourceServiceImpl implements ResourceService {
 		Instant now = Instant.now();
 
 		Map options = ObjectUtils.asMap(
-				"resource_type", "image",
-				"type", "authenticated",
+				"resource_type",
+				"image",
+				"type",
+				"authenticated",
 				"expires_at",
-						now.plus(cloudinaryProperties.secureUrlExpireIn(), ChronoUnit.HOURS)
-								.toEpochMilli());
+				now.plus(cloudinaryProperties.secureUrlExpireIn(), ChronoUnit.HOURS)
+						.toEpochMilli());
 
 		return cloudinary.apiSignRequest(options, "EB0sjDs0N22e-7gECIM3YpE_Kuo");
 	}
