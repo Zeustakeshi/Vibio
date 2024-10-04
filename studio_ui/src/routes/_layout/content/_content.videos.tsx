@@ -1,68 +1,104 @@
-import { VideoData, VideoVisibility } from '@/common/type/video.type'
-import { DataTable } from '@/components/ui/data-table'
+import { getAllVideo } from "@/api/video";
+import { DataTable } from "@/components/ui/data-table";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination'
-import { columns } from '@/modules/content/video/columns'
-import { createFileRoute } from '@tanstack/react-router'
-export const Route = createFileRoute('/_layout/content/_content/videos')({
-  component: Videos,
-})
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationLink,
+} from "@/components/ui/pagination";
+import { columns } from "@/modules/content/video/columns";
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
 
-const videos: VideoData[] = new Array(5).fill(0).map((_, index) => ({
-  video: {
-    id: index.toString(),
-    title:
-      ' Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut, odio?',
-    description:
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi, quam ab quidem odio voluptates blanditiis qui est doloremque autem facere corporis maxime modi, minus, magnam omnis. Adipisci sunt magnam quasi nesciunt delectus fugiat vel quisquam cupiditate sint omnis? Optio, in.',
-    thumbnail:
-      'https://images.unsplash.com/photo-1469285994282-454ceb49e63c?q=80&w=1771&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  },
-  metadata: {
-    comments: 10,
-    reaction: { like: 1000, dislike: 120 },
-    views: 10000,
-    updatedAt: new Date(),
-    createdAt: new Date(),
-    visibiliity: VideoVisibility.PUBLIC,
-  },
-}))
+const DEFAULT_LIMIT = 5;
+
+export const Route = createFileRoute("/_layout/content/_content/videos")({
+    validateSearch: (search: Record<string, unknown>) => {
+        const page = search?.page ?? 1;
+        const limit = search?.limit ?? DEFAULT_LIMIT;
+
+        return {
+            page: Math.max(0, Number(page)),
+            limit: Math.max(1, Number(limit)),
+        };
+    },
+    component: Videos,
+});
 
 function Videos() {
-  return (
-    <div className="">
-      <DataTable columns={columns} data={videos} />
-      <Pagination className="my-4">
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious href="#" />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">1</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#" isActive>
-              2
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationLink href="#">3</PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationNext href="#" />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
-    </div>
-  )
+    const { limit, page } = Route.useSearch();
+
+    const { data, isLoading } = useQuery({
+        queryKey: ["videos"],
+        queryFn: () => getAllVideo(page - 1, limit),
+    });
+
+    return (
+        <div className="flex-1 min-w-full min-h-[300px] flex flex-col justify-center items-center">
+            {isLoading && (
+                <div className="size-[32px] rounded-full border-[3px] border-primary border-t-transparent animate-spin"></div>
+            )}
+            {!isLoading && (
+                <DataTable
+                    className="w-full"
+                    columns={columns}
+                    data={data?.content || []}
+                />
+            )}
+            {!isLoading && data?.totalPages && data.totalPages > 0 && (
+                <Pagination className="my-4">
+                    <PaginationContent>
+                        {page - 2 > 0 && (
+                            <PaginationItem>
+                                <PaginationLink
+                                    href={`/content/videos?page=${page - 2}&limit=${DEFAULT_LIMIT}`}
+                                >
+                                    {page - 2}
+                                </PaginationLink>
+                            </PaginationItem>
+                        )}
+
+                        {page - 1 > 0 && (
+                            <PaginationItem>
+                                <PaginationLink
+                                    href={`/content/videos?page=${page - 1}&limit=${DEFAULT_LIMIT}`}
+                                >
+                                    {page - 1}
+                                </PaginationLink>
+                            </PaginationItem>
+                        )}
+
+                        <PaginationItem>
+                            <PaginationLink
+                                className="bg-primary text-white"
+                                href={`#`}
+                            >
+                                {page}
+                            </PaginationLink>
+                        </PaginationItem>
+
+                        {page + 1 <= data.totalPages && (
+                            <PaginationItem>
+                                <PaginationLink
+                                    href={`/content/videos?page=${page + 1}&limit=${DEFAULT_LIMIT}`}
+                                >
+                                    {page + 1}
+                                </PaginationLink>
+                            </PaginationItem>
+                        )}
+
+                        {page + 2 <= data.totalPages && (
+                            <PaginationItem>
+                                <PaginationLink
+                                    href={`/content/videos?page=${page + 2}&limit=${DEFAULT_LIMIT}`}
+                                >
+                                    {page + 2}
+                                </PaginationLink>
+                            </PaginationItem>
+                        )}
+                    </PaginationContent>
+                </Pagination>
+            )}
+        </div>
+    );
 }

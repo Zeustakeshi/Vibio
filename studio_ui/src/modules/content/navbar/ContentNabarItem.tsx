@@ -10,7 +10,7 @@ const ContentNabarItem = ({ children, to }: Props) => {
         <Link
             className=" inline-block px-3 py-2 cursor-pointer font-semibold border-transparent hover:text-primary hover:border-primary border-b-2 transition-all"
             to={to}
-            activeOptions={{ exact: true }}
+            activeOptions={{ includeSearch: true }}
             activeProps={{ className: "text-primary !border-primary" }}
         >
             {children}
