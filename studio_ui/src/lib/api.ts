@@ -18,11 +18,14 @@ api.interceptors.request.use((request) => {
 api.interceptors.response.use(
     (response) => response.data.data,
     async (error) => {
-        console.log({ error });
         if (error.request.status === 401 || error.request.status === 403) {
             await memoizedRefreshToken();
             if (Cookies.get(ACCESS_TOKEN_KEY)) return api(error.config);
         }
-        return Promise.reject(error?.response?.data?.errors);
+        if (error?.response?.data?.errors) {
+            return Promise.reject(error?.response?.data?.errors);
+        } else {
+            return Promise.reject(error);
+        }
     }
 );

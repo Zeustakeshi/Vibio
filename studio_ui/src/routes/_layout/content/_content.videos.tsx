@@ -1,14 +1,15 @@
 import { getAllVideo } from "@/api/video";
+import { buttonVariants } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import {
     Pagination,
     PaginationContent,
     PaginationItem,
-    PaginationLink,
 } from "@/components/ui/pagination";
+import { cn } from "@/lib/utils";
 import { columns } from "@/modules/content/video/columns";
-import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 const DEFAULT_LIMIT = 5;
 
@@ -29,8 +30,9 @@ function Videos() {
     const { limit, page } = Route.useSearch();
 
     const { data, isLoading } = useQuery({
-        queryKey: ["videos"],
+        queryKey: ["videos", page, limit],
         queryFn: () => getAllVideo(page - 1, limit),
+        placeholderData: keepPreviousData,
     });
 
     return (
@@ -50,50 +52,95 @@ function Videos() {
                     <PaginationContent>
                         {page - 2 > 0 && (
                             <PaginationItem>
-                                <PaginationLink
-                                    href={`/content/videos?page=${page - 2}&limit=${DEFAULT_LIMIT}`}
+                                <Link
+                                    className={cn(
+                                        buttonVariants({
+                                            variant: "ghost",
+                                            size: "sm",
+                                        })
+                                    )}
+                                    to="/content/videos"
+                                    search={() => ({
+                                        page: page - 2,
+                                        limit: DEFAULT_LIMIT,
+                                    })}
                                 >
                                     {page - 2}
-                                </PaginationLink>
+                                </Link>
                             </PaginationItem>
                         )}
 
                         {page - 1 > 0 && (
                             <PaginationItem>
-                                <PaginationLink
-                                    href={`/content/videos?page=${page - 1}&limit=${DEFAULT_LIMIT}`}
+                                <Link
+                                    className={cn(
+                                        buttonVariants({
+                                            variant: "ghost",
+                                            size: "sm",
+                                        })
+                                    )}
+                                    to="/content/videos"
+                                    search={() => ({
+                                        page: page - 1,
+                                        limit: DEFAULT_LIMIT,
+                                    })}
                                 >
                                     {page - 1}
-                                </PaginationLink>
+                                </Link>
                             </PaginationItem>
                         )}
 
                         <PaginationItem>
-                            <PaginationLink
-                                className="bg-primary text-white"
+                            <Link
+                                className={cn(
+                                    buttonVariants({
+                                        variant: "default",
+                                        size: "sm",
+                                    })
+                                )}
                                 href={`#`}
                             >
                                 {page}
-                            </PaginationLink>
+                            </Link>
                         </PaginationItem>
 
                         {page + 1 <= data.totalPages && (
                             <PaginationItem>
-                                <PaginationLink
-                                    href={`/content/videos?page=${page + 1}&limit=${DEFAULT_LIMIT}`}
+                                <Link
+                                    className={cn(
+                                        buttonVariants({
+                                            variant: "ghost",
+                                            size: "sm",
+                                        })
+                                    )}
+                                    to="/content/videos"
+                                    search={() => ({
+                                        page: page + 1,
+                                        limit: DEFAULT_LIMIT,
+                                    })}
                                 >
                                     {page + 1}
-                                </PaginationLink>
+                                </Link>
                             </PaginationItem>
                         )}
 
                         {page + 2 <= data.totalPages && (
                             <PaginationItem>
-                                <PaginationLink
-                                    href={`/content/videos?page=${page + 2}&limit=${DEFAULT_LIMIT}`}
+                                <Link
+                                    className={cn(
+                                        buttonVariants({
+                                            variant: "ghost",
+                                            size: "sm",
+                                        })
+                                    )}
+                                    to="/content/videos"
+                                    search={() => ({
+                                        page: page + 2,
+                                        limit: DEFAULT_LIMIT,
+                                    })}
                                 >
                                     {page + 2}
-                                </PaginationLink>
+                                </Link>
                             </PaginationItem>
                         )}
                     </PaginationContent>

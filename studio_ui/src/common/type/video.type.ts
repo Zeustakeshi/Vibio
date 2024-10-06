@@ -12,6 +12,13 @@ export type Video = {
     updatedAt: Date;
 };
 
+export type VideoDetail = {
+    url: string;
+    tags: string[];
+    uploadStatus: string;
+    allowedComment: boolean;
+} & Video;
+
 export enum VideoVisibility {
     PUBLIC = "PUBLIC",
     PRIVATE = "PRIVATE",

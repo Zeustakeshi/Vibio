@@ -12,12 +12,18 @@ export const Route = createFileRoute("/videos/$videoId/_layout")({
 
 function Layout() {
     const navigate = useNavigate();
+    const { videoId } = Route.useParams();
     return (
         <div className="flex justify-start items-start w-full h-[calc(100svh-60px)]">
             <Sidebar>
                 <div className="flex justify-start w-full">
                     <Button
-                        onClick={() => navigate({ to: "/content/videos" })}
+                        onClick={() =>
+                            navigate({
+                                to: "/content/videos",
+                                search: { page: 1, limit: 5 },
+                            })
+                        }
                         size="sm"
                         variant="ghost"
                     >
@@ -25,7 +31,7 @@ function Layout() {
                     </Button>
                 </div>
                 <div className=" space-y-2  my-4 flex-1 w-full overflow-y-scroll hidden-scroll">
-                    <SidebarItem Icon={FiEdit3} to="/videos/1/edit">
+                    <SidebarItem Icon={FiEdit3} to={`/videos/${videoId}/edit`}>
                         Chi tiết
                     </SidebarItem>
                     <SidebarItem
@@ -34,7 +40,10 @@ function Layout() {
                     >
                         Thống kê
                     </SidebarItem>
-                    <SidebarItem Icon={BiCommentDetail} to="/videos/1/comments">
+                    <SidebarItem
+                        Icon={BiCommentDetail}
+                        to={`/videos/${videoId}/comments`}
+                    >
                         Bình luận
                     </SidebarItem>
                 </div>

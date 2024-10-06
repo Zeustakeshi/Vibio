@@ -32,7 +32,7 @@ const VideoRow = ({ video }: Props) => {
                             onClick={() =>
                                 navigate({
                                     to: "/videos/$videoId/edit",
-                                    params: { videoId: "1" },
+                                    params: { videoId: video.id },
                                 })
                             }
                             variant="ghost"
