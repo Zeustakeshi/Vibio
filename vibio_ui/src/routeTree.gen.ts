@@ -13,7 +13,9 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as ShortsIndexImport } from './routes/shorts/index'
 import { Route as appIndexImport } from './routes/(app)/index'
+import { Route as WatchVideoIdImport } from './routes/watch/$videoId'
 import { Route as AuthAuthImport } from './routes/auth/_auth'
 import { Route as AuthOtpOtpImport } from './routes/auth/otp/_otp'
 import { Route as AuthAuthRegisterImport } from './routes/auth/_auth.register'
@@ -38,8 +40,18 @@ const AuthOtpRoute = AuthOtpImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
+const ShortsIndexRoute = ShortsIndexImport.update({
+  path: '/shorts/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const appIndexRoute = appIndexImport.update({
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const WatchVideoIdRoute = WatchVideoIdImport.update({
+  path: '/watch/$videoId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -91,11 +103,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAuthImport
       parentRoute: typeof AuthRoute
     }
+    '/watch/$videoId': {
+      id: '/watch/$videoId'
+      path: '/watch/$videoId'
+      fullPath: '/watch/$videoId'
+      preLoaderRoute: typeof WatchVideoIdImport
+      parentRoute: typeof rootRoute
+    }
     '/(app)/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof appIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/shorts/': {
+      id: '/shorts/'
+      path: '/shorts'
+      fullPath: '/shorts'
+      preLoaderRoute: typeof ShortsIndexImport
       parentRoute: typeof rootRoute
     }
     '/auth/_auth/login': {
@@ -198,7 +224,9 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 export interface FileRoutesByFullPath {
   '/auth': typeof AuthAuthRouteWithChildren
+  '/watch/$videoId': typeof WatchVideoIdRoute
   '/': typeof appIndexRoute
+  '/shorts': typeof ShortsIndexRoute
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
   '/auth/otp': typeof AuthOtpOtpRouteWithChildren
@@ -208,7 +236,9 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/auth': typeof AuthAuthRouteWithChildren
+  '/watch/$videoId': typeof WatchVideoIdRoute
   '/': typeof appIndexRoute
+  '/shorts': typeof ShortsIndexRoute
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
   '/auth/otp': typeof AuthOtpOtpRouteWithChildren
@@ -220,7 +250,9 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/auth': typeof AuthRouteWithChildren
   '/auth/_auth': typeof AuthAuthRouteWithChildren
+  '/watch/$videoId': typeof WatchVideoIdRoute
   '/': typeof appIndexRoute
+  '/shorts/': typeof ShortsIndexRoute
   '/auth/_auth/login': typeof AuthAuthLoginRoute
   '/auth/_auth/register': typeof AuthAuthRegisterRoute
   '/auth/otp': typeof AuthOtpRouteWithChildren
@@ -233,7 +265,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/auth'
+    | '/watch/$videoId'
     | '/'
+    | '/shorts'
     | '/auth/login'
     | '/auth/register'
     | '/auth/otp'
@@ -242,7 +276,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
+    | '/watch/$videoId'
     | '/'
+    | '/shorts'
     | '/auth/login'
     | '/auth/register'
     | '/auth/otp'
@@ -252,7 +288,9 @@ export interface FileRouteTypes {
     | '__root__'
     | '/auth'
     | '/auth/_auth'
+    | '/watch/$videoId'
     | '/'
+    | '/shorts/'
     | '/auth/_auth/login'
     | '/auth/_auth/register'
     | '/auth/otp'
@@ -264,12 +302,16 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
+  WatchVideoIdRoute: typeof WatchVideoIdRoute
   appIndexRoute: typeof appIndexRoute
+  ShortsIndexRoute: typeof ShortsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
+  WatchVideoIdRoute: WatchVideoIdRoute,
   appIndexRoute: appIndexRoute,
+  ShortsIndexRoute: ShortsIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -285,7 +327,9 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/auth",
-        "/"
+        "/watch/$videoId",
+        "/",
+        "/shorts/"
       ]
     },
     "/auth": {
@@ -303,8 +347,14 @@ export const routeTree = rootRoute
         "/auth/_auth/register"
       ]
     },
+    "/watch/$videoId": {
+      "filePath": "watch/$videoId.tsx"
+    },
     "/": {
       "filePath": "(app)/index.tsx"
+    },
+    "/shorts/": {
+      "filePath": "shorts/index.tsx"
     },
     "/auth/_auth/login": {
       "filePath": "auth/_auth.login.tsx",

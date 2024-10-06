@@ -1,4 +1,9 @@
-import { createContext, useContext } from "react";
+import { Form } from "@/components/ui/form";
+import { updateVideoSchema } from "@/schema/video.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { createContext, useCallback, useContext } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 type VideoUpdateProviderProps = {
     children: React.ReactNode;
@@ -17,11 +22,17 @@ export function VideoUpdateProvider({
     videoId,
     ...props
 }: VideoUpdateProviderProps) {
+    const form = useForm<z.infer<typeof updateVideoSchema>>({
+        resolver: zodResolver(updateVideoSchema),
+    });
+
+    const handleUpdateVideo = useCallback(async () => {}, []);
+
     const value = {};
 
     return (
         <VideoUpdateProviderContext.Provider {...props} value={value}>
-            {children}
+            <Form {...form}>{children}</Form>
         </VideoUpdateProviderContext.Provider>
     );
 }

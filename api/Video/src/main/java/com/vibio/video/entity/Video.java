@@ -10,14 +10,15 @@ import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.vibio.video.common.enums.UploadStatus;
 import com.vibio.video.common.enums.Visibility;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -26,47 +27,52 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Builder
 public class Video {
 
-	@Id
-	@Builder.Default
-	private String id = NanoIdUtils.randomNanoId();
+    @Id
+    @Builder.Default
+    private String id = NanoIdUtils.randomNanoId();
 
-	@Column(nullable = false)
-	private String channelId;
+    @Column(nullable = false)
+    private String channelId;
 
-	@Column(nullable = false)
-	private String title;
+    @Column(nullable = false)
+    private String title;
 
-	@Column(nullable = false)
-	private String description;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String description;
 
-	private String url;
+    private String url;
 
-	@Builder.Default
-	private Integer viewCount = 0;
+    private String thumbnail;
 
-	@Builder.Default
-	private Integer likeCount = 0;
+    @Builder.Default
+    private Integer viewCount = 0;
 
-	@Builder.Default
-	private Integer dislikeCount = 0;
+    @Builder.Default
+    private Integer likeCount = 0;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Tag> tags;
+    @Builder.Default
+    private Integer dislikeCount = 0;
 
-	@Builder.Default
-	@Enumerated(EnumType.STRING)
-	private UploadStatus uploadStatus = UploadStatus.PENDING;
+    @Builder.Default
+    private Integer commentCount = 0;
 
-	@Builder.Default
-	@Enumerated(EnumType.STRING)
-	private Visibility visibility = Visibility.PRIVATE;
+    @ElementCollection
+    private Set<String> tags;
 
-	@Builder.Default
-	private boolean allowedComment = false;
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private UploadStatus uploadStatus = UploadStatus.PENDING;
 
-	@CreationTimestamp
-	private LocalDateTime createdAt;
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility = Visibility.PRIVATE;
 
-	@UpdateTimestamp
-	private LocalDateTime updatedAt;
+    @Builder.Default
+    private boolean allowedComment = false;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }

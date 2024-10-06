@@ -7,8 +7,15 @@ spring:
     name: api-gateway
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          "[/**]":
+            allowedOrigins: "*"
+            allowed-origin-patterns: "*"
+            allowedHeaders: "*"
+            allowedMethods: "*"
       routes:
-        #        ======== AUTH ===========
+        #============================  Auth route ============================#
         - id: auth_route
           uri: ${services.user-service}
           predicates:
@@ -16,7 +23,7 @@ spring:
           filters:
             - StripPrefix=2
             - RewritePath=/auth/, /user/auth/
-        #        ======== TOKEN ===========
+        #============================  Token route ============================#
         - id: token_route
           uri: ${services.user-service}
           predicates:
@@ -24,7 +31,7 @@ spring:
           filters:
             - StripPrefix=2
             - RewritePath=/token/, /user/token/
-        #        ======== USER ===========
+        #============================  User route ============================#
         - id: user_route
           uri: ${services.user-service}
           predicates:
@@ -32,21 +39,23 @@ spring:
           filters:
             - StripPrefix=2
             - AuthorizationFilter
-        #        ======== CHANNEL ===========
+        #============================  Channel route ============================#
         - id: channel_route
           uri: ${services.channel-service}
           predicates:
-            - Path= ${api.prefix}/channel/**
+            - Path= ${api.prefix}/channels/**
           filters:
             - StripPrefix=2
+            - RewritePath=/channels(?<segment>/?.*), /channels${segment}
             - AuthorizationFilter
-        #        ======== VIDEO ===========
-        - id: channel_route
+        #============================  Video route ============================#
+        - id: video_route
           uri: ${services.video-service}
           predicates:
-            - Path= ${api.prefix}/video/**
+            - Path= ${api.prefix}/videos/**
           filters:
             - StripPrefix=2
+            - RewritePath=/videos(?<segment>/?.*), /videos${segment}
             - AuthorizationFilter
 
 services:

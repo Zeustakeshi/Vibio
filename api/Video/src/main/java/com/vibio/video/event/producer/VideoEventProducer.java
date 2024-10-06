@@ -6,6 +6,7 @@
 
 package com.vibio.video.event.producer;
 
+import com.vibio.video.event.eventModel.UploadThumbnailEvent;
 import com.vibio.video.event.eventModel.UploadVideoEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -17,6 +18,10 @@ public class VideoEventProducer {
 	private final ApplicationEventPublisher publisher;
 
 	public void uploadVideo(UploadVideoEvent event) {
+		publisher.publishEvent(event);
+	}
+
+	public void uploadVideoThumbnail(UploadThumbnailEvent event) {
 		publisher.publishEvent(event);
 	}
 }

@@ -10,7 +10,7 @@ type Props = { video: Video };
 const VideoRow = ({ video }: Props) => {
     const navigate = useNavigate();
     return (
-        <div className="group min-w-[100px] max-w-[450px] flex justify-start items-center gap-2">
+        <div className="group min-w-[300px] w-full max-w-[450px] flex justify-start items-center gap-2">
             <div className="w-[80px] h-[50px] rounded-md overflow-hidden">
                 <img
                     className="w-full h-full object-cover"
@@ -22,14 +22,19 @@ const VideoRow = ({ video }: Props) => {
                 <p className="max-w-[80%] text-ellipsis line-clamp-1 font-semibold">
                     {video.title}
                 </p>
-                <div className="min-h-[50px]">
-                    <p className="group-hover:hidden transition-all line-clamp-3 max-w-[90%] text-xs text-muted-foreground">
+                <div className="min-h-[50px] w-full">
+                    <p className="group-hover:hidden transition-all line-clamp-3 w-full max-w-[90%] text-xs text-muted-foreground">
                         {video.description}
                     </p>
 
                     <div className="group-hover:flex justify-start items-center gap-2 hidden transition-all  w-full my-1">
                         <Button
-                            onClick={() => navigate({ to: "/videos/1/edit" })}
+                            onClick={() =>
+                                navigate({
+                                    to: "/videos/$videoId/edit",
+                                    params: { videoId: video.id },
+                                })
+                            }
                             variant="ghost"
                             size="sm"
                         >

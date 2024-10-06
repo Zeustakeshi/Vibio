@@ -1,14 +1,15 @@
-import { VideoData } from "@/common/type/video.type";
+import { Video } from "@/common/type/video.type";
 import { convertVisibilityToText } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
+import moment from "moment";
 import VideoRow from "./VideoRow";
 
-export const columns: ColumnDef<VideoData>[] = [
+export const columns: ColumnDef<Video>[] = [
     {
         accessorKey: "video",
         header: "Video",
         cell: ({ row }) => {
-            const { video } = row.original;
+            const video = row.original;
             return <VideoRow video={video}></VideoRow>;
         },
     },
@@ -16,10 +17,10 @@ export const columns: ColumnDef<VideoData>[] = [
         accessorKey: "visibility",
         header: "Hiển thị",
         cell: ({ row }) => {
-            const { metadata } = row.original;
+            const video = row.original;
             return (
                 <div className="min-w-[80px] ">
-                    {convertVisibilityToText(metadata.visibiliity)}
+                    {convertVisibilityToText(video.visibility)}
                 </div>
             );
         },
@@ -28,10 +29,10 @@ export const columns: ColumnDef<VideoData>[] = [
         accessorKey: "createdAt",
         header: "Ngày đăng",
         cell: ({ row }) => {
-            const { metadata } = row.original;
+            const video = row.original;
             return (
                 <div className="min-w-[120px] ">
-                    {metadata.createdAt.toISOString()}
+                    {moment(video.createdAt).format("DD-MM-YYYY")}
                 </div>
             );
         },
@@ -40,10 +41,11 @@ export const columns: ColumnDef<VideoData>[] = [
         accessorKey: "updatedAt",
         header: "Chỉnh sửa làn cuối",
         cell: ({ row }) => {
-            const { metadata } = row.original;
+            const video = row.original;
             return (
                 <div className="min-w-[120px] ">
-                    {metadata.updatedAt.toISOString()}
+                    {" "}
+                    {moment(video.updatedAt).format("DD-MM-YYYY")}
                 </div>
             );
         },
@@ -52,29 +54,32 @@ export const columns: ColumnDef<VideoData>[] = [
         accessorKey: "views",
         header: "Lượt xem",
         cell: ({ row }) => {
-            const { metadata } = row.original;
-            return <div className="min-w-[70px] ">{metadata.views}</div>;
+            const video = row.original;
+            return <div className="min-w-[70px] ">{video.viewCount}</div>;
         },
     },
     {
         accessorKey: "comments",
         header: "Bình luận",
         cell: ({ row }) => {
-            const { metadata } = row.original;
-            return <div className="min-w-[70px] ">{metadata.comments}</div>;
+            const video = row.original;
+            return <div className="min-w-[70px] ">{video.commentCount}</div>;
         },
     },
     {
         accessorKey: "reaction",
         header: "Like (vs dislike)",
         cell: ({ row }) => {
-            const { metadata } = row.original;
+            const video = row.original;
 
-            const reactPercent = Math.floor(
-                (metadata.reaction.like /
-                    (metadata.reaction.like + metadata.reaction.dislike)) *
-                    100
-            );
+            let reactPercent = 0;
+
+            if (video.likeCount !== 0 && video.dislikeCount !== 0) {
+                reactPercent = Math.floor(
+                    (video.likeCount / (video.likeCount + video.dislikeCount)) *
+                        100
+                );
+            }
 
             return <div className="min-w-[100px] ">{reactPercent} %</div>;
         },

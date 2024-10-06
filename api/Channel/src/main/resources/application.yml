@@ -38,10 +38,10 @@ spring:
 server:
   port: 8084
   servlet:
-    context-path: /channel
+    context-path: /channels
 
 services-url:
-  user: ${USER_SERVICE_URL:http://localhost:8082/user}
+  user: ${USER_SERVICE_URL}
 
 #logging:
 #  level:

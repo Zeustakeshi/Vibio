@@ -6,8 +6,9 @@
 
 package com.vibio.video.event.consumer;
 
+import com.vibio.video.event.eventModel.UploadThumbnailEvent;
 import com.vibio.video.event.eventModel.UploadVideoEvent;
-import com.vibio.video.service.VideoService;
+import com.vibio.video.service.StudioVideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -16,10 +17,17 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class VideoEventConsumer {
 
-	private final VideoService videoService;
+	private final StudioVideoService studioVideoService;
 
 	@EventListener
-	public void handleVideoUploadEvent(UploadVideoEvent event) {
-		videoService.uploadVideoAsync(event.getVideoId(), event.getChannelId(), event.getVideo());
+	public void handleUploadVideoEvent(UploadVideoEvent event) {
+		studioVideoService.uploadVideoAsync(
+				event.getVideoId(), event.getChannel(), event.getAccountId(), event.getVideo());
+	}
+
+	@EventListener
+	public void handleUploadThumbnailEvent(UploadThumbnailEvent event) {
+		studioVideoService.uploadThumbnailAsync(
+				event.getVideoId(), event.getChannelId(), event.getAccountId(), event.getThumbnail());
 	}
 }

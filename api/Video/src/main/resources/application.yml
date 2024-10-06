@@ -35,11 +35,11 @@ spring:
 server:
   port: 8086
   servlet:
-    context-path: /video
+    context-path: /videos
 
 services-url:
-  user: ${USER_SERVICE_URL:http://localhost:8082/user}
-  channel: ${CHANNEL_SERVICE_URL:http://localhost:8084/channel}
+  user: ${USER_SERVICE_URL}
+  channel: ${CHANNEL_SERVICE_URL}
 
 cloudinary:
   cloud-name: ${CLOUDINARY_NAME}
