@@ -1,16 +1,17 @@
 package com.vibio.video.dto.response;
 
-import java.util.List;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class PageableResponse<T> {
-	private int totalPages;
-	private int totalElements;
-	private int size;
-	private List<T> content;
-	private boolean first;
-	private boolean last;
-	private int pageNumber;
-	private boolean empty;
+    private int totalPages;
+    private int totalElements;
+    private int size;
+    private List<T> content;
+    private boolean first;
+    private boolean last;
+    private int pageNumber;
+    private boolean empty;
 }

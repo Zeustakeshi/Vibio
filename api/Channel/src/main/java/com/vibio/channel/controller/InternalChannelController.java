@@ -7,8 +7,10 @@
 
 package com.vibio.channel.controller;
 
+import com.vibio.channel.dto.request.FindChannelByIdsRequest;
 import com.vibio.channel.dto.response.ApiResponse;
 import com.vibio.channel.service.InternalChannelService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -28,10 +30,18 @@ public class InternalChannelController {
         return ApiResponse.success(channelService.validateChannel(channelId));
     }
 
-    @GetMapping("/info")
+    @GetMapping("/info/detail")
     @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> getChannelInfo(@RequestParam("accountId") String accountId) {
-        return ApiResponse.success(channelService.getChannelInfo(accountId));
+    public ApiResponse<?> getChannelDetailInfo(@RequestParam("accountId") String accountId) {
+        return ApiResponse.success(channelService.getChannelDetailInfo(accountId));
+    }
+
+    @PostMapping("/infos")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<?> findChannelByIds(
+            @RequestBody @Valid FindChannelByIdsRequest request
+    ) {
+        return ApiResponse.success(channelService.getChannelByIds(request.getIds()));
     }
 
 }

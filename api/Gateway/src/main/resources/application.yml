@@ -49,6 +49,14 @@ spring:
             - RewritePath=/channels(?<segment>/?.*), /channels${segment}
             - AuthorizationFilter
         #============================  Video route ============================#
+        - id: video_public_route
+          uri: ${services.video-service}
+          predicates:
+            - Path= ${api.prefix}/videos/guest/**
+          filters:
+            - StripPrefix=2
+            - RewritePath=/videos(?<segment>/?.*), /videos${segment}
+        #============================  Video route ============================#
         - id: video_route
           uri: ${services.video-service}
           predicates:
