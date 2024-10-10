@@ -1,7 +1,7 @@
 /*
  *  ChannelResponse
  *  @author: Minhhieuano
- *  @created 10/7/2024 6:03 PM
+ *  @created 10/9/2024 12:22 AM
  * */
 
 
@@ -14,6 +14,8 @@ import lombok.Data;
 @Builder
 public class ChannelResponse {
     private String id;
-    private String name;
     private String thumbnail;
+    private String name;
+    private boolean isSubscribed;
+    private boolean isMember;
 }

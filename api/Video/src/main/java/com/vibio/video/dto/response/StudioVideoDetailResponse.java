@@ -8,44 +8,43 @@ package com.vibio.video.dto.response;
 
 import com.vibio.video.common.enums.UploadStatus;
 import com.vibio.video.common.enums.Visibility;
-import lombok.Builder;
-import lombok.Data;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import lombok.Builder;
+import lombok.Data;
 
 @Data
 @Builder
 public class StudioVideoDetailResponse {
 
-    private String id;
+	private String id;
 
-    private String title;
+	private String title;
 
-    private String description;
+	private String description;
 
-    private String url;
+	private String url;
 
-    private String thumbnail;
+	private String thumbnail;
 
-    @Builder.Default
-    private Integer viewCount = 0;
+	@Builder.Default
+	private Integer viewCount = 0;
 
-    @Builder.Default
-    private Integer likeCount = 0;
+	@Builder.Default
+	private Integer likeCount = 0;
 
-    @Builder.Default
-    private Integer dislikeCount = 0;
+	@Builder.Default
+	private Integer dislikeCount = 0;
 
-    private List<String> tags;
+	private List<String> tags;
 
-    private UploadStatus uploadStatus;
+	private UploadStatus uploadStatus;
 
-    private Visibility visibility;
+	private Visibility visibility;
 
-    private boolean allowedComment;
+	private boolean allowedComment;
 
-    private LocalDateTime createdAt;
+	private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt;
+	private LocalDateTime updatedAt;
 }

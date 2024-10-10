@@ -6,8 +6,8 @@
 
 package com.vibio.channel.service;
 
+import com.vibio.channel.dto.response.ChannelBasicResponse;
 import com.vibio.channel.dto.response.ChannelDetailResponse;
-import com.vibio.channel.dto.response.ChannelResponse;
 
 import java.util.List;
 
@@ -16,6 +16,6 @@ public interface InternalChannelService {
 
     ChannelDetailResponse getChannelDetailInfo(String accountId);
 
-    List<ChannelResponse> getChannelByIds(List<String> channelIds);
+    List<ChannelBasicResponse> getChannelByIds(List<String> channelIds);
 
 }

@@ -22,50 +22,48 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CommentController {
 
-    private final CommentService commentService;
+	private final CommentService commentService;
 
-    // create comment;
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<?> createComment(
-            @PathVariable("videoId") String videoId,
-            @RequestBody @Valid CommentRequest request,
-            @AuthenticationPrincipal AuthenticatedUser user) {
-        return ApiResponse.success(commentService.crateComment(videoId, user.getId(), request));
-    }
+	// create comment;
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	public ApiResponse<?> createComment(
+			@PathVariable("videoId") String videoId,
+			@RequestBody @Valid CommentRequest request,
+			@AuthenticationPrincipal AuthenticatedUser user) {
+		return ApiResponse.success(commentService.crateComment(videoId, user.getId(), request));
+	}
 
-    // get all comment by parentId and videoId
+	// get all comment by parentId and videoId
 
-    @GetMapping()
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> getAllComment(
-            @PathVariable("videoId") String videoId,
-            @RequestParam(value = "parentId", required = false) String parentId,
-            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-            @RequestParam(value = "limit", required = false, defaultValue = "5") int limit,
-            @AuthenticationPrincipal AuthenticatedUser user) {
-        return ApiResponse.success(commentService.getAllComment(videoId, user.getId(), parentId, page, limit));
-    }
+	@GetMapping()
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> getAllComment(
+			@PathVariable("videoId") String videoId,
+			@RequestParam(value = "parentId", required = false) String parentId,
+			@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+			@RequestParam(value = "limit", required = false, defaultValue = "5") int limit,
+			@AuthenticationPrincipal AuthenticatedUser user) {
+		return ApiResponse.success(commentService.getAllComment(videoId, user.getId(), parentId, page, limit));
+	}
 
-    // update comment
-    @PatchMapping("{commentId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> updateComment(
-            @PathVariable("videoId") String videoId,
-            @PathVariable("commentId") String commentId,
-            @RequestBody @Valid UpdateCommentRequest request,
-            @AuthenticationPrincipal AuthenticatedUser user) {
-        return ApiResponse.success(commentService.updateComment(videoId, user.getId(), commentId, request));
-    }
+	// update comment
+	@PatchMapping("{commentId}")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> updateComment(
+			@PathVariable("videoId") String videoId,
+			@PathVariable("commentId") String commentId,
+			@RequestBody @Valid UpdateCommentRequest request,
+			@AuthenticationPrincipal AuthenticatedUser user) {
+		return ApiResponse.success(commentService.updateComment(videoId, user.getId(), commentId, request));
+	}
 
-    @DeleteMapping("{commentId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> deleteComment(
-            @PathVariable("videoId") String videoId,
-            @PathVariable("commentId") String commentId,
-            @AuthenticationPrincipal AuthenticatedUser user
-    ) {
-        return ApiResponse.success(commentService.deleteComment(videoId, user.getId(), commentId));
-    }
-
+	@DeleteMapping("{commentId}")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> deleteComment(
+			@PathVariable("videoId") String videoId,
+			@PathVariable("commentId") String commentId,
+			@AuthenticationPrincipal AuthenticatedUser user) {
+		return ApiResponse.success(commentService.deleteComment(videoId, user.getId(), commentId));
+	}
 }

@@ -39,6 +39,14 @@ spring:
           filters:
             - StripPrefix=2
             - AuthorizationFilter
+        #============================  Channel public route ============================#
+        - id: channel_public_route
+          uri: ${services.channel-service}
+          predicates:
+            - Path= ${api.prefix}/channels/guest/**
+          filters:
+            - StripPrefix=2
+            - RewritePath=/channels(?<segment>/?.*), /channels${segment}
         #============================  Channel route ============================#
         - id: channel_route
           uri: ${services.channel-service}
@@ -48,7 +56,8 @@ spring:
             - StripPrefix=2
             - RewritePath=/channels(?<segment>/?.*), /channels${segment}
             - AuthorizationFilter
-        #============================  Video route ============================#
+
+        #============================  Video public route ============================#
         - id: video_public_route
           uri: ${services.video-service}
           predicates:

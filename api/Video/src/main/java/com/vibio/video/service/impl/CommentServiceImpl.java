@@ -31,89 +31,93 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
-    private final CommentRepository commentRepository;
-    private final VideoRepository videoRepository;
-    private final CommentMapper commentMapper;
-    private final UserClient userClient;
-    private final PageMapper pageMapper;
+	private final CommentRepository commentRepository;
+	private final VideoRepository videoRepository;
+	private final CommentMapper commentMapper;
+	private final UserClient userClient;
+	private final PageMapper pageMapper;
 
-    @Override
-    public CommentResponse crateComment(String videoId, String accountId, CommentRequest request) {
-        Video video = videoRepository.findById(videoId).orElseThrow(() -> new NotfoundException("Video not found"));
+	@Override
+	public CommentResponse crateComment(String videoId, String accountId, CommentRequest request) {
+		Video video = videoRepository.findById(videoId).orElseThrow(() -> new NotfoundException("Video not found"));
 
-        if (!video.isAllowedComment()) {
-            throw new ForbiddenException("Video not allow comment");
-        }
+		if (!video.isAllowedComment()) {
+			throw new ForbiddenException("Video not allow comment");
+		}
 
-        // get user by accountId
-        UserResponse user = userClient.getUserByAccountId(accountId).getData();
+		// get user by accountId
+		UserResponse user = userClient.getUserByAccountId(accountId).getData();
 
-        Comment comment = Comment.builder()
-                .content(request.getContent())
-                .userId(user.getId())
-                .video(video)
-                .build();
+		Comment comment = Comment.builder()
+				.content(request.getContent())
+				.userId(user.getId())
+				.video(video)
+				.build();
 
-        if (request.getParentId() != null) {
-            Comment parent = commentRepository
-                    .findById(request.getParentId())
-                    .orElseThrow(() -> new NotfoundException("Comment not found"));
-            comment.setParent(parent);
-        }
+		if (request.getParentId() != null) {
+			Comment parent = commentRepository
+					.findById(request.getParentId())
+					.orElseThrow(() -> new NotfoundException("Comment not found"));
+			if (parent.isReply()) comment.setParent(parent.getParent());
+			else comment.setParent(parent);
+			comment.setReply(true);
+		}
 
-        CommentResponse commentResponse = commentMapper.commentToCommentResponse(commentRepository.save(comment));
+		CommentResponse commentResponse = commentMapper.commentToCommentResponse(commentRepository.save(comment));
 
-        commentResponse.setOwner(user);
+		commentResponse.setOwner(user);
 
-        return commentResponse;
-    }
+		return commentResponse;
+	}
 
-    @Override
-    public PageableResponse<CommentResponse> getAllGuestComment(String videoId, String parentId, int page, int limit) {
+	@Override
+	public PageableResponse<CommentResponse> getAllGuestComment(String videoId, String parentId, int page, int limit) {
 
-        PageRequest request = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "updatedAt"));
+		Page<Comment> comments;
 
-        Page<Comment> comments;
+		if (parentId == null) {
+			comments = commentRepository.getAllGuestComment(
+					videoId, PageRequest.of(page, limit, Sort.Direction.DESC, "updatedAt"));
+		} else {
+			comments = commentRepository.getAllGuestReplies(
+					videoId, parentId, PageRequest.of(page, limit, Sort.Direction.ASC, "createdAt"));
+		}
 
-        if (parentId == null) {
-            comments = commentRepository.getAllGuestComment(videoId, request);
-        } else {
-            comments = commentRepository.getAllGuestReplies(videoId, parentId, request);
-        }
+		return pageMapper.toPageableResponse(comments.map(commentMapper::commentToCommentResponse));
+	}
 
-        return pageMapper.toPageableResponse(comments.map(commentMapper::commentToCommentResponse));
-    }
+	@Override
+	public PageableResponse<CommentResponse> getAllComment(
+			String videoId, String accountId, String parentId, int page, int limit) {
 
-    @Override
-    public PageableResponse<CommentResponse> getAllComment(
-            String videoId, String accountId, String parentId, int page, int limit) {
+		Page<Comment> comments;
 
-        PageRequest request = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "updatedAt"));
+		if (parentId == null) {
+			comments = commentRepository.getAllComment(
+					videoId, PageRequest.of(page, limit, Sort.Direction.DESC, "updatedAt"));
+		} else {
+			comments = commentRepository.getAllReplies(
+					videoId, parentId, PageRequest.of(page, limit, Sort.Direction.ASC, "createdAt"));
+		}
 
-        Page<Comment> comments;
+		return pageMapper.toPageableResponse(comments.map(commentMapper::commentToCommentResponse));
+	}
 
-        if (parentId == null) {
-            comments = commentRepository.getAllComment(videoId, request);
-        } else {
-            comments = commentRepository.getAllReplies(videoId, parentId, request);
-        }
+	@Override
+	public CommentResponse updateComment(
+			String videoId, String accountId, String commentId, UpdateCommentRequest request) {
+		Comment comment = commentRepository
+				.findByIdAndUserId(commentId, accountId)
+				.orElseThrow(() -> new NotfoundException("Comment not found"));
+		comment.setContent(request.getContent());
+		comment.setUpdated(true);
+		return commentMapper.commentToCommentResponse(commentRepository.save(comment));
+	}
 
-        return pageMapper.toPageableResponse(comments.map(commentMapper::commentToCommentResponse));
-    }
-
-    @Override
-    public CommentResponse updateComment(String videoId, String accountId, String commentId, UpdateCommentRequest request) {
-        Comment comment =
-                commentRepository.findByIdAndUserId(commentId, accountId).orElseThrow(() -> new NotfoundException("Comment not found"));
-        comment.setContent(request.getContent());
-        comment.setUpdated(true);
-        return commentMapper.commentToCommentResponse(commentRepository.save(comment));
-    }
-
-    @Override
-    @Transactional
-    public boolean deleteComment(String videoId, String accountId, String commentId) {
-        commentRepository.deleteByIdAndUserIdAndVideoId(commentId, accountId, videoId);
-        return true;
-    }
+	@Override
+	@Transactional
+	public boolean deleteComment(String videoId, String accountId, String commentId) {
+		commentRepository.deleteByIdAndUserIdAndVideoId(commentId, accountId, videoId);
+		return true;
+	}
 }

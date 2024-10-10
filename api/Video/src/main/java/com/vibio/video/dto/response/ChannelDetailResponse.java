@@ -6,20 +6,19 @@
 
 package com.vibio.video.dto.response;
 
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
-
-import java.time.LocalDateTime;
 
 @Data
 @Builder
 public class ChannelDetailResponse {
-    private String id;
-    private String name;
-    private String description;
-    private String thumbnail;
-    private String background;
-    private String defaultEmail;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+	private String id;
+	private String name;
+	private String description;
+	private String thumbnail;
+	private String background;
+	private String defaultEmail;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 }

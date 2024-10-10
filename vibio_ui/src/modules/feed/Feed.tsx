@@ -8,7 +8,7 @@ import FeedItem from "./FeedItem";
 
 type Props = {};
 
-const Feeds = (props: Props) => {
+const Feeds = ({}: Props) => {
     const { isAuthenticated } = useAuth();
     const [ref, inView] = useInView();
 
@@ -23,7 +23,7 @@ const Feeds = (props: Props) => {
                 if (lastPage.last) return undefined;
                 return allPages.length + 1;
             },
-            initialPageParam: 1,
+            initialPageParam: 0,
             refetchOnWindowFocus: false,
         });
 
@@ -37,7 +37,7 @@ const Feeds = (props: Props) => {
         <div className="grid gap-4 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))]">
             {data &&
                 data?.pages
-                    .flatMap(({ content }: any) => content)
+                    .flatMap(({ content }: any) => content ?? [])
                     .map((video: Video, index, content) => {
                         const lastIndex = content.length - 1;
                         if (index === Math.ceil(lastIndex * 0.8))

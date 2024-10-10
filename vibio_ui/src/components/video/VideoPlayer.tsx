@@ -8,7 +8,7 @@ const VideoPlayer = (props: Props) => {
                 width="100%"
                 height="100%"
                 controls
-                url="http://localhost:8080/stream"
+                url="http://localhost:8088/stream/video"
             />
         </div>
     );

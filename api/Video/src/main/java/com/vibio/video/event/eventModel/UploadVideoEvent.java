@@ -13,8 +13,8 @@ import lombok.Data;
 @Data
 @Builder
 public class UploadVideoEvent {
-    private byte[] video;
-    private String videoId;
-    private ChannelDetailResponse channel;
-    private String accountId;
+	private byte[] video;
+	private String videoId;
+	private ChannelDetailResponse channel;
+	private String accountId;
 }

@@ -7,8 +7,8 @@
 
 package com.vibio.channel.service.impl;
 
+import com.vibio.channel.dto.response.ChannelBasicResponse;
 import com.vibio.channel.dto.response.ChannelDetailResponse;
-import com.vibio.channel.dto.response.ChannelResponse;
 import com.vibio.channel.exception.NotfoundException;
 import com.vibio.channel.mapper.ChannelMapper;
 import com.vibio.channel.model.Channel;
@@ -39,8 +39,8 @@ public class InternalChannelServiceImpl implements InternalChannelService {
     }
 
     @Override
-    public List<ChannelResponse> getChannelByIds(List<String> channelIds) {
+    public List<ChannelBasicResponse> getChannelByIds(List<String> channelIds) {
         List<Channel> channels = channelRepository.findAllByIdIn(channelIds);
-        return channels.stream().map(channelMapper::channelToChannelResponse).toList();
+        return channels.stream().map(channelMapper::channelToChannelBasicResponse).toList();
     }
 }

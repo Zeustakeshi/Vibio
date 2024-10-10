@@ -14,6 +14,7 @@
         <option value="$PROJECT_DIR$/api/Channel/pom.xml" />
         <option value="$PROJECT_DIR$/api/Video/pom.xml" />
         <option value="$PROJECT_DIR$/api/Socket/pom.xml" />
+        <option value="$PROJECT_DIR$/api/Stream/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

@@ -12,30 +12,30 @@ const FeedItem = ({ video }: Props, ref: any) => {
     return (
         <Link
             to="/watch/$videoId"
-            params={{ videoId: video.id }}
+            params={{ videoId: video?.id }}
             className="w-auto overflow-hidden rounded-md p-1"
         >
             <div ref={ref} className="rounded-md overflow-hidden">
                 <img
                     className="w-full h-full object-cover"
                     src={video?.thumbnail}
-                    alt={`video-${video.id}`}
+                    alt={`video-${video?.id}`}
                 />
             </div>
             <div className="flex justify-start items-start gap-1 mt-1">
                 <Avatar className="size-[32px]">
-                    <AvatarImage src={video.channel?.thumbnail}></AvatarImage>
+                    <AvatarImage src={video?.channel?.thumbnail}></AvatarImage>
                 </Avatar>
                 <div>
                     <p className="line-clamp-2 text-sm font-semibold">
-                        {video.title}
+                        {video?.title}
                     </p>
                     <Link to="/" className="text-xs text-muted-foreground">
                         {video?.channel?.name}
                     </Link>
                     <div className="flex justify-start items-center gap-2 text-xs text-muted-foreground">
-                        <p> {video.views ?? 0} - Lượt xem</p>
-                        <p>{moment(video.createdAt).fromNow()}</p>
+                        <p> {video?.views ?? 0} - Lượt xem</p>
+                        <p>{moment(video?.createdAt).fromNow()}</p>
                     </div>
                 </div>
             </div>

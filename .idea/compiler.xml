@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Gateway" />
         <module name="Socket" />
+        <module name="Stream" />
       </profile>
       <profile name="Annotation profile for Video" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -35,6 +36,7 @@
       <module name="Gateway" options="-parameters" />
       <module name="Notification" options="-parameters" />
       <module name="Socket" options="-parameters" />
+      <module name="Stream" options="-parameters" />
       <module name="User" options="-parameters -Amapstruct.defaultComponentModel=spring" />
       <module name="Video" options="-parameters -Amapstruct.defaultComponentModel=spring" />
     </option>

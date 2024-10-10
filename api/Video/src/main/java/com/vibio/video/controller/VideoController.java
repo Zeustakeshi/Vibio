@@ -4,7 +4,6 @@
  *  @created 10/7/2024 5:53 PM
  * */
 
-
 package com.vibio.video.controller;
 
 import com.vibio.video.dto.common.AuthenticatedUser;
@@ -19,15 +18,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping
 @RequiredArgsConstructor
 public class VideoController {
-    private final VideoService videoService;
+	private final VideoService videoService;
 
-    @GetMapping("/feeds")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> getFeeds(
-            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-            @RequestParam(value = "limit", required = false, defaultValue = "20") int limit,
-            @AuthenticationPrincipal AuthenticatedUser user
-    ) {
-        return ApiResponse.success(videoService.getFeeds(user.getId(), page, limit));
-    }
+	@GetMapping("/feeds")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> getFeeds(
+			@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+			@RequestParam(value = "limit", required = false, defaultValue = "20") int limit,
+			@AuthenticationPrincipal AuthenticatedUser user) {
+		return ApiResponse.success(videoService.getFeeds(user.getId(), page, limit));
+	}
+
+	@GetMapping("{videoId}")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> getVideoById(
+			@PathVariable("videoId") String videoId, @AuthenticationPrincipal AuthenticatedUser user) {
+		return ApiResponse.success(videoService.getVideoById(videoId, user.getId()));
+	}
 }
