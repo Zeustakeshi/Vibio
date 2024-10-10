@@ -7,7 +7,7 @@
 
 package com.vibio.channel.controller;
 
-import com.vibio.channel.dto.request.FindChannelByIdsRequest;
+import com.vibio.channel.dto.request.FindChannelsByIdsRequest;
 import com.vibio.channel.dto.response.ApiResponse;
 import com.vibio.channel.service.InternalChannelService;
 import jakarta.validation.Valid;
@@ -39,7 +39,7 @@ public class InternalChannelController {
     @PostMapping("/infos")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<?> findChannelByIds(
-            @RequestBody @Valid FindChannelByIdsRequest request
+            @RequestBody @Valid FindChannelsByIdsRequest request
     ) {
         return ApiResponse.success(channelService.getChannelByIds(request.getIds()));
     }

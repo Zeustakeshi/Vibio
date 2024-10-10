@@ -12,7 +12,7 @@ import { Avatar, AvatarImage } from "../ui/avatar";
 type Props = {};
 
 const Profile = ({}: Props) => {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     return (
         <div>
             <DropdownMenu>
@@ -27,7 +27,9 @@ const Profile = ({}: Props) => {
                     <DropdownMenuItem>Profile</DropdownMenuItem>
                     <DropdownMenuItem>Billing</DropdownMenuItem>
                     <DropdownMenuItem>Team</DropdownMenuItem>
-                    <DropdownMenuItem>Subscription</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => logout()}>
+                        Đăng xuất
+                    </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>

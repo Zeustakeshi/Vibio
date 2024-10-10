@@ -14,7 +14,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class FindChannelByIdsRequest {
+public class FindChannelsByIdsRequest {
     @NotNull
     @Size(min = 1, max = 100)
     private List<String> ids;

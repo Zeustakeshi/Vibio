@@ -25,11 +25,13 @@ const CommentItem = ({ comment, isReply }: Props, ref: any) => {
                     "size-[24px]": isReply,
                 })}
             >
-                <AvatarImage src="https://th.bing.com/th/id/R.69b6c7c1419fedc585d4aac2958c5ae4?rik=Ti4lNMU9Co54jg&pid=ImgRaw&r=0"></AvatarImage>
+                <AvatarImage src={comment.owner.avatar}></AvatarImage>
             </Avatar>
             <div className="w-full">
                 <div className="flex justify-start items-center gap-2 text-xs text-muted-foreground">
-                    <span className="font-semibold">Minh hiếu</span>
+                    <span className="font-semibold">
+                        {comment.owner.username}
+                    </span>
                     <span>{moment(comment.updatedAt).toNow()}</span>
                 </div>
                 <p
