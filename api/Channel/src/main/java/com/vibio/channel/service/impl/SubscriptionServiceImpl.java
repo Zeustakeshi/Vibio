@@ -50,7 +50,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public SubscriptionResponse unSubscribeChannel(String channelId, String accountId) {
 
-        if (channelRepository.existsById(channelId)) {
+        if (!channelRepository.existsById(channelId)) {
             throw new NotfoundException("Channel not found");
         }
         Subscription subscription = subscriptionRepository.findByChannelIdAndUserId(channelId, accountId)

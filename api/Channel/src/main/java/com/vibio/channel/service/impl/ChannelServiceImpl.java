@@ -12,6 +12,7 @@ import com.vibio.channel.exception.NotfoundException;
 import com.vibio.channel.mapper.ChannelMapper;
 import com.vibio.channel.model.Channel;
 import com.vibio.channel.repository.ChannelRepository;
+import com.vibio.channel.repository.SubscriptionRepository;
 import com.vibio.channel.service.ChannelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 public class ChannelServiceImpl implements ChannelService {
     private final ChannelRepository channelRepository;
     private final ChannelMapper channelMapper;
+    private final SubscriptionRepository subscriptionRepository;
 
     @Override
     public void createChannel(NewChannelEvent event) {
@@ -34,7 +36,10 @@ public class ChannelServiceImpl implements ChannelService {
     public ChannelResponse getChannelById(String channelId, String accountId) {
         Channel channel = channelRepository.findById(channelId)
                 .orElseThrow(() -> new NotfoundException("Channel not found"));
-        return channelMapper.channelToChannelResponse(channel);
+
+        ChannelResponse channelResponse = channelMapper.channelToChannelResponse(channel);
+        channelResponse.setSubscribed(subscriptionRepository.existsByChannelIdAndUserId(channelId, accountId));
+        return channelResponse;
     }
 
     @Override
@@ -44,5 +49,5 @@ public class ChannelServiceImpl implements ChannelService {
         return channelMapper.channelToChannelResponse(channel);
     }
 
-  
+
 }

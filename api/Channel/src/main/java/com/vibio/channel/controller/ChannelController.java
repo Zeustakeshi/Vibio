@@ -31,7 +31,7 @@ public class ChannelController {
         return ApiResponse.success(channelService.getChannelById(channelId, user.getId()));
     }
 
-    @GetMapping("{channelId}/subscribe")
+    @PostMapping("{channelId}/subscribe")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<?> subscribeChannel(
             @PathVariable("channelId") String channelId,
@@ -40,7 +40,7 @@ public class ChannelController {
         return ApiResponse.success(subscriptionService.subscribeChannel(channelId, user.getId()));
     }
 
-    @GetMapping("{channelId}/unsubscribe")
+    @PostMapping("{channelId}/unSubscribe")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<?> unSubscribeChannel(
             @PathVariable("channelId") String channelId,

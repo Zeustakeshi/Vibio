@@ -22,18 +22,18 @@ public class InternalChannelController {
 
     private final InternalChannelService channelService;
 
+    @GetMapping("")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<?> getChannelDetailInfo(@RequestParam("accountId") String accountId) {
+        return ApiResponse.success(channelService.getChannelDetailInfo(accountId));
+    }
+
     @GetMapping("/validate")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<?> validateChannel(
             @RequestParam("channelId") String channelId
     ) {
         return ApiResponse.success(channelService.validateChannel(channelId));
-    }
-
-    @GetMapping("/info/detail")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> getChannelDetailInfo(@RequestParam("accountId") String accountId) {
-        return ApiResponse.success(channelService.getChannelDetailInfo(accountId));
     }
 
     @PostMapping("/infos")
