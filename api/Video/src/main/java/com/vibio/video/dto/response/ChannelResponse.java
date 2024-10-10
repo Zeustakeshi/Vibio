@@ -1,12 +1,11 @@
 /*
- *  ChannelResponse
+ *  VideoChannelResponse
  *  @author: Minhhieuano
- *  @created 9/27/2024 11:52 PM
+ *  @created 10/7/2024 6:00 PM
  * */
 
 package com.vibio.video.dto.response;
 
-import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,11 +13,6 @@ import lombok.Data;
 @Builder
 public class ChannelResponse {
 	private String id;
-	private String name;
-	private String description;
 	private String thumbnail;
-	private String background;
-	private String defaultEmail;
-	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
+	private String name;
 }

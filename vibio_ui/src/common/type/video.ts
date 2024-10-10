@@ -1,9 +1,23 @@
-import { Channel } from "./channel";
+import { ChannelBasicInfo } from "./channel";
 
 export type Video = {
     id: string;
+    title: string;
     thumbnail: string;
-    channel: Pick<Channel, "id" | "avatar" | "name">;
-    createdAt: Date;
+    channel: Pick<ChannelBasicInfo, "id" | "thumbnail" | "name">;
+    createdAt: string;
     views: number;
+};
+
+export type videoDetail = {
+    id: string;
+    channelId: string;
+    title: string;
+    description: string;
+    viewCount: number;
+    likeCount: number;
+    commentCount: number;
+    allowedComment: boolean;
+    createdAt: string;
+    updatedAt: string;
 };

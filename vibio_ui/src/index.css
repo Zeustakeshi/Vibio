@@ -74,4 +74,17 @@
         left: 50%;
         transform: translate(-50%, -50%);
     }
+
+    .custom-scroll::-webkit-scrollbar {
+        width: 4px;
+        @apply group-hover:block;
+    }
+
+    .custom-scroll::-webkit-scrollbar-track {
+        @apply shadow-lg bg-slate-200;
+    }
+
+    .custom-scroll::-webkit-scrollbar-thumb {
+        @apply rounded-full bg-primary shadow-primary;
+    }
 }

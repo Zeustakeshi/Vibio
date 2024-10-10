@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .exceptionHandling(handler -> handler.accessDeniedHandler(accessDeniedHandler)
                         .authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/internal/**").permitAll()
+                        .requestMatchers("/internal/**", "/guest/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(
                         oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));

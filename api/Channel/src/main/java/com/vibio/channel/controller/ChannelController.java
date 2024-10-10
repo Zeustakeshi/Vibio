@@ -6,15 +6,46 @@
 
 package com.vibio.channel.controller;
 
+import com.vibio.channel.dto.common.AuthenticatedUser;
+import com.vibio.channel.dto.response.ApiResponse;
 import com.vibio.channel.service.ChannelService;
+import com.vibio.channel.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping
 @RequiredArgsConstructor
 public class ChannelController {
     private final ChannelService channelService;
+    private final SubscriptionService subscriptionService;
 
+    @GetMapping("{channelId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<?> getChannelById(
+            @PathVariable("channelId") String channelId,
+            @AuthenticationPrincipal AuthenticatedUser user
+    ) {
+        return ApiResponse.success(channelService.getChannelById(channelId, user.getId()));
+    }
+
+    @GetMapping("{channelId}/subscribe")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<?> subscribeChannel(
+            @PathVariable("channelId") String channelId,
+            @AuthenticationPrincipal AuthenticatedUser user
+    ) {
+        return ApiResponse.success(subscriptionService.subscribeChannel(channelId, user.getId()));
+    }
+
+    @GetMapping("{channelId}/unsubscribe")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<?> unSubscribeChannel(
+            @PathVariable("channelId") String channelId,
+            @AuthenticationPrincipal AuthenticatedUser user
+    ) {
+        return ApiResponse.success(subscriptionService.unSubscribeChannel(channelId, user.getId()));
+    }
 }

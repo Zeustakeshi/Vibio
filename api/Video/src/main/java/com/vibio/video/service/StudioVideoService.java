@@ -16,17 +16,17 @@ public interface StudioVideoService {
 	// Create
 	UploadVideoResponse uploadVideo(MultipartFile file, String accountId);
 
-	void uploadVideoAsync(String videoId, ChannelResponse channel, String accountId, byte[] file);
+	void uploadVideoAsync(String videoId, ChannelDetailResponse channel, String accountId, byte[] file);
 
 	void uploadThumbnailAsync(String videoId, String channelId, String accountId, byte[] thumbnail);
 
 	// Read
 	PageableResponse<StudioVideoResponse> getChannelVideos(String accountId, int page, int limit);
 
-	VideoDetailResponse getVideoDetail(String videoId, String accountId);
+	StudioVideoDetailResponse getVideoDetail(String videoId, String accountId);
 
 	// Update
-	VideoDetailResponse updateVideo(String videoId, String accountId, UpdateVideoRequest request);
+	StudioVideoDetailResponse updateVideo(String videoId, String accountId, UpdateVideoRequest request);
 
 	UploadStatus updateThumbnail(String videoId, String accountId, MultipartFile thumbnail);
 

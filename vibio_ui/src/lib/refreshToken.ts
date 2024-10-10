@@ -1,8 +1,12 @@
 import Cookies from "js-cookie";
 import mem from "mem";
-import {ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, USER_INFO_KEY,} from "../common/constant/auth";
-import {api} from "./api";
-import {clearLocalStorage, clearSessionStorage} from "./storage.ts";
+import {
+    ACCESS_TOKEN_KEY,
+    REFRESH_TOKEN_KEY,
+    USER_INFO_KEY,
+} from "../common/constant/auth";
+import { api } from "./api";
+import { clearLocalStorage, clearSessionStorage } from "./storage";
 
 const refreshToken = async () => {
     const refreshToken = Cookies.get(REFRESH_TOKEN_KEY);
@@ -30,12 +34,11 @@ const refreshToken = async () => {
             domain: ".vibio.com",
         });
     } catch (error) {
-        sessionStorage.removeItem(USER_INFO_KEY);
+        console.log("Refresh token error " + error);
         clearLocalStorage();
         clearSessionStorage();
         Cookies.remove(REFRESH_TOKEN_KEY);
         Cookies.remove(ACCESS_TOKEN_KEY);
-        console.log("Refresh token error " + error);
     }
 };
 

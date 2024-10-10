@@ -1,36 +1,41 @@
 import { Link } from "@tanstack/react-router";
+import moment from "moment";
+import { forwardRef } from "react";
+import { Video } from "../../common/type/video";
 import { Avatar, AvatarImage } from "../../components/ui/avatar";
 
-type Props = {};
+type Props = {
+    video: Video;
+};
 
-const FeedItem = ({}: Props) => {
+const FeedItem = ({ video }: Props, ref: any) => {
     return (
         <Link
-            to="/watch/1"
-            className="w-[250px] overflow-hidden rounded-md p-1"
+            to="/watch/$videoId"
+            params={{ videoId: video?.id }}
+            className="w-auto overflow-hidden rounded-md p-1"
         >
-            <div className="rounded-md overflow-hidden">
+            <div ref={ref} className="rounded-md overflow-hidden">
                 <img
                     className="w-full h-full object-cover"
-                    src="https://i.ytimg.com/vi/XUGywpiiwlE/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLCYQFiThIyJKl37xfmdDxjk-pCJLA"
-                    alt=""
+                    src={video?.thumbnail}
+                    alt={`video-${video?.id}`}
                 />
             </div>
             <div className="flex justify-start items-start gap-1 mt-1">
                 <Avatar className="size-[32px]">
-                    <AvatarImage src="https://yt3.ggpht.com/MmyBjwWwb50dJo__SPHRO_kGXMjPRhiRgTykElPkjL9xoQSa38kt0_NMvlro4rkRDxnJqSWz=s68-c-k-c0x00ffffff-no-rj"></AvatarImage>
+                    <AvatarImage src={video?.channel?.thumbnail}></AvatarImage>
                 </Avatar>
                 <div>
                     <p className="line-clamp-2 text-sm font-semibold">
-                        VS Code Extensions tăng hiệu năng làm việc (Giveaway
-                        licenses ~400$)
+                        {video?.title}
                     </p>
                     <Link to="/" className="text-xs text-muted-foreground">
-                        HoleTex
+                        {video?.channel?.name}
                     </Link>
                     <div className="flex justify-start items-center gap-2 text-xs text-muted-foreground">
-                        <p> 7 N Lượt xem</p>
-                        <p>3 tháng trước</p>
+                        <p> {video?.views ?? 0} - Lượt xem</p>
+                        <p>{moment(video?.createdAt).fromNow()}</p>
                     </div>
                 </div>
             </div>
@@ -38,4 +43,4 @@ const FeedItem = ({}: Props) => {
     );
 };
 
-export default FeedItem;
+export default forwardRef(FeedItem);

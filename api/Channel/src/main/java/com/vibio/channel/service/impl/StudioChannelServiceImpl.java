@@ -7,7 +7,7 @@
 package com.vibio.channel.service.impl;
 
 import com.vibio.channel.dto.request.UpdateChannelRequest;
-import com.vibio.channel.dto.response.ChannelResponse;
+import com.vibio.channel.dto.response.ChannelDetailResponse;
 import com.vibio.channel.exception.ConflictException;
 import com.vibio.channel.exception.NotfoundException;
 import com.vibio.channel.mapper.ChannelMapper;
@@ -25,13 +25,13 @@ public class StudioChannelServiceImpl implements StudioChannelService {
     private final ChannelMapper channelMapper;
 
     @Override
-    public ChannelResponse getChannelInfo(String accountId) {
+    public ChannelDetailResponse getChannelInfo(String accountId) {
         Channel channel = findChannelByAccountIdAndThrowException(accountId);
-        return channelMapper.channelToChannelResponse(channel);
+        return channelMapper.channelToChannelDetailResponse(channel);
     }
 
     @Override
-    public ChannelResponse updateChannelInfo(String accountId, UpdateChannelRequest request) {
+    public ChannelDetailResponse updateChannelInfo(String accountId, UpdateChannelRequest request) {
         Channel channel = findChannelByAccountIdAndThrowException(accountId);
 
         if (channelRepository.existsByName(request.getName())) {
@@ -41,7 +41,7 @@ public class StudioChannelServiceImpl implements StudioChannelService {
         channel.setName(request.getName());
         channel.setDescription(request.getDescription());
 
-        return channelMapper.channelToChannelResponse(channelRepository.save(channel));
+        return channelMapper.channelToChannelDetailResponse(channelRepository.save(channel));
     }
 
     private Channel findChannelByAccountIdAndThrowException(String accountId) {

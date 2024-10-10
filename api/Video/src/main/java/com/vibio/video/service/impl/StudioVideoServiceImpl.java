@@ -48,31 +48,31 @@ public class StudioVideoServiceImpl implements StudioVideoService {
 
 	@Override
 	public PageableResponse<StudioVideoResponse> getChannelVideos(String accountId, int page, int limit) {
-		ChannelResponse channel = getChannelByAccountId(accountId);
+		ChannelDetailResponse channel = getChannelByAccountId(accountId);
 
 		PageRequest request = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "updatedAt"));
 
 		Page<Video> videos = videoRepository.findAllByChannelId(channel.getId(), request);
 
-		return pageMapper.toPageableResponse(videos.map(videoMapper::videoToVideoResponse));
+		return pageMapper.toPageableResponse(videos.map(videoMapper::videoToStudioVideoResponse));
 	}
 
 	@Override
 	@Transactional
-	public VideoDetailResponse getVideoDetail(String videoId, String accountId) {
-		ChannelResponse channel = getChannelByAccountId(accountId);
+	public StudioVideoDetailResponse getVideoDetail(String videoId, String accountId) {
+		ChannelDetailResponse channel = getChannelByAccountId(accountId);
 
 		Video video = videoRepository
 				.findByIdAndChannelId(videoId, channel.getId())
 				.orElseThrow(() -> new NotfoundException("Video not found"));
 
-		return videoMapper.videoToVideoDetailResponse(video);
+		return videoMapper.videoToStudioVideoDetailResponse(video);
 	}
 
 	@SneakyThrows
 	@Override
 	public UploadVideoResponse uploadVideo(MultipartFile file, String accountId) {
-		ChannelResponse channel = getChannelByAccountId(accountId);
+		ChannelDetailResponse channel = getChannelByAccountId(accountId);
 
 		Video video = videoRepository.save(Video.builder()
 				.channelId(channel.getId())
@@ -91,7 +91,7 @@ public class StudioVideoServiceImpl implements StudioVideoService {
 
 	@Override
 	@Async
-	public void uploadVideoAsync(String videoId, ChannelResponse channel, String accountId, byte[] file) {
+	public void uploadVideoAsync(String videoId, ChannelDetailResponse channel, String accountId, byte[] file) {
 		Video video = videoRepository
 				.findByIdAndChannelId(videoId, channel.getId())
 				.orElseThrow(() -> new NotfoundException("Video with id " + videoId + " not found"));
@@ -135,8 +135,8 @@ public class StudioVideoServiceImpl implements StudioVideoService {
 
 	@Override
 	@Transactional
-	public VideoDetailResponse updateVideo(String videoId, String accountId, UpdateVideoRequest request) {
-		ChannelResponse channel = getChannelByAccountId(accountId);
+	public StudioVideoDetailResponse updateVideo(String videoId, String accountId, UpdateVideoRequest request) {
+		ChannelDetailResponse channel = getChannelByAccountId(accountId);
 
 		Video video = videoRepository
 				.findByIdAndChannelId(videoId, channel.getId())
@@ -156,13 +156,13 @@ public class StudioVideoServiceImpl implements StudioVideoService {
 
 		Video updatedVideo = videoRepository.save(video);
 
-		return videoMapper.videoToVideoDetailResponse(updatedVideo);
+		return videoMapper.videoToStudioVideoDetailResponse(updatedVideo);
 	}
 
 	@Override
 	@SneakyThrows
 	public UploadStatus updateThumbnail(String videoId, String accountId, MultipartFile thumbnail) {
-		ChannelResponse channel = getChannelByAccountId(accountId);
+		ChannelDetailResponse channel = getChannelByAccountId(accountId);
 
 		if (!videoRepository.existsByIdAndChannelId(videoId, channel.getId())) {
 			throw new NotfoundException("Video not found");
@@ -179,8 +179,8 @@ public class StudioVideoServiceImpl implements StudioVideoService {
 		return UploadStatus.PENDING;
 	}
 
-	private ChannelResponse getChannelByAccountId(String accountId) {
-		ApiResponse<ChannelResponse> channelResponse = channelClient.getChannelInfoByAccountId(accountId);
+	private ChannelDetailResponse getChannelByAccountId(String accountId) {
+		ApiResponse<ChannelDetailResponse> channelResponse = channelClient.getChannelInfoByAccountId(accountId);
 		return channelResponse.getData();
 	}
 
