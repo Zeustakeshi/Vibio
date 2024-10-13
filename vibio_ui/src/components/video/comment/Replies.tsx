@@ -17,7 +17,7 @@ const commentTest: Comment = {
     owner: {
         avatar: "",
         id: "",
-        usename: "",
+        username: "",
     },
     updated: false,
     updatedAt: "",
@@ -79,7 +79,7 @@ const Replies = ({ parentId }: Props) => {
                             ></CommentItem>
                         );
                     })}
-            {hasNextPage && status !== "pending" && <Button>Xem them</Button>}
+            {hasNextPage && status !== "pending" && <Button>Xem thêm</Button>}
         </div>
     );
 };

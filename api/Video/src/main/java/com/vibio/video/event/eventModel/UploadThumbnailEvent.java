@@ -8,12 +8,14 @@ package com.vibio.video.event.eventModel;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @Builder
-public class UploadThumbnailEvent {
-	private byte[] thumbnail;
-	private String videoId;
-	private String channelId;
-	private String accountId;
+@EqualsAndHashCode(callSuper = true)
+public class UploadThumbnailEvent extends Event {
+    private byte[] thumbnail;
+    private String videoId;
+    private String channelId;
+    private String accountId;
 }

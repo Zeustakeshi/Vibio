@@ -32,6 +32,17 @@ spring:
       enabled: true
       max-file-size: 1026MB
       max-request-size: 1026MB
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}
+      group-id: video_group
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: '*'
 server:
   port: 8086
   servlet:
