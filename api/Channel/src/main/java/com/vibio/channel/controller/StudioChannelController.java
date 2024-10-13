@@ -20,21 +20,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/studio")
 @RequiredArgsConstructor
 public class StudioChannelController {
-    private final StudioChannelService channelService;
+	private final StudioChannelService channelService;
 
-    @GetMapping("/info")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> getChannelInfo(@AuthenticationPrincipal AuthenticatedUser user) {
-        return ApiResponse.success(channelService.getChannelInfo(user.getId()));
-    }
+	@GetMapping("/info")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> getChannelInfo(@AuthenticationPrincipal AuthenticatedUser user) {
+		return ApiResponse.success(channelService.getChannelInfo(user.getId()));
+	}
 
-    @PatchMapping()
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> updateChannelInfo(
-            @AuthenticationPrincipal AuthenticatedUser user,
-            @RequestBody @Valid UpdateChannelRequest request
+	@PatchMapping()
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> updateChannelInfo(
+			@AuthenticationPrincipal AuthenticatedUser user, @RequestBody @Valid UpdateChannelRequest request) {
 
-    ) {
-        return ApiResponse.success(channelService.updateChannelInfo(user.getId(), request));
-    }
+		return ApiResponse.success(channelService.updateChannelInfo(user.getId(), request));
+	}
 }

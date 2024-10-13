@@ -1,11 +1,12 @@
 /*
- *  NewCommentEvent
+ *  ReactionVideoEvent
  *  @author: Minhhieuano
- *  @created 10/12/2024 11:34 PM
+ *  @created 10/13/2024 12:01 PM
  * */
 
 package com.vibio.video.event.eventModel;
 
+import com.vibio.video.common.enums.ReactionType;
 import lombok.*;
 
 @Data
@@ -13,12 +14,13 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class NewCommentEvent extends Event {
+public class ReactionVideoEvent extends Event {
+
 	@Builder.Default
-	private String id = "E_003";
+	private String id = "E_004";
 
 	private String videoId;
-	private String parentId;
-	private String commentId;
 	private String userId;
+	private boolean isReaction;
+	private ReactionType reactionType;
 }

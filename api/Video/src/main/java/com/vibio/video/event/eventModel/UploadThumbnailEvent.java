@@ -14,8 +14,8 @@ import lombok.EqualsAndHashCode;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class UploadThumbnailEvent extends Event {
-    private byte[] thumbnail;
-    private String videoId;
-    private String channelId;
-    private String accountId;
+	private byte[] thumbnail;
+	private String videoId;
+	private String channelId;
+	private String accountId;
 }

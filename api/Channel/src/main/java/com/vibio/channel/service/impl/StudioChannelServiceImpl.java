@@ -21,32 +21,32 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class StudioChannelServiceImpl implements StudioChannelService {
 
-    private final ChannelRepository channelRepository;
-    private final ChannelMapper channelMapper;
+	private final ChannelRepository channelRepository;
+	private final ChannelMapper channelMapper;
 
-    @Override
-    public ChannelDetailResponse getChannelInfo(String accountId) {
-        Channel channel = findChannelByAccountIdAndThrowException(accountId);
-        return channelMapper.channelToChannelDetailResponse(channel);
-    }
+	@Override
+	public ChannelDetailResponse getChannelInfo(String accountId) {
+		Channel channel = findChannelByAccountIdAndThrowException(accountId);
+		return channelMapper.channelToChannelDetailResponse(channel);
+	}
 
-    @Override
-    public ChannelDetailResponse updateChannelInfo(String accountId, UpdateChannelRequest request) {
-        Channel channel = findChannelByAccountIdAndThrowException(accountId);
+	@Override
+	public ChannelDetailResponse updateChannelInfo(String accountId, UpdateChannelRequest request) {
+		Channel channel = findChannelByAccountIdAndThrowException(accountId);
 
-        if (channelRepository.existsByName(request.getName())) {
-            throw new ConflictException("Channel with name " + request.getName() + " already existed!");
-        }
+		if (channelRepository.existsByName(request.getName())) {
+			throw new ConflictException("Channel with name " + request.getName() + " already existed!");
+		}
 
-        channel.setName(request.getName());
-        channel.setDescription(request.getDescription());
+		channel.setName(request.getName());
+		channel.setDescription(request.getDescription());
 
-        return channelMapper.channelToChannelDetailResponse(channelRepository.save(channel));
-    }
+		return channelMapper.channelToChannelDetailResponse(channelRepository.save(channel));
+	}
 
-    private Channel findChannelByAccountIdAndThrowException(String accountId) {
-        return channelRepository
-                .findByAccountId(accountId)
-                .orElseThrow(() -> new NotfoundException("Channel not found"));
-    }
+	private Channel findChannelByAccountIdAndThrowException(String accountId) {
+		return channelRepository
+				.findByAccountId(accountId)
+				.orElseThrow(() -> new NotfoundException("Channel not found"));
+	}
 }

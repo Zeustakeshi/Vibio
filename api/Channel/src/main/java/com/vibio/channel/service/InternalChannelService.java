@@ -8,14 +8,12 @@ package com.vibio.channel.service;
 
 import com.vibio.channel.dto.response.ChannelBasicResponse;
 import com.vibio.channel.dto.response.ChannelDetailResponse;
-
 import java.util.List;
 
 public interface InternalChannelService {
-    boolean validateChannel(String channelId);
+	boolean validateChannel(String channelId);
 
-    ChannelDetailResponse getChannelDetailInfo(String accountId);
+	ChannelDetailResponse getChannelDetailInfo(String accountId);
 
-    List<ChannelBasicResponse> getChannelByIds(List<String> channelIds);
-
+	List<ChannelBasicResponse> getChannelByIds(List<String> channelIds);
 }

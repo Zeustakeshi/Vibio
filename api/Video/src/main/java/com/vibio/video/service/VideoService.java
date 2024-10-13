@@ -11,13 +11,15 @@ import com.vibio.video.dto.response.VideoDetailResponse;
 import com.vibio.video.dto.response.VideoResponse;
 
 public interface VideoService {
-    PageableResponse<VideoResponse> getFeeds(String accountId, int page, int limit);
+	PageableResponse<VideoResponse> getFeeds(String accountId, int page, int limit);
 
-    PageableResponse<VideoResponse> getGuestFeeds(int page, int limit);
+	PageableResponse<VideoResponse> getGuestFeeds(int page, int limit);
 
-    VideoDetailResponse getVideoById(String videoId, String accountId);
+	VideoDetailResponse getVideoById(String videoId, String accountId);
 
-    VideoDetailResponse getVideoByIdGuest(String videoId);
+	VideoDetailResponse getVideoByIdGuest(String videoId);
 
-    void updateCommentCount(String videoId, int count, boolean isIncrease);
+	void updateCommentCount(String videoId);
+
+	void updateVideoReactionCount(String videoId);
 }

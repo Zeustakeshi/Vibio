@@ -18,6 +18,8 @@ public class VideoDetailResponse {
 	private String title;
 	private String description;
 	private Integer viewCount;
+	private boolean isLiked;
+	private boolean isDisliked;
 	private Integer likeCount;
 	private Integer commentCount;
 	private boolean allowedComment;

@@ -1,16 +1,14 @@
 /*
- *  Subscription
+ *  CommentReaction
  *  @author: Minhhieuano
- *  @created 10/10/2024 8:10 AM
+ *  @created 10/6/2024 8:47 AM
  * */
 
-package com.vibio.channel.model;
+package com.vibio.video.entity;
 
-import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import com.vibio.video.common.enums.ReactionType;
+import com.vibio.video.entity.key.VideoReactionKey;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,19 +19,20 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Subscription {
-	@Id
-	@Builder.Default
-	private String id = NanoIdUtils.randomNanoId();
-
-	@Column(nullable = false)
-	private String userId;
+@Builder
+public class VideoReaction {
+	@EmbeddedId
+	VideoReactionKey id;
 
 	@ManyToOne
-	private Channel channel;
+	@MapsId("videoId")
+	private Video video;
+
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private ReactionType type;
 
 	@CreationTimestamp
 	private LocalDateTime createdAt;

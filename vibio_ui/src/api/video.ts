@@ -1,3 +1,4 @@
+import { ReactionType } from "../common/enum";
 import { videoDetail } from "../common/type/video";
 import { api } from "../lib/api";
 
@@ -27,4 +28,16 @@ export const getVideoDetailGuest = async (
 
 export const getVideoDetail = async (videoId: string): Promise<videoDetail> => {
     return await api.get(`/videos/${videoId}`);
+};
+
+export const reactionVideo = async (videoId: string, type: ReactionType) => {
+    return await api.post(`/videos/${videoId}/reaction`, {
+        reactionType: type,
+    });
+};
+
+export const unReactionVideo = async (videoId: string, type: ReactionType) => {
+    return await api.post(`/videos/${videoId}/un-reaction`, {
+        reactionType: type,
+    });
 };

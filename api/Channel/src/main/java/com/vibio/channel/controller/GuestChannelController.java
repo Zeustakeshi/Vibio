@@ -4,7 +4,6 @@
  *  @created 10/9/2024 12:27 AM
  * */
 
-
 package com.vibio.channel.controller;
 
 import com.vibio.channel.dto.response.ApiResponse;
@@ -17,15 +16,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("guest")
 @RequiredArgsConstructor
 public class GuestChannelController {
-    private final ChannelService channelService;
+	private final ChannelService channelService;
 
-
-    @GetMapping("{channelId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> getChannelById(
-            @PathVariable("channelId") String channelId
-    ) {
-        return ApiResponse.success(channelService.getChannelByIdGuest(channelId));
-    }
-
+	@GetMapping("{channelId}")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> getChannelById(@PathVariable("channelId") String channelId) {
+		return ApiResponse.success(channelService.getChannelByIdGuest(channelId));
+	}
 }

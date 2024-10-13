@@ -6,11 +6,14 @@
 
 package com.vibio.video.event.consumer;
 
+import com.vibio.video.event.eventModel.ReactionVideoEvent;
 import com.vibio.video.event.eventModel.UploadThumbnailEvent;
 import com.vibio.video.event.eventModel.UploadVideoEvent;
 import com.vibio.video.service.StudioVideoService;
+import com.vibio.video.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Component;
 public class VideoEventConsumer {
 
 	private final StudioVideoService studioVideoService;
+	private final VideoService videoService;
 
 	@EventListener
 	public void handleUploadVideoEvent(UploadVideoEvent event) {
@@ -29,5 +33,10 @@ public class VideoEventConsumer {
 	public void handleUploadThumbnailEvent(UploadThumbnailEvent event) {
 		studioVideoService.uploadThumbnailAsync(
 				event.getVideoId(), event.getChannelId(), event.getAccountId(), event.getThumbnail());
+	}
+
+	@KafkaListener(topics = "video_reaction", groupId = "${spring.kafka.consumer.group-id}")
+	public void handleReactionVideoEvent(ReactionVideoEvent event) {
+		videoService.updateVideoReactionCount(event.getVideoId());
 	}
 }

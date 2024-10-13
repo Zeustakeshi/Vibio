@@ -20,7 +20,9 @@ public interface CommentRepository extends JpaRepository<Comment, String> {
 
 	Page<Comment> findAllByParentId(String parentId, Pageable pageable);
 
-	Long countByVideoId(String videoId);
+	Integer countByVideoId(String videoId);
+
+	Integer countByParentId(String parentId);
 
 	Optional<Comment> findByIdAndUserId(String commentId, String userId);
 

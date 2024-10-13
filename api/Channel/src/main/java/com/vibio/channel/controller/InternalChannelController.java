@@ -4,7 +4,6 @@
  *  @created 9/29/2024 9:24 PM
  * */
 
-
 package com.vibio.channel.controller;
 
 import com.vibio.channel.dto.request.FindChannelsByIdsRequest;
@@ -20,29 +19,23 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class InternalChannelController {
 
-    private final InternalChannelService channelService;
+	private final InternalChannelService channelService;
 
-    @GetMapping("")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> getChannelDetailInfo(@RequestParam("accountId") String accountId) {
-        return ApiResponse.success(channelService.getChannelDetailInfo(accountId));
-    }
+	@GetMapping("")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> getChannelDetailInfo(@RequestParam("accountId") String accountId) {
+		return ApiResponse.success(channelService.getChannelDetailInfo(accountId));
+	}
 
-    @GetMapping("/validate")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> validateChannel(
-            @RequestParam("channelId") String channelId
-    ) {
-        return ApiResponse.success(channelService.validateChannel(channelId));
-    }
+	@GetMapping("/validate")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> validateChannel(@RequestParam("channelId") String channelId) {
+		return ApiResponse.success(channelService.validateChannel(channelId));
+	}
 
-    @PostMapping("/infos")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> findChannelByIds(
-            @RequestBody @Valid FindChannelsByIdsRequest request
-    ) {
-        return ApiResponse.success(channelService.getChannelByIds(request.getIds()));
-    }
-
+	@PostMapping("/infos")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> findChannelByIds(@RequestBody @Valid FindChannelsByIdsRequest request) {
+		return ApiResponse.success(channelService.getChannelByIds(request.getIds()));
+	}
 }
-
