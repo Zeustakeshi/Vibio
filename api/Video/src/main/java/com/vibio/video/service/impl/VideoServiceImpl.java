@@ -13,6 +13,8 @@ import com.vibio.video.entity.Video;
 import com.vibio.video.exception.NotfoundException;
 import com.vibio.video.mapper.PageMapper;
 import com.vibio.video.mapper.VideoMapper;
+import com.vibio.video.repository.CommentRepository;
+import com.vibio.video.repository.VideoReactionRepository;
 import com.vibio.video.repository.VideoRepository;
 import com.vibio.video.service.VideoService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,8 @@ public class VideoServiceImpl implements VideoService {
     private final PageMapper pageMapper;
     private final VideoMapper videoMapper;
     private final ChannelClient channelClient;
+    private final VideoReactionRepository videoReactionRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public PageableResponse<VideoResponse> getFeeds(String accountId, int page, int limit) {
@@ -48,7 +52,8 @@ public class VideoServiceImpl implements VideoService {
             VideoResponse videoResponse = videoMapper.videoToVideoResponse(v);
             ChannelResponse channel = channels.stream()
                     .filter(c -> c.getId().equals(v.getChannelId()))
-                    .findFirst().orElseThrow(() -> new NotfoundException("Channel " + v.getChannelId() + " not found"));
+                    .findFirst()
+                    .orElseThrow(() -> new NotfoundException("Channel " + v.getChannelId() + " not found"));
             videoResponse.setChannel(channel);
             return videoResponse;
         }));
@@ -93,15 +98,22 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public void updateCommentCount(String videoId, int count, boolean isIncrease) {
-        Video video = videoRepository.findById(videoId)
+    public void updateCommentCount(String videoId) {
+        Video video = videoRepository
+                .findById(videoId)
                 .orElseThrow(() -> new NotfoundException("Video " + videoId + " not found"));
 
-        if (isIncrease) video.setCommentCount(video.getCommentCount() + count);
-        else video.setCommentCount(video.getCommentCount() - count);
-
+        video.setCommentCount(commentRepository.countByVideoId(videoId));
         videoRepository.save(video);
     }
 
-
+    @Override
+    public void updateVideoReactionCount(String videoId) {
+        Video video = videoRepository
+                .findById(videoId)
+                .orElseThrow(() -> new NotfoundException("Video " + videoId + " not found"));
+        video.setLikeCount(videoReactionRepository.countLikeByVideoId(videoId));
+        video.setDislikeCount(videoReactionRepository.countDislikeByVideoId(videoId));
+        videoRepository.save(video);
+    }
 }

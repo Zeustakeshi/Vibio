@@ -14,7 +14,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface CommentMapper {
 
-    @Mapping(target = "likeCount", ignore = true)
-    @Mapping(target = "owner", ignore = true)
-    CommentResponse commentToCommentResponse(Comment comment);
+	@Mapping(target = "likeCount", ignore = true)
+	@Mapping(target = "owner", ignore = true)
+	CommentResponse commentToCommentResponse(Comment comment);
 }

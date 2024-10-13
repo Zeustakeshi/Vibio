@@ -4,7 +4,6 @@
  *  @created 10/12/2024 11:29 PM
  * */
 
-
 package com.vibio.video.event.producer;
 
 import com.vibio.video.event.eventModel.NewCommentEvent;
@@ -15,9 +14,9 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class CommentEventProducer {
-    private final KafkaTemplate<String, Object> commentTemplate;
+	private final KafkaTemplate<String, Object> commentTemplate;
 
-    public void createNewComment(NewCommentEvent event) {
-        commentTemplate.send("new_comment", event);
-    }
+	public void createNewComment(NewCommentEvent event) {
+		commentTemplate.send("new_comment", event);
+	}
 }

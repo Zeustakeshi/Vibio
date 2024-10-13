@@ -4,7 +4,6 @@
  *  @created 10/12/2024 11:44 PM
  * */
 
-
 package com.vibio.video.event.consumer;
 
 import com.vibio.video.event.eventModel.NewCommentEvent;
@@ -24,10 +23,10 @@ public class CommentEventListener {
     @KafkaListener(topics = "new_comment", groupId = "${spring.kafka.consumer.group-id}")
     public void newCommentListener(NewCommentEvent event) {
         // update comment count for video
-        videoService.updateCommentCount(event.getVideoId(), 1, true);
+        videoService.updateCommentCount(event.getVideoId());
 
         // update reply count for video
         if (event.getParentId() == null) return;
-        commentService.updateReplyCount(event.getParentId(), 1, true);
+        commentService.updateReplyCount(event.getParentId());
     }
 }

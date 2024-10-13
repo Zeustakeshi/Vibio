@@ -23,6 +23,5 @@ public interface CommentService {
 
     boolean deleteComment(String videoId, String accountId, String commentId);
 
-    void updateReplyCount(String commentParentId, int count, boolean isIncrease);
-
+    void updateReplyCount(String commentParentId);
 }

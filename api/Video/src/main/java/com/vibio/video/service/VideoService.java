@@ -19,5 +19,7 @@ public interface VideoService {
 
     VideoDetailResponse getVideoByIdGuest(String videoId);
 
-    void updateCommentCount(String videoId, int count, boolean isIncrease);
+    void updateCommentCount(String videoId);
+
+    void updateVideoReactionCount(String videoId);
 }

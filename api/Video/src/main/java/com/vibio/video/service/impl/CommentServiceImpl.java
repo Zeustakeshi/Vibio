@@ -72,14 +72,12 @@ public class CommentServiceImpl implements CommentService {
 
         Comment newComment = commentRepository.save(comment);
 
-        commentEventProducer.createNewComment(NewCommentEvent
-                .builder()
+        commentEventProducer.createNewComment(NewCommentEvent.builder()
                 .commentId(newComment.getId())
                 .parentId(request.getParentId())
                 .videoId(videoId)
                 .userId(accountId)
-                .build()
-        );
+                .build());
 
         CommentResponse commentResponse = commentMapper.commentToCommentResponse(newComment);
 
@@ -100,7 +98,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public PageableResponse<CommentResponse> getAllComment(String videoId, String accountId, String parentId, int page, int limit) {
+    public PageableResponse<CommentResponse> getAllComment(
+            String videoId, String accountId, String parentId, int page, int limit) {
         Page<Comment> comments = fetchComments(videoId, parentId, page, limit);
 
         List<UserResponse> users = Collections.emptyList();
@@ -129,12 +128,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void updateReplyCount(String commentParentId, int count, boolean isIncrease) {
-        Comment comment = commentRepository.findById(commentParentId)
+    public void updateReplyCount(String commentParentId) {
+        Comment comment = commentRepository
+                .findById(commentParentId)
                 .orElseThrow(() -> new NotfoundException("Comment " + commentParentId + " not found"));
 
-        if (isIncrease) comment.setReplyCount(comment.getReplyCount() + count);
-        else comment.setReplyCount(comment.getReplyCount() - count);
+        comment.setReplyCount(commentRepository.countByParentId(commentParentId));
 
         commentRepository.save(comment);
     }
@@ -161,15 +160,13 @@ public class CommentServiceImpl implements CommentService {
 
     private List<UserResponse> fetchUsersForComments(Page<Comment> comments) {
         List<String> userIds = comments.map(Comment::getUserId).stream().toList();
-        return userClient.getUsersByIds(
-                FindAccountsByIdsRequest.builder().ids(userIds).build()
-        ).getData();
+        return userClient
+                .getUsersByIds(FindAccountsByIdsRequest.builder().ids(userIds).build())
+                .getData();
     }
 
     private PageableResponse<CommentResponse> mapCommentsToResponse(Page<Comment> comments, List<UserResponse> users) {
-        return pageMapper.toPageableResponse(
-                comments.map(comment -> mapCommentToResponse(comment, users))
-        );
+        return pageMapper.toPageableResponse(comments.map(comment -> mapCommentToResponse(comment, users)));
     }
 
     private CommentResponse mapCommentToResponse(Comment comment, List<UserResponse> users) {
