@@ -17,18 +17,18 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class VideoEventProducer {
-    private final ApplicationEventPublisher publisher;
-    private final KafkaTemplate<String, Object> videoTemplate;
+	private final ApplicationEventPublisher publisher;
+	private final KafkaTemplate<String, Object> videoTemplate;
 
-    public void uploadVideo(UploadVideoEvent event) {
-        publisher.publishEvent(event);
-    }
+	public void uploadVideo(UploadVideoEvent event) {
+		publisher.publishEvent(event);
+	}
 
-    public void uploadVideoThumbnail(UploadThumbnailEvent event) {
-        publisher.publishEvent(event);
-    }
+	public void uploadVideoThumbnail(UploadThumbnailEvent event) {
+		publisher.publishEvent(event);
+	}
 
-    public void reactionVideo(ReactionVideoEvent event) {
-        videoTemplate.send("video_reaction", event);
-    }
+	public void reactionVideo(ReactionVideoEvent event) {
+		videoTemplate.send("video_reaction", event);
+	}
 }

@@ -17,16 +17,16 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CommentEventListener {
 
-    private final VideoService videoService;
-    private final CommentService commentService;
+	private final VideoService videoService;
+	private final CommentService commentService;
 
-    @KafkaListener(topics = "new_comment", groupId = "${spring.kafka.consumer.group-id}")
-    public void newCommentListener(NewCommentEvent event) {
-        // update comment count for video
-        videoService.updateCommentCount(event.getVideoId());
+	@KafkaListener(topics = "new_comment", groupId = "${spring.kafka.consumer.group-id}")
+	public void newCommentListener(NewCommentEvent event) {
+		// update comment count for video
+		videoService.updateCommentCount(event.getVideoId());
 
-        // update reply count for video
-        if (event.getParentId() == null) return;
-        commentService.updateReplyCount(event.getParentId());
-    }
+		// update reply count for video
+		if (event.getParentId() == null) return;
+		commentService.updateReplyCount(event.getParentId());
+	}
 }

@@ -18,22 +18,21 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface ChannelMapper {
 
-    ChannelDetailResponse channelToChannelDetailResponse(Channel channel);
+	ChannelDetailResponse channelToChannelDetailResponse(Channel channel);
 
-    ChannelBasicResponse channelToChannelBasicResponse(Channel channel);
+	ChannelBasicResponse channelToChannelBasicResponse(Channel channel);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(source = "defaultAvatar", target = "thumbnail")
-    @Mapping(expression = "java(randomChannelName(event))", target = "name")
-    @Mapping(source = "defaultEmail", target = "defaultEmail")
-    Channel newChannelEventToChannel(NewChannelEvent event);
+	@Mapping(target = "id", ignore = true)
+	@Mapping(source = "defaultAvatar", target = "thumbnail")
+	@Mapping(expression = "java(randomChannelName(event))", target = "name")
+	@Mapping(source = "defaultEmail", target = "defaultEmail")
+	Channel newChannelEventToChannel(NewChannelEvent event);
 
+	@Mapping(target = "isSubscribed", ignore = true)
+	@Mapping(target = "isMember", ignore = true)
+	ChannelResponse channelToChannelResponse(Channel channel);
 
-    @Mapping(target = "isSubscribed", ignore = true)
-    @Mapping(target = "isMember", ignore = true)
-    ChannelResponse channelToChannelResponse(Channel channel);
-
-    default String randomChannelName(NewChannelEvent event) {
-        return event.getName() + '-' + NanoIdUtils.randomNanoId();
-    }
+	default String randomChannelName(NewChannelEvent event) {
+		return event.getName() + '-' + NanoIdUtils.randomNanoId();
+	}
 }

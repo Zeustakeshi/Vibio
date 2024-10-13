@@ -1,10 +1,19 @@
-import {useMutation} from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import * as React from "react";
-import {getUserInfo} from "../api/user";
-import {ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, USER_INFO_KEY,} from "../common/constant/auth";
-import {TokenPair} from "../common/type/token";
-import {User} from "../common/type/user";
-import {clearLocalStorage, clearSessionStorage, getSessionStorageValue, saveSessionStorage,} from "../lib/storage";
+import { getUserInfo } from "../api/user";
+import {
+    ACCESS_TOKEN_KEY,
+    REFRESH_TOKEN_KEY,
+    USER_INFO_KEY,
+} from "../common/constant/auth";
+import { TokenPair } from "../common/type/token";
+import { User } from "../common/type/user";
+import {
+    clearLocalStorage,
+    clearSessionStorage,
+    getSessionStorageValue,
+    saveSessionStorage,
+} from "../lib/storage";
 
 import Cookies from "js-cookie";
 
@@ -18,10 +27,11 @@ export interface AuthContext {
 
 const AuthContext = React.createContext<AuthContext | null>(null);
 
-export function AuthProvider({children}: { children: React.ReactNode }) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = React.useState<User | null>(null);
-    const [isAuthenticated, setIsAuthenticated] =
-        React.useState<boolean>(!!user);
+    const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(
+        () => !!Cookies.get(REFRESH_TOKEN_KEY)
+    );
 
     const userInfoMutation = useMutation({
         mutationKey: ["get user", "user info"],

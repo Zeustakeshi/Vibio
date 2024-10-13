@@ -20,23 +20,23 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class VideoEventConsumer {
 
-    private final StudioVideoService studioVideoService;
-    private final VideoService videoService;
+	private final StudioVideoService studioVideoService;
+	private final VideoService videoService;
 
-    @EventListener
-    public void handleUploadVideoEvent(UploadVideoEvent event) {
-        studioVideoService.uploadVideoAsync(
-                event.getVideoId(), event.getChannel(), event.getAccountId(), event.getVideo());
-    }
+	@EventListener
+	public void handleUploadVideoEvent(UploadVideoEvent event) {
+		studioVideoService.uploadVideoAsync(
+				event.getVideoId(), event.getChannel(), event.getAccountId(), event.getVideo());
+	}
 
-    @EventListener
-    public void handleUploadThumbnailEvent(UploadThumbnailEvent event) {
-        studioVideoService.uploadThumbnailAsync(
-                event.getVideoId(), event.getChannelId(), event.getAccountId(), event.getThumbnail());
-    }
+	@EventListener
+	public void handleUploadThumbnailEvent(UploadThumbnailEvent event) {
+		studioVideoService.uploadThumbnailAsync(
+				event.getVideoId(), event.getChannelId(), event.getAccountId(), event.getThumbnail());
+	}
 
-    @KafkaListener(topics = "video_reaction", groupId = "${spring.kafka.consumer.group-id}")
-    public void handleReactionVideoEvent(ReactionVideoEvent event) {
-        videoService.updateVideoReactionCount(event.getVideoId());
-    }
+	@KafkaListener(topics = "video_reaction", groupId = "${spring.kafka.consumer.group-id}")
+	public void handleReactionVideoEvent(ReactionVideoEvent event) {
+		videoService.updateVideoReactionCount(event.getVideoId());
+	}
 }

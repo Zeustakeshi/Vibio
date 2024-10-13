@@ -19,33 +19,27 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping
 @RequiredArgsConstructor
 public class ChannelController {
-    private final ChannelService channelService;
-    private final SubscriptionService subscriptionService;
+	private final ChannelService channelService;
+	private final SubscriptionService subscriptionService;
 
-    @GetMapping("{channelId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> getChannelById(
-            @PathVariable("channelId") String channelId,
-            @AuthenticationPrincipal AuthenticatedUser user
-    ) {
-        return ApiResponse.success(channelService.getChannelById(channelId, user.getId()));
-    }
+	@GetMapping("{channelId}")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> getChannelById(
+			@PathVariable("channelId") String channelId, @AuthenticationPrincipal AuthenticatedUser user) {
+		return ApiResponse.success(channelService.getChannelById(channelId, user.getId()));
+	}
 
-    @PostMapping("{channelId}/subscribe")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> subscribeChannel(
-            @PathVariable("channelId") String channelId,
-            @AuthenticationPrincipal AuthenticatedUser user
-    ) {
-        return ApiResponse.success(subscriptionService.subscribeChannel(channelId, user.getId()));
-    }
+	@PostMapping("{channelId}/subscribe")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> subscribeChannel(
+			@PathVariable("channelId") String channelId, @AuthenticationPrincipal AuthenticatedUser user) {
+		return ApiResponse.success(subscriptionService.subscribeChannel(channelId, user.getId()));
+	}
 
-    @PostMapping("{channelId}/unSubscribe")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> unSubscribeChannel(
-            @PathVariable("channelId") String channelId,
-            @AuthenticationPrincipal AuthenticatedUser user
-    ) {
-        return ApiResponse.success(subscriptionService.unSubscribeChannel(channelId, user.getId()));
-    }
+	@PostMapping("{channelId}/unSubscribe")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> unSubscribeChannel(
+			@PathVariable("channelId") String channelId, @AuthenticationPrincipal AuthenticatedUser user) {
+		return ApiResponse.success(subscriptionService.unSubscribeChannel(channelId, user.getId()));
+	}
 }

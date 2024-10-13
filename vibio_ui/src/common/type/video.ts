@@ -17,6 +17,8 @@ export type videoDetail = {
     viewCount: number;
     likeCount: number;
     commentCount: number;
+    liked: boolean;
+    disliked: boolean;
     allowedComment: boolean;
     createdAt: string;
     updatedAt: string;

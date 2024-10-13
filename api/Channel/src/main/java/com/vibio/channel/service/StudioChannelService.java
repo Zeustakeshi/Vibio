@@ -10,7 +10,7 @@ import com.vibio.channel.dto.request.UpdateChannelRequest;
 import com.vibio.channel.dto.response.ChannelDetailResponse;
 
 public interface StudioChannelService {
-    ChannelDetailResponse getChannelInfo(String accountId);
+	ChannelDetailResponse getChannelInfo(String accountId);
 
-    ChannelDetailResponse updateChannelInfo(String accountId, UpdateChannelRequest request);
+	ChannelDetailResponse updateChannelInfo(String accountId, UpdateChannelRequest request);
 }

@@ -21,45 +21,42 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping
 @RequiredArgsConstructor
 public class VideoController {
-    private final VideoService videoService;
-    private final VideoReactionService videoReactionService;
+	private final VideoService videoService;
+	private final VideoReactionService videoReactionService;
 
-    @GetMapping("/feeds")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> getFeeds(
-            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-            @RequestParam(value = "limit", required = false, defaultValue = "20") int limit,
-            @AuthenticationPrincipal AuthenticatedUser user) {
-        return ApiResponse.success(videoService.getFeeds(user.getId(), page, limit));
-    }
+	@GetMapping("/feeds")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> getFeeds(
+			@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+			@RequestParam(value = "limit", required = false, defaultValue = "20") int limit,
+			@AuthenticationPrincipal AuthenticatedUser user) {
+		return ApiResponse.success(videoService.getFeeds(user.getId(), page, limit));
+	}
 
-    @GetMapping("{videoId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> getVideoById(
-            @PathVariable("videoId") String videoId, @AuthenticationPrincipal AuthenticatedUser user) {
-        return ApiResponse.success(videoService.getVideoById(videoId, user.getId()));
-    }
+	@GetMapping("{videoId}")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> getVideoById(
+			@PathVariable("videoId") String videoId, @AuthenticationPrincipal AuthenticatedUser user) {
+		return ApiResponse.success(videoService.getVideoById(videoId, user.getId()));
+	}
 
-    @PostMapping("{videoId}/reaction")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<?> reactionVideo(
-            @PathVariable("videoId") String videoId,
-            @RequestBody @Valid ReactionRequest request,
-            @AuthenticationPrincipal AuthenticatedUser user
-    ) {
-        videoReactionService.reactionVideo(videoId, user.getId(), request.getReactionType());
-        return ApiResponse.success(true);
-    }
+	@PostMapping("{videoId}/reaction")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ApiResponse<?> reactionVideo(
+			@PathVariable("videoId") String videoId,
+			@RequestBody @Valid ReactionRequest request,
+			@AuthenticationPrincipal AuthenticatedUser user) {
+		videoReactionService.reactionVideo(videoId, user.getId(), request.getReactionType());
+		return ApiResponse.success(true);
+	}
 
-    @PostMapping("{videoId}/un-reaction")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> unReactionVideo(
-            @PathVariable("videoId") String videoId,
-            @RequestBody @Valid ReactionRequest request,
-            @AuthenticationPrincipal AuthenticatedUser user
-    ) {
-        videoReactionService.unReactionVideo(videoId, user.getId(), request.getReactionType());
-        return ApiResponse.success(true);
-    }
-
+	@PostMapping("{videoId}/un-reaction")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> unReactionVideo(
+			@PathVariable("videoId") String videoId,
+			@RequestBody @Valid ReactionRequest request,
+			@AuthenticationPrincipal AuthenticatedUser user) {
+		videoReactionService.unReactionVideo(videoId, user.getId(), request.getReactionType());
+		return ApiResponse.success(true);
+	}
 }
