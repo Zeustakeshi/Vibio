@@ -51,7 +51,7 @@ const CommentItem = ({ comment, isReply }: Props, ref: any) => {
                         {isCollapse ? "Đọc thêm" : "Ẩn bớt"}
                     </Button>
                 )}
-                <CommentAction commentId={comment.id}></CommentAction>
+                <CommentAction comment={comment}></CommentAction>
                 {!isReply && comment.replyCount > 0 && (
                     <CommentReplies
                         commentId={comment.id}

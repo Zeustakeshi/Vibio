@@ -21,11 +21,18 @@ public class CommentResponse {
 
 	private boolean updated;
 
+	private boolean isLiked;
+
+	private boolean isDisliked;
+
+	@Builder.Default
+	private Integer replyCount = 0;
+
 	@Builder.Default
 	private Integer likeCount = 0;
 
 	@Builder.Default
-	private Integer replyCount = 0;
+	private Integer dislikeCount = 0;
 
 	private LocalDateTime updatedAt;
 }

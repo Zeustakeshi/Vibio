@@ -39,8 +39,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     React.useEffect(() => {
-        if (!isAuthenticated) loadUser();
-    }, [isAuthenticated]);
+        if (!isAuthenticated || !user) loadUser();
+    }, [isAuthenticated, user]);
+
+    console.log({ isAuthenticated, user });
 
     const logout = React.useCallback(async () => {
         setUser(null);
