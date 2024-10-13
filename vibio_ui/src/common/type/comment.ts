@@ -5,7 +5,10 @@ export type Comment = {
     content: string;
     owner: Omit<User, "email">;
     updated: boolean;
+    liked: boolean;
+    disliked: boolean;
     likeCount: number;
+    dislikeCount: number;
     replyCount: number;
     updatedAt: string;
 };

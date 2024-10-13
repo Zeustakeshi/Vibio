@@ -7,6 +7,7 @@
 package com.vibio.video.service.impl;
 
 import com.vibio.video.client.UserClient;
+import com.vibio.video.common.enums.ReactionType;
 import com.vibio.video.dto.request.CommentRequest;
 import com.vibio.video.dto.request.FindAccountsByIdsRequest;
 import com.vibio.video.dto.request.UpdateCommentRequest;
@@ -21,6 +22,7 @@ import com.vibio.video.exception.ForbiddenException;
 import com.vibio.video.exception.NotfoundException;
 import com.vibio.video.mapper.CommentMapper;
 import com.vibio.video.mapper.PageMapper;
+import com.vibio.video.repository.CommentReactionRepository;
 import com.vibio.video.repository.CommentRepository;
 import com.vibio.video.repository.VideoRepository;
 import com.vibio.video.service.CommentService;
@@ -38,6 +40,7 @@ import org.springframework.stereotype.Service;
 public class CommentServiceImpl implements CommentService {
 	private final CommentRepository commentRepository;
 	private final VideoRepository videoRepository;
+	private final CommentReactionRepository commentReactionRepository;
 	private final CommentMapper commentMapper;
 	private final UserClient userClient;
 	private final PageMapper pageMapper;
@@ -93,7 +96,7 @@ public class CommentServiceImpl implements CommentService {
 
 		if (!comments.isEmpty()) users = fetchUsersForComments(comments);
 
-		return mapCommentsToResponse(comments, users);
+		return mapCommentsToResponse(comments, users, null);
 	}
 
 	@Override
@@ -105,7 +108,7 @@ public class CommentServiceImpl implements CommentService {
 
 		if (!comments.isEmpty()) users = fetchUsersForComments(comments);
 
-		return mapCommentsToResponse(comments, users);
+		return mapCommentsToResponse(comments, users, accountId);
 	}
 
 	@Override
@@ -137,6 +140,18 @@ public class CommentServiceImpl implements CommentService {
 		commentRepository.save(comment);
 	}
 
+	@Override
+	public void updateReactionCount(String commentId) {
+		Comment comment = commentRepository
+				.findById(commentId)
+				.orElseThrow(() -> new NotfoundException("Comment " + commentId + " not found"));
+
+		comment.setLikeCount(commentReactionRepository.countLikeByCommentId(commentId));
+		comment.setDislikeCount(commentReactionRepository.countDislikeByCommentId(commentId));
+
+		commentRepository.save(comment);
+	}
+
 	private Page<Comment> fetchGuestComments(String videoId, String parentId, int page, int limit) {
 		if (parentId == null) {
 			return commentRepository.getAllGuestComment(
@@ -164,17 +179,27 @@ public class CommentServiceImpl implements CommentService {
 				.getData();
 	}
 
-	private PageableResponse<CommentResponse> mapCommentsToResponse(Page<Comment> comments, List<UserResponse> users) {
-		return pageMapper.toPageableResponse(comments.map(comment -> mapCommentToResponse(comment, users)));
+	private PageableResponse<CommentResponse> mapCommentsToResponse(
+			Page<Comment> comments, List<UserResponse> users, String accountId) {
+		return pageMapper.toPageableResponse(comments.map(comment -> mapCommentToResponse(comment, users, accountId)));
 	}
 
-	private CommentResponse mapCommentToResponse(Comment comment, List<UserResponse> users) {
+	private CommentResponse mapCommentToResponse(Comment comment, List<UserResponse> users, String accountId) {
 		CommentResponse commentResponse = commentMapper.commentToCommentResponse(comment);
 		UserResponse user = users.stream()
 				.filter(u -> u.getId().equals(comment.getUserId()))
 				.findFirst()
 				.orElseThrow(() -> new NotfoundException("User " + comment.getUserId() + " not found"));
+
+		if (accountId != null) {
+			commentResponse.setLiked(commentReactionRepository.existsByCommentIdAndUserIdAndReactionType(
+					comment.getId(), accountId, ReactionType.LIKE));
+			commentResponse.setDisliked(commentReactionRepository.existsByCommentIdAndUserIdAndReactionType(
+					comment.getId(), accountId, ReactionType.DISLIKE));
+		}
+
 		commentResponse.setOwner(user);
+
 		return commentResponse;
 	}
 }

@@ -49,6 +49,12 @@ public class Comment {
 	private Integer replyCount = 0;
 
 	@Builder.Default
+	private Integer likeCount = 0;
+
+	@Builder.Default
+	private Integer dislikeCount = 0;
+
+	@Builder.Default
 	private boolean updated = false;
 
 	@CreationTimestamp

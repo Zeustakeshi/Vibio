@@ -8,8 +8,10 @@ package com.vibio.video.controller;
 
 import com.vibio.video.dto.common.AuthenticatedUser;
 import com.vibio.video.dto.request.CommentRequest;
+import com.vibio.video.dto.request.ReactionRequest;
 import com.vibio.video.dto.request.UpdateCommentRequest;
 import com.vibio.video.dto.response.ApiResponse;
+import com.vibio.video.service.CommentReactionService;
 import com.vibio.video.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
 
 	private final CommentService commentService;
+	private final CommentReactionService commentReactionService;
 
 	// create comment;
 	@PostMapping
@@ -35,7 +38,6 @@ public class CommentController {
 	}
 
 	// get all comment by parentId and videoId
-
 	@GetMapping()
 	@ResponseStatus(HttpStatus.OK)
 	public ApiResponse<?> getAllComment(
@@ -65,5 +67,29 @@ public class CommentController {
 			@PathVariable("commentId") String commentId,
 			@AuthenticationPrincipal AuthenticatedUser user) {
 		return ApiResponse.success(commentService.deleteComment(videoId, user.getId(), commentId));
+	}
+
+	// reaction comment
+	@PostMapping("{commentId}/reaction")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ApiResponse<?> reactionComment(
+			@PathVariable("videoId") String videoId,
+			@PathVariable("commentId") String commentId,
+			@RequestBody @Valid ReactionRequest request,
+			@AuthenticationPrincipal AuthenticatedUser user) {
+		commentReactionService.reactionComment(commentId, user.getId(), request.getReactionType());
+		return ApiResponse.success(true);
+	}
+
+	// un reaction comment
+	@PostMapping("{commentId}/un-reaction")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ApiResponse<?> unReactionComment(
+			@PathVariable("videoId") String videoId,
+			@PathVariable("commentId") String commentId,
+			@RequestBody @Valid ReactionRequest request,
+			@AuthenticationPrincipal AuthenticatedUser user) {
+		commentReactionService.unReactionComment(commentId, user.getId(), request.getReactionType());
+		return ApiResponse.success(true);
 	}
 }

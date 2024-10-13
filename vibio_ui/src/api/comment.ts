@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ReactionType } from "../common/enum";
 import { api } from "../lib/api";
 import { newCommentSchema } from "../schema/comment.schema";
 
@@ -56,4 +57,25 @@ export const createComment = async (
     data: z.infer<typeof newCommentSchema>
 ) => {
     return await api.post(`/videos/${videoId}/comments`, data);
+};
+
+export const reactionComment = async (
+    videoId: string,
+    commentId: string,
+    reactionType: ReactionType
+) => {
+    return await api.post(`/videos/${videoId}/comments/${commentId}/reaction`, {
+        reactionType,
+    });
+};
+
+export const unReactionComment = async (
+    videoId: string,
+    commentId: string,
+    reactionType: ReactionType
+) => {
+    return await api.post(
+        `/videos/${videoId}/comments/${commentId}/un-reaction`,
+        { reactionType }
+    );
 };
