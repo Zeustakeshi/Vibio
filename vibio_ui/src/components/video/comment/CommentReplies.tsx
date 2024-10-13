@@ -2,9 +2,9 @@ import { useState } from "react";
 import { Button } from "../../ui/button";
 import Replies from "./Replies";
 
-type Props = { commentId: string };
+type Props = { commentId: string; replyCount: number };
 
-const CommentReplies = ({ commentId }: Props) => {
+const CommentReplies = ({ commentId, replyCount }: Props) => {
     const [showReplies, setShowReplies] = useState<boolean>(false);
     return (
         <div>
@@ -13,7 +13,7 @@ const CommentReplies = ({ commentId }: Props) => {
                 variant="ghost"
                 size="sm"
             >
-                {showReplies ? "Ẩn" : "Xem thêm"} 1 Phản hồi
+                {showReplies ? "Ẩn" : "Xem thêm"} {replyCount} Phản hồi
             </Button>
             {showReplies && <Replies parentId={commentId}></Replies>}
         </div>

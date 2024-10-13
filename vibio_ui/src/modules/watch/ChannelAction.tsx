@@ -102,15 +102,17 @@ const ChannelAction = (props: Props) => {
                     onClick={handleUnSubscribeChannel}
                     variant="secondary"
                     className="rounded-full"
+                    disabled={unSubscribeMutation.isPending}
                 >
-                    Hủy đăng ký
+                    {unSubscribeMutation.isPending ? "Đang hủy" : "Hủy đăng ký"}
                 </Button>
             ) : (
                 <Button
                     onClick={handleSubscribeChannel}
                     className="rounded-full"
+                    disabled={subscribeMutation.isPending}
                 >
-                    Đăng ký
+                    {subscribeMutation.isPending ? "Đang đăng ký" : "đăng ký"}
                 </Button>
             )}
         </div>

@@ -15,6 +15,8 @@ import com.vibio.video.dto.response.PageableResponse;
 import com.vibio.video.dto.response.UserResponse;
 import com.vibio.video.entity.Comment;
 import com.vibio.video.entity.Video;
+import com.vibio.video.event.eventModel.NewCommentEvent;
+import com.vibio.video.event.producer.CommentEventProducer;
 import com.vibio.video.exception.ForbiddenException;
 import com.vibio.video.exception.NotfoundException;
 import com.vibio.video.mapper.CommentMapper;
@@ -40,6 +42,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentMapper commentMapper;
     private final UserClient userClient;
     private final PageMapper pageMapper;
+    private final CommentEventProducer commentEventProducer;
 
     @Override
     public CommentResponse crateComment(String videoId, String accountId, CommentRequest request) {
@@ -67,7 +70,18 @@ public class CommentServiceImpl implements CommentService {
             comment.setReply(true);
         }
 
-        CommentResponse commentResponse = commentMapper.commentToCommentResponse(commentRepository.save(comment));
+        Comment newComment = commentRepository.save(comment);
+
+        commentEventProducer.createNewComment(NewCommentEvent
+                .builder()
+                .commentId(newComment.getId())
+                .parentId(request.getParentId())
+                .videoId(videoId)
+                .userId(accountId)
+                .build()
+        );
+
+        CommentResponse commentResponse = commentMapper.commentToCommentResponse(newComment);
 
         commentResponse.setOwner(user);
 
@@ -77,13 +91,22 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public PageableResponse<CommentResponse> getAllGuestComment(String videoId, String parentId, int page, int limit) {
         Page<Comment> comments = fetchGuestComments(videoId, parentId, page, limit);
-        return mapCommentsToResponse(comments, Collections.emptyList());
+
+        List<UserResponse> users = Collections.emptyList();
+
+        if (!comments.isEmpty()) users = fetchUsersForComments(comments);
+
+        return mapCommentsToResponse(comments, users);
     }
 
     @Override
     public PageableResponse<CommentResponse> getAllComment(String videoId, String accountId, String parentId, int page, int limit) {
         Page<Comment> comments = fetchComments(videoId, parentId, page, limit);
-        List<UserResponse> users = fetchUsersForComments(comments);
+
+        List<UserResponse> users = Collections.emptyList();
+
+        if (!comments.isEmpty()) users = fetchUsersForComments(comments);
+
         return mapCommentsToResponse(comments, users);
     }
 
@@ -103,6 +126,17 @@ public class CommentServiceImpl implements CommentService {
     public boolean deleteComment(String videoId, String accountId, String commentId) {
         commentRepository.deleteByIdAndUserIdAndVideoId(commentId, accountId, videoId);
         return true;
+    }
+
+    @Override
+    public void updateReplyCount(String commentParentId, int count, boolean isIncrease) {
+        Comment comment = commentRepository.findById(commentParentId)
+                .orElseThrow(() -> new NotfoundException("Comment " + commentParentId + " not found"));
+
+        if (isIncrease) comment.setReplyCount(comment.getReplyCount() + count);
+        else comment.setReplyCount(comment.getReplyCount() - count);
+
+        commentRepository.save(comment);
     }
 
     private Page<Comment> fetchGuestComments(String videoId, String parentId, int page, int limit) {
@@ -140,10 +174,11 @@ public class CommentServiceImpl implements CommentService {
 
     private CommentResponse mapCommentToResponse(Comment comment, List<UserResponse> users) {
         CommentResponse commentResponse = commentMapper.commentToCommentResponse(comment);
-        users.stream()
-                .filter(user -> user.getId().equals(comment.getUserId()))
+        UserResponse user = users.stream()
+                .filter(u -> u.getId().equals(comment.getUserId()))
                 .findFirst()
-                .ifPresent(commentResponse::setOwner);
+                .orElseThrow(() -> new NotfoundException("User " + comment.getUserId() + " not found"));
+        commentResponse.setOwner(user);
         return commentResponse;
     }
 }

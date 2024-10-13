@@ -34,12 +34,9 @@ public class InternalAccountServiceImpl implements InternalAccountService {
 
     @Override
     public List<AccountResponse> getAccountByIds(FindAccountsByIdsRequest request) {
-        return request.getIds()
-                .stream()
-                .map(id -> {
-                    Account account = accountRepository.findById(id).orElseThrow(() -> new NotfoundException("Account " + id + " not found."));
-                    return accountMapper.accountToAccountResponse(account);
-                })
-                .toList();
+
+        List<Account> accounts = accountRepository.findAllByIdIn(request.getIds());
+
+        return accounts.stream().map(accountMapper::accountToAccountResponse).toList();
     }
 }

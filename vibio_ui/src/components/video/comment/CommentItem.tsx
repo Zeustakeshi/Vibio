@@ -52,8 +52,11 @@ const CommentItem = ({ comment, isReply }: Props, ref: any) => {
                     </Button>
                 )}
                 <CommentAction commentId={comment.id}></CommentAction>
-                {!isReply && (
-                    <CommentReplies commentId={comment.id}></CommentReplies>
+                {!isReply && comment.replyCount > 0 && (
+                    <CommentReplies
+                        commentId={comment.id}
+                        replyCount={comment.replyCount}
+                    ></CommentReplies>
                 )}
             </div>
         </div>
