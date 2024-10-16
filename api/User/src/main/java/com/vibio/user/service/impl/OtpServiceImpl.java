@@ -8,7 +8,7 @@ package com.vibio.user.service.impl;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vibio.user.common.enums.OTPType;
+import com.vibio.user.common.enums.OtpType;
 import com.vibio.user.domain.OTP;
 import com.vibio.user.event.eventModel.SendOtpEvent;
 import com.vibio.user.event.producer.NotificationProducer;
@@ -40,7 +40,7 @@ public class OtpServiceImpl implements OtpService {
 		// Generate an OTP for account creation
 		OTP otp = OTP.builder()
 				.value(generateOtp(6))
-				.type(OTPType.CREATE_ACCOUNT)
+				.type(OtpType.ACCOUNT_CREATION)
 				.expiresIn(TimeUnit.MINUTES.toSeconds(3))
 				.build();
 		// Save hashed OTP to cache
@@ -58,7 +58,7 @@ public class OtpServiceImpl implements OtpService {
 
 	@SneakyThrows
 	@Override
-	public void sendOtp(String key, String email, OTP plainOtp) {
+	public void sendOtp(String key, String email, OTP plainOtp, OtpType otpType) {
 		String otpLimitKey = createOtpLimitKey(key, plainOtp.getType());
 
 		Integer sendCount = 1; // default send count
@@ -87,8 +87,11 @@ public class OtpServiceImpl implements OtpService {
 		}
 
 		// Send OTP to user via email
-		notificationProducer.sendOtp(
-				SendOtpEvent.builder().email(email).otpCode(plainOtp.getValue()).build());
+		notificationProducer.sendOtp(SendOtpEvent.builder()
+				.otpType(otpType)
+				.email(email)
+				.otpCode(plainOtp.getValue())
+				.build());
 	}
 
 	@Override
@@ -97,7 +100,7 @@ public class OtpServiceImpl implements OtpService {
 		// Generate an OTP for account Multi-Factor Authentication (MFA)
 		OTP otp = OTP.builder()
 				.value(generateOtp(6))
-				.type(OTPType.MFA)
+				.type(OtpType.MFA)
 				.expiresIn(TimeUnit.MINUTES.toSeconds(3))
 				.build();
 
@@ -122,7 +125,7 @@ public class OtpServiceImpl implements OtpService {
 		return objectMapper.writeValueAsString(otp);
 	}
 
-	private String createOtpLimitKey(String key, OTPType otpType) {
+	private String createOtpLimitKey(String key, OtpType otpType) {
 		return key + otpType.toString();
 	}
 

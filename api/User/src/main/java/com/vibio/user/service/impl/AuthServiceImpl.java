@@ -8,6 +8,7 @@ package com.vibio.user.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vibio.user.common.enums.OtpType;
 import com.vibio.user.common.enums.Role;
 import com.vibio.user.domain.AccountConfirmation;
 import com.vibio.user.domain.AccountMFA;
@@ -83,7 +84,7 @@ public class AuthServiceImpl implements AuthService {
 				objectMapper.writeValueAsString(confirmation));
 
 		// send otp to user via email
-		otpService.sendOtp(confirmation.getCode(), confirmation.getEmail(), otp);
+		otpService.sendOtp(confirmation.getCode(), confirmation.getEmail(), otp, OtpType.ACCOUNT_CREATION);
 
 		return OtpResponse.builder().code(confirmation.getCode()).build();
 	}
@@ -133,7 +134,7 @@ public class AuthServiceImpl implements AuthService {
 				objectMapper.writeValueAsString(confirmation));
 
 		// Resend OTP
-		otpService.sendOtp(confirmation.getCode(), confirmation.getEmail(), otp);
+		otpService.sendOtp(confirmation.getCode(), confirmation.getEmail(), otp, OtpType.ACCOUNT_CREATION);
 
 		return OtpResponse.builder().code(confirmation.getCode()).build();
 	}
@@ -191,7 +192,7 @@ public class AuthServiceImpl implements AuthService {
 				objectMapper.writeValueAsString(confirmation));
 
 		// Resend OTP
-		otpService.sendOtp(confirmation.getCode(), confirmation.getEmail(), otp);
+		otpService.sendOtp(confirmation.getCode(), confirmation.getEmail(), otp, OtpType.MFA);
 
 		return OtpResponse.builder().code(confirmation.getCode()).build();
 	}
@@ -238,7 +239,7 @@ public class AuthServiceImpl implements AuthService {
 				confirmation.getCode(), TimeUnit.MINUTES.toSeconds(5), objectMapper.writeValueAsString(confirmation));
 
 		// send otp to user via email
-		otpService.sendOtp(confirmation.getCode(), confirmation.getEmail(), otp);
+		otpService.sendOtp(confirmation.getCode(), confirmation.getEmail(), otp, OtpType.MFA);
 
 		return OtpResponse.builder().code(confirmation.getCode()).build();
 	}

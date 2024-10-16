@@ -6,6 +6,7 @@
 
 package com.vibio.user.service;
 
+import com.vibio.user.common.enums.OtpType;
 import com.vibio.user.domain.OTP;
 
 public interface OtpService {
@@ -14,7 +15,7 @@ public interface OtpService {
 
 	OTP createMultiFactorAuthenticationOTP();
 
-	void sendOtp(String key, String email, OTP plainOtp);
+	void sendOtp(String key, String email, OTP plainOtp, OtpType otpType);
 
 	void clearOtp(String otpCode);
 
