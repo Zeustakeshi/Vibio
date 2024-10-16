@@ -56,7 +56,6 @@ spring:
             - StripPrefix=2
             - RewritePath=/channels(?<segment>/?.*), /channels${segment}
             - AuthorizationFilter
-
         #============================  Video public route ============================#
         - id: video_public_route
           uri: ${services.video-service}
@@ -74,8 +73,19 @@ spring:
             - StripPrefix=2
             - RewritePath=/videos(?<segment>/?.*), /videos${segment}
             - AuthorizationFilter
+        #============================  Notification route ============================#
+        - id: notification_route
+          uri: ${services.notification-service}
+          predicates:
+            - Path= ${api.prefix}/notification/**
+          filters:
+            - StripPrefix=2
+            - RewritePath=/notification(?<segment>/?.*), /notification${segment}
+            - AuthorizationFilter
+
 
 services:
   user-service: ${USER_SERVICE_URL}
   channel-service: ${CHANNEL_SERVICE_URL}
   video-service: ${VIDEO_SERVICE_URL}
+  notification-service: ${NOTIFICATION_SERVICE}

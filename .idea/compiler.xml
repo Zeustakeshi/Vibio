@@ -10,7 +10,6 @@
         <module name="Stream" />
         <module name="Gateway" />
         <module name="Socket" />
-        <module name="Notification" />
       </profile>
       <profile name="Annotation profile for Video" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -38,6 +37,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.34/lombok-1.18.34.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok-mapstruct-binding/0.2.0/lombok-mapstruct-binding-0.2.0.jar" />
         </processorPath>
+        <module name="Notification" />
         <module name="User" />
         <module name="Channel" />
       </profile>
@@ -47,7 +47,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="Channel" options="-parameters -Amapstruct.defaultComponentModel=spring" />
       <module name="Gateway" options="-parameters" />
-      <module name="Notification" options="-parameters" />
+      <module name="Notification" options="-parameters -Amapstruct.defaultComponentModel=spring" />
       <module name="Socket" options="-parameters" />
       <module name="Stream" options="-parameters" />
       <module name="User" options="-parameters -Amapstruct.defaultComponentModel=spring" />

@@ -7,7 +7,7 @@
 package com.vibio.user.domain;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
-import com.vibio.user.common.enums.OTPType;
+import com.vibio.user.common.enums.OtpType;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +21,7 @@ public class OTP implements Cloneable {
 	private String code = NanoIdUtils.randomNanoId();
 
 	private String value;
-	private OTPType type;
+	private OtpType type;
 	private Long expiresIn;
 
 	@Override
