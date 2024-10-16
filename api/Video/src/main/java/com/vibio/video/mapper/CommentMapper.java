@@ -9,9 +9,11 @@ package com.vibio.video.mapper;
 import com.vibio.video.dto.response.CommentResponse;
 import com.vibio.video.entity.Comment;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface CommentMapper {
 
-	CommentResponse commentToCommentResponse(Comment comment);
+    @Mapping(source = "lovedByChannel", target = "isLovedByChannel")
+    CommentResponse commentToCommentResponse(Comment comment);
 }

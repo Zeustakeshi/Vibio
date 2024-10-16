@@ -7,6 +7,7 @@
 package com.vibio.video.common.enums;
 
 public enum ReactionType {
-	LIKE,
-	DISLIKE
+    LIKE,
+    DISLIKE,
+    LOVE
 }
