@@ -6,33 +6,36 @@
 
 package com.vibio.video.dto.response;
 
-import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 public class CommentResponse {
-	private String id;
+    private String id;
 
-	private String content;
+    private String content;
 
-	private UserResponse owner;
+    private UserResponse owner;
 
-	private boolean updated;
+    private boolean updated;
 
-	private boolean isLiked;
+    private boolean isLiked;
 
-	private boolean isDisliked;
+    private boolean isDisliked;
 
-	@Builder.Default
-	private Integer replyCount = 0;
+    private boolean isLovedByChannel;
 
-	@Builder.Default
-	private Integer likeCount = 0;
+    @Builder.Default
+    private Integer replyCount = 0;
 
-	@Builder.Default
-	private Integer dislikeCount = 0;
+    @Builder.Default
+    private Integer likeCount = 0;
 
-	private LocalDateTime updatedAt;
+    @Builder.Default
+    private Integer dislikeCount = 0;
+
+    private LocalDateTime updatedAt;
 }
