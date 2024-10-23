@@ -12,9 +12,11 @@ import lombok.Data;
 @Data
 @Builder
 public class ChannelResponse {
-	private String id;
-	private String thumbnail;
-	private String name;
-	private boolean isSubscribed;
-	private boolean isMember;
+    private String id;
+    private String thumbnail;
+    private String name;
+    private String accountId;
+    private boolean isSubscribed;
+    private boolean isMember;
+    private Integer subscribeCount;
 }

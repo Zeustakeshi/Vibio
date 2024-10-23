@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import {
     getCommentByVideoId,
@@ -18,7 +19,7 @@ const CommentList = (props: Props) => {
 
     const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
         useInfiniteQuery({
-            queryKey: ["comments", "video-comment"],
+            queryKey: ["comments", "video-comment", video.id],
             queryFn: async (pages) => {
                 if (isAuthenticated)
                     return await getCommentByVideoId(video.id, pages.pageParam);
@@ -36,7 +37,9 @@ const CommentList = (props: Props) => {
             refetchOnWindowFocus: false,
         });
 
-    console.log({ data });
+    useEffect(() => {
+        if (inView) fetchNextPage();
+    }, [inView]);
 
     return (
         <div className="my-3 max-w-[800px]">

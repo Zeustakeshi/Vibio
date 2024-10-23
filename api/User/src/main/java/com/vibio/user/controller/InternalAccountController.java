@@ -18,17 +18,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/internal/account")
 @RequiredArgsConstructor
 public class InternalAccountController {
-	private final InternalAccountService accountService;
+    private final InternalAccountService accountService;
 
-	@PostMapping()
-	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<?> getAccountsByIds(@RequestBody @Valid FindAccountsByIdsRequest request) {
-		return ApiResponse.success(accountService.getAccountByIds(request));
-	}
+    @PostMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<?> getAccountsByIds(@RequestBody @Valid FindAccountsByIdsRequest request) {
+        return ApiResponse.success(accountService.getAccountByIds(request));
+    }
 
-	@GetMapping("/{accountId}")
-	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<?> getAccountByAccountId(@PathVariable("accountId") String accountId) {
-		return ApiResponse.success(accountService.getAccountInfo(accountId));
-	}
+    @GetMapping("/{accountId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<?> getAccountByAccountId(@PathVariable("accountId") String accountId) {
+        return ApiResponse.success(accountService.getAccountInfo(accountId));
+    }
 }

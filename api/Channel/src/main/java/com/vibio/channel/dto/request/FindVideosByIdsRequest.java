@@ -5,15 +5,17 @@
  * */
 
 
-package com.vibio.video.dto.request;
+package com.vibio.channel.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
+@Builder
 public class FindVideosByIdsRequest {
     @NotNull
     @Size(min = 1, max = 20)

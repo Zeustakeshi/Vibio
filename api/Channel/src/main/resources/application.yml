@@ -42,6 +42,10 @@ server:
 
 services-url:
   user: ${USER_SERVICE_URL}
+  video: ${VIDEO_SERVICE_URL}
+
+assets:
+  default-playlist-thumbnail: ${PLAYLIST_DEFAULT_THUMBNAIL}
 
 #logging:
 #  level:

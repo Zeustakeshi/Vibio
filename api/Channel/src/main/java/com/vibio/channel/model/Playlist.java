@@ -4,14 +4,11 @@
  *  @created 10/17/2024 5:05 PM
  * */
 
-
-package com.vibio.user.model;
+package com.vibio.channel.model;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import com.vibio.channel.common.enums.Visibility;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +17,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -34,14 +32,23 @@ public class Playlist {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @JoinColumn(nullable = false)
     @ManyToOne
-    private Account account;
+    private Channel channel;
 
     private Integer videoCount;
 
+    private String defaultThumbnail;
+
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "playlist")
+    private List<PlaylistVideo> videos;
+
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility = Visibility.PRIVATE;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

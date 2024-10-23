@@ -14,8 +14,11 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as ShortsIndexImport } from './routes/shorts/index'
+import { Route as PlaylistsIndexImport } from './routes/playlists/index'
 import { Route as appIndexImport } from './routes/(app)/index'
 import { Route as WatchVideoIdImport } from './routes/watch/$videoId'
+import { Route as PlaylistsPlaylistIdImport } from './routes/playlists/$playlistId'
+import { Route as ChannelChannelIdImport } from './routes/channel/$channelId'
 import { Route as AuthAuthImport } from './routes/auth/_auth'
 import { Route as AuthOtpOtpImport } from './routes/auth/otp/_otp'
 import { Route as AuthAuthRegisterImport } from './routes/auth/_auth.register'
@@ -45,6 +48,11 @@ const ShortsIndexRoute = ShortsIndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const PlaylistsIndexRoute = PlaylistsIndexImport.update({
+  path: '/playlists/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const appIndexRoute = appIndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
@@ -52,6 +60,16 @@ const appIndexRoute = appIndexImport.update({
 
 const WatchVideoIdRoute = WatchVideoIdImport.update({
   path: '/watch/$videoId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PlaylistsPlaylistIdRoute = PlaylistsPlaylistIdImport.update({
+  path: '/playlists/$playlistId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ChannelChannelIdRoute = ChannelChannelIdImport.update({
+  path: '/channel/$channelId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -103,6 +121,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAuthImport
       parentRoute: typeof AuthRoute
     }
+    '/channel/$channelId': {
+      id: '/channel/$channelId'
+      path: '/channel/$channelId'
+      fullPath: '/channel/$channelId'
+      preLoaderRoute: typeof ChannelChannelIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/playlists/$playlistId': {
+      id: '/playlists/$playlistId'
+      path: '/playlists/$playlistId'
+      fullPath: '/playlists/$playlistId'
+      preLoaderRoute: typeof PlaylistsPlaylistIdImport
+      parentRoute: typeof rootRoute
+    }
     '/watch/$videoId': {
       id: '/watch/$videoId'
       path: '/watch/$videoId'
@@ -115,6 +147,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof appIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/playlists/': {
+      id: '/playlists/'
+      path: '/playlists'
+      fullPath: '/playlists'
+      preLoaderRoute: typeof PlaylistsIndexImport
       parentRoute: typeof rootRoute
     }
     '/shorts/': {
@@ -224,8 +263,11 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 export interface FileRoutesByFullPath {
   '/auth': typeof AuthAuthRouteWithChildren
+  '/channel/$channelId': typeof ChannelChannelIdRoute
+  '/playlists/$playlistId': typeof PlaylistsPlaylistIdRoute
   '/watch/$videoId': typeof WatchVideoIdRoute
   '/': typeof appIndexRoute
+  '/playlists': typeof PlaylistsIndexRoute
   '/shorts': typeof ShortsIndexRoute
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
@@ -236,8 +278,11 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/auth': typeof AuthAuthRouteWithChildren
+  '/channel/$channelId': typeof ChannelChannelIdRoute
+  '/playlists/$playlistId': typeof PlaylistsPlaylistIdRoute
   '/watch/$videoId': typeof WatchVideoIdRoute
   '/': typeof appIndexRoute
+  '/playlists': typeof PlaylistsIndexRoute
   '/shorts': typeof ShortsIndexRoute
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
@@ -250,8 +295,11 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/auth': typeof AuthRouteWithChildren
   '/auth/_auth': typeof AuthAuthRouteWithChildren
+  '/channel/$channelId': typeof ChannelChannelIdRoute
+  '/playlists/$playlistId': typeof PlaylistsPlaylistIdRoute
   '/watch/$videoId': typeof WatchVideoIdRoute
   '/': typeof appIndexRoute
+  '/playlists/': typeof PlaylistsIndexRoute
   '/shorts/': typeof ShortsIndexRoute
   '/auth/_auth/login': typeof AuthAuthLoginRoute
   '/auth/_auth/register': typeof AuthAuthRegisterRoute
@@ -265,8 +313,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/auth'
+    | '/channel/$channelId'
+    | '/playlists/$playlistId'
     | '/watch/$videoId'
     | '/'
+    | '/playlists'
     | '/shorts'
     | '/auth/login'
     | '/auth/register'
@@ -276,8 +327,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
+    | '/channel/$channelId'
+    | '/playlists/$playlistId'
     | '/watch/$videoId'
     | '/'
+    | '/playlists'
     | '/shorts'
     | '/auth/login'
     | '/auth/register'
@@ -288,8 +342,11 @@ export interface FileRouteTypes {
     | '__root__'
     | '/auth'
     | '/auth/_auth'
+    | '/channel/$channelId'
+    | '/playlists/$playlistId'
     | '/watch/$videoId'
     | '/'
+    | '/playlists/'
     | '/shorts/'
     | '/auth/_auth/login'
     | '/auth/_auth/register'
@@ -302,15 +359,21 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
+  ChannelChannelIdRoute: typeof ChannelChannelIdRoute
+  PlaylistsPlaylistIdRoute: typeof PlaylistsPlaylistIdRoute
   WatchVideoIdRoute: typeof WatchVideoIdRoute
   appIndexRoute: typeof appIndexRoute
+  PlaylistsIndexRoute: typeof PlaylistsIndexRoute
   ShortsIndexRoute: typeof ShortsIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
+  ChannelChannelIdRoute: ChannelChannelIdRoute,
+  PlaylistsPlaylistIdRoute: PlaylistsPlaylistIdRoute,
   WatchVideoIdRoute: WatchVideoIdRoute,
   appIndexRoute: appIndexRoute,
+  PlaylistsIndexRoute: PlaylistsIndexRoute,
   ShortsIndexRoute: ShortsIndexRoute,
 }
 
@@ -327,8 +390,11 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/auth",
+        "/channel/$channelId",
+        "/playlists/$playlistId",
         "/watch/$videoId",
         "/",
+        "/playlists/",
         "/shorts/"
       ]
     },
@@ -347,11 +413,20 @@ export const routeTree = rootRoute
         "/auth/_auth/register"
       ]
     },
+    "/channel/$channelId": {
+      "filePath": "channel/$channelId.tsx"
+    },
+    "/playlists/$playlistId": {
+      "filePath": "playlists/$playlistId.tsx"
+    },
     "/watch/$videoId": {
       "filePath": "watch/$videoId.tsx"
     },
     "/": {
       "filePath": "(app)/index.tsx"
+    },
+    "/playlists/": {
+      "filePath": "playlists/index.tsx"
     },
     "/shorts/": {
       "filePath": "shorts/index.tsx"

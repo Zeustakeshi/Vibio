@@ -5,5 +5,23 @@
  * */
 
 
-package com.vibio.channel.dto.response;public class PlaylistVideoResponse {
+package com.vibio.channel.dto.response;
+
+import lombok.Builder;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+@Data
+@Builder
+public class PlaylistVideoResponse {
+    private String id;
+    private String title;
+    private String thumbnail;
+
+    private Integer viewCount;
+
+    private Integer order;
+
+    private LocalDateTime updatedAt;
 }

@@ -7,6 +7,7 @@ export type Comment = {
     updated: boolean;
     liked: boolean;
     disliked: boolean;
+    lovedByChannel: boolean;
     likeCount: number;
     dislikeCount: number;
     replyCount: number;

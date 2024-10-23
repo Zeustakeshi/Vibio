@@ -42,15 +42,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (!isAuthenticated || !user) loadUser();
     }, [isAuthenticated, user]);
 
-    console.log({ isAuthenticated, user });
-
     const logout = React.useCallback(async () => {
         setUser(null);
         setIsAuthenticated(false);
         clearLocalStorage();
         clearSessionStorage();
-        Cookies.remove(ACCESS_TOKEN_KEY);
-        Cookies.remove(REFRESH_TOKEN_KEY);
+        Cookies.remove(ACCESS_TOKEN_KEY, {
+            domain: ".vibio.com",
+        });
+        Cookies.remove(REFRESH_TOKEN_KEY, {
+            domain: ".vibio.com",
+        });
     }, []);
 
     const loadUser = React.useCallback(async () => {

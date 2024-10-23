@@ -1,7 +1,9 @@
 import moment from "moment";
 import { forwardRef, useState } from "react";
 import { Comment } from "../../../common/type/comment";
+import { useAuth } from "../../../context/AuthContext";
 import { cn } from "../../../lib/utils";
+import { useWatchVideo } from "../../../routes/watch/$videoId";
 import { Avatar, AvatarImage } from "../../ui/avatar";
 import { Button } from "../../ui/button";
 import CommentAction from "./CommentAction";
@@ -13,7 +15,9 @@ type Props = {
 };
 
 const CommentItem = ({ comment, isReply }: Props, ref: any) => {
+    const { video, channel } = useWatchVideo();
     const [isCollapse, setCollapse] = useState<boolean>(true);
+    const { user } = useAuth();
 
     return (
         <div
@@ -29,7 +33,12 @@ const CommentItem = ({ comment, isReply }: Props, ref: any) => {
             </Avatar>
             <div className="w-full">
                 <div className="flex justify-start items-center gap-2 text-xs text-muted-foreground">
-                    <span className="font-semibold">
+                    <span
+                        className={cn("font-semibold ", {
+                            "px-2 py-1 rounded-md bg-primary text-white font-semibold":
+                                channel?.accountId === comment.owner.id,
+                        })}
+                    >
                         {comment.owner.username}
                     </span>
                     <span>{moment(comment.updatedAt).toNow()}</span>

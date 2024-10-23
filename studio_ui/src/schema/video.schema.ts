@@ -1,4 +1,4 @@
-import { VideoVisibility } from "@/common/type/video.type";
+import { Visibility } from "@/common/enum.ts";
 import { z } from "zod";
 
 export const MAX_TAG_SIZE = 30;
@@ -13,7 +13,7 @@ export const updateVideoSchema = z.object({
         .string({ message: "Mô tả video không được để trống" })
         .min(20, "Mô tả quá ngắn")
         .max(5000, "Mô tả quá dài"),
-    visibility: z.enum(Object.values(VideoVisibility) as [string, ...string[]]),
+    visibility: z.enum(Object.values(Visibility) as [string, ...string[]]),
     allowedComment: z.boolean(),
     tags: z
         .array(z.string())

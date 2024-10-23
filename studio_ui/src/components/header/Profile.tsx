@@ -21,7 +21,7 @@ type Props = {};
 
 const Profile = (props: Props) => {
     const { setTheme } = useTheme();
-    const { channel } = useAuth();
+    const { channel, logout } = useAuth();
 
     return (
         <DropdownMenu>
@@ -68,7 +68,7 @@ const Profile = (props: Props) => {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>GitHub</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Đăng xuất</DropdownMenuItem>
+                <DropdownMenuItem onClick={logout}>Đăng xuất</DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>
     );

@@ -16,16 +16,26 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as LayoutIndexImport } from './routes/_layout/index'
 import { Route as VideosVideoIdLayoutImport } from './routes/videos/$videoId/_layout'
+import { Route as PlaylistPlaylistIdLayoutImport } from './routes/playlist/$playlistId/_layout'
 import { Route as LayoutContentContentImport } from './routes/_layout/content/_content'
 import { Route as VideosVideoIdLayoutEditImport } from './routes/videos/$videoId/_layout.edit'
+import { Route as PlaylistPlaylistIdLayoutEditImport } from './routes/playlist/$playlistId/_layout.edit'
 import { Route as LayoutContentContentVideosImport } from './routes/_layout/content/_content.videos'
 import { Route as LayoutContentContentShortsImport } from './routes/_layout/content/_content.shorts'
 import { Route as LayoutContentContentPlaylistsImport } from './routes/_layout/content/_content.playlists'
+import { Route as VideosVideoIdLayoutCommentsLayoutImport } from './routes/videos/$videoId/_layout.comments/_layout'
+import { Route as VideosVideoIdLayoutCommentsLayoutIndexImport } from './routes/videos/$videoId/_layout.comments/_layout.index'
+import { Route as VideosVideoIdLayoutCommentsLayoutUnReplyImport } from './routes/videos/$videoId/_layout.comments/_layout.un-reply'
+import { Route as VideosVideoIdLayoutCommentsLayoutMemberImport } from './routes/videos/$videoId/_layout.comments/_layout.member'
 
 // Create Virtual Routes
 
 const VideosVideoIdImport = createFileRoute('/videos/$videoId')()
+const PlaylistPlaylistIdImport = createFileRoute('/playlist/$playlistId')()
 const LayoutContentImport = createFileRoute('/_layout/content')()
+const VideosVideoIdLayoutCommentsImport = createFileRoute(
+  '/videos/$videoId/_layout/comments',
+)()
 
 // Create/Update Routes
 
@@ -36,6 +46,11 @@ const LayoutRoute = LayoutImport.update({
 
 const VideosVideoIdRoute = VideosVideoIdImport.update({
   path: '/videos/$videoId',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PlaylistPlaylistIdRoute = PlaylistPlaylistIdImport.update({
+  path: '/playlist/$playlistId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -54,15 +69,32 @@ const VideosVideoIdLayoutRoute = VideosVideoIdLayoutImport.update({
   getParentRoute: () => VideosVideoIdRoute,
 } as any)
 
+const PlaylistPlaylistIdLayoutRoute = PlaylistPlaylistIdLayoutImport.update({
+  id: '/_layout',
+  getParentRoute: () => PlaylistPlaylistIdRoute,
+} as any)
+
 const LayoutContentContentRoute = LayoutContentContentImport.update({
   id: '/_content',
   getParentRoute: () => LayoutContentRoute,
 } as any)
 
+const VideosVideoIdLayoutCommentsRoute =
+  VideosVideoIdLayoutCommentsImport.update({
+    path: '/comments',
+    getParentRoute: () => VideosVideoIdLayoutRoute,
+  } as any)
+
 const VideosVideoIdLayoutEditRoute = VideosVideoIdLayoutEditImport.update({
   path: '/edit',
   getParentRoute: () => VideosVideoIdLayoutRoute,
 } as any)
+
+const PlaylistPlaylistIdLayoutEditRoute =
+  PlaylistPlaylistIdLayoutEditImport.update({
+    path: '/edit',
+    getParentRoute: () => PlaylistPlaylistIdLayoutRoute,
+  } as any)
 
 const LayoutContentContentVideosRoute = LayoutContentContentVideosImport.update(
   {
@@ -82,6 +114,30 @@ const LayoutContentContentPlaylistsRoute =
   LayoutContentContentPlaylistsImport.update({
     path: '/playlists',
     getParentRoute: () => LayoutContentContentRoute,
+  } as any)
+
+const VideosVideoIdLayoutCommentsLayoutRoute =
+  VideosVideoIdLayoutCommentsLayoutImport.update({
+    id: '/_layout',
+    getParentRoute: () => VideosVideoIdLayoutCommentsRoute,
+  } as any)
+
+const VideosVideoIdLayoutCommentsLayoutIndexRoute =
+  VideosVideoIdLayoutCommentsLayoutIndexImport.update({
+    path: '/',
+    getParentRoute: () => VideosVideoIdLayoutCommentsLayoutRoute,
+  } as any)
+
+const VideosVideoIdLayoutCommentsLayoutUnReplyRoute =
+  VideosVideoIdLayoutCommentsLayoutUnReplyImport.update({
+    path: '/un-reply',
+    getParentRoute: () => VideosVideoIdLayoutCommentsLayoutRoute,
+  } as any)
+
+const VideosVideoIdLayoutCommentsLayoutMemberRoute =
+  VideosVideoIdLayoutCommentsLayoutMemberImport.update({
+    path: '/member',
+    getParentRoute: () => VideosVideoIdLayoutCommentsLayoutRoute,
   } as any)
 
 // Populate the FileRoutesByPath interface
@@ -115,6 +171,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/content'
       preLoaderRoute: typeof LayoutContentContentImport
       parentRoute: typeof LayoutContentRoute
+    }
+    '/playlist/$playlistId': {
+      id: '/playlist/$playlistId'
+      path: '/playlist/$playlistId'
+      fullPath: '/playlist/$playlistId'
+      preLoaderRoute: typeof PlaylistPlaylistIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/playlist/$playlistId/_layout': {
+      id: '/playlist/$playlistId/_layout'
+      path: '/playlist/$playlistId'
+      fullPath: '/playlist/$playlistId'
+      preLoaderRoute: typeof PlaylistPlaylistIdLayoutImport
+      parentRoute: typeof PlaylistPlaylistIdRoute
     }
     '/videos/$videoId': {
       id: '/videos/$videoId'
@@ -151,12 +221,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutContentContentVideosImport
       parentRoute: typeof LayoutContentContentImport
     }
+    '/playlist/$playlistId/_layout/edit': {
+      id: '/playlist/$playlistId/_layout/edit'
+      path: '/edit'
+      fullPath: '/playlist/$playlistId/edit'
+      preLoaderRoute: typeof PlaylistPlaylistIdLayoutEditImport
+      parentRoute: typeof PlaylistPlaylistIdLayoutImport
+    }
     '/videos/$videoId/_layout/edit': {
       id: '/videos/$videoId/_layout/edit'
       path: '/edit'
       fullPath: '/videos/$videoId/edit'
       preLoaderRoute: typeof VideosVideoIdLayoutEditImport
       parentRoute: typeof VideosVideoIdLayoutImport
+    }
+    '/videos/$videoId/_layout/comments': {
+      id: '/videos/$videoId/_layout/comments'
+      path: '/comments'
+      fullPath: '/videos/$videoId/comments'
+      preLoaderRoute: typeof VideosVideoIdLayoutCommentsImport
+      parentRoute: typeof VideosVideoIdLayoutImport
+    }
+    '/videos/$videoId/_layout/comments/_layout': {
+      id: '/videos/$videoId/_layout/comments/_layout'
+      path: '/comments'
+      fullPath: '/videos/$videoId/comments'
+      preLoaderRoute: typeof VideosVideoIdLayoutCommentsLayoutImport
+      parentRoute: typeof VideosVideoIdLayoutCommentsRoute
+    }
+    '/videos/$videoId/_layout/comments/_layout/member': {
+      id: '/videos/$videoId/_layout/comments/_layout/member'
+      path: '/member'
+      fullPath: '/videos/$videoId/comments/member'
+      preLoaderRoute: typeof VideosVideoIdLayoutCommentsLayoutMemberImport
+      parentRoute: typeof VideosVideoIdLayoutCommentsLayoutImport
+    }
+    '/videos/$videoId/_layout/comments/_layout/un-reply': {
+      id: '/videos/$videoId/_layout/comments/_layout/un-reply'
+      path: '/un-reply'
+      fullPath: '/videos/$videoId/comments/un-reply'
+      preLoaderRoute: typeof VideosVideoIdLayoutCommentsLayoutUnReplyImport
+      parentRoute: typeof VideosVideoIdLayoutCommentsLayoutImport
+    }
+    '/videos/$videoId/_layout/comments/_layout/': {
+      id: '/videos/$videoId/_layout/comments/_layout/'
+      path: '/'
+      fullPath: '/videos/$videoId/comments/'
+      preLoaderRoute: typeof VideosVideoIdLayoutCommentsLayoutIndexImport
+      parentRoute: typeof VideosVideoIdLayoutCommentsLayoutImport
     }
   }
 }
@@ -203,12 +315,76 @@ const LayoutRouteChildren: LayoutRouteChildren = {
 const LayoutRouteWithChildren =
   LayoutRoute._addFileChildren(LayoutRouteChildren)
 
+interface PlaylistPlaylistIdLayoutRouteChildren {
+  PlaylistPlaylistIdLayoutEditRoute: typeof PlaylistPlaylistIdLayoutEditRoute
+}
+
+const PlaylistPlaylistIdLayoutRouteChildren: PlaylistPlaylistIdLayoutRouteChildren =
+  {
+    PlaylistPlaylistIdLayoutEditRoute: PlaylistPlaylistIdLayoutEditRoute,
+  }
+
+const PlaylistPlaylistIdLayoutRouteWithChildren =
+  PlaylistPlaylistIdLayoutRoute._addFileChildren(
+    PlaylistPlaylistIdLayoutRouteChildren,
+  )
+
+interface PlaylistPlaylistIdRouteChildren {
+  PlaylistPlaylistIdLayoutRoute: typeof PlaylistPlaylistIdLayoutRouteWithChildren
+}
+
+const PlaylistPlaylistIdRouteChildren: PlaylistPlaylistIdRouteChildren = {
+  PlaylistPlaylistIdLayoutRoute: PlaylistPlaylistIdLayoutRouteWithChildren,
+}
+
+const PlaylistPlaylistIdRouteWithChildren =
+  PlaylistPlaylistIdRoute._addFileChildren(PlaylistPlaylistIdRouteChildren)
+
+interface VideosVideoIdLayoutCommentsLayoutRouteChildren {
+  VideosVideoIdLayoutCommentsLayoutMemberRoute: typeof VideosVideoIdLayoutCommentsLayoutMemberRoute
+  VideosVideoIdLayoutCommentsLayoutUnReplyRoute: typeof VideosVideoIdLayoutCommentsLayoutUnReplyRoute
+  VideosVideoIdLayoutCommentsLayoutIndexRoute: typeof VideosVideoIdLayoutCommentsLayoutIndexRoute
+}
+
+const VideosVideoIdLayoutCommentsLayoutRouteChildren: VideosVideoIdLayoutCommentsLayoutRouteChildren =
+  {
+    VideosVideoIdLayoutCommentsLayoutMemberRoute:
+      VideosVideoIdLayoutCommentsLayoutMemberRoute,
+    VideosVideoIdLayoutCommentsLayoutUnReplyRoute:
+      VideosVideoIdLayoutCommentsLayoutUnReplyRoute,
+    VideosVideoIdLayoutCommentsLayoutIndexRoute:
+      VideosVideoIdLayoutCommentsLayoutIndexRoute,
+  }
+
+const VideosVideoIdLayoutCommentsLayoutRouteWithChildren =
+  VideosVideoIdLayoutCommentsLayoutRoute._addFileChildren(
+    VideosVideoIdLayoutCommentsLayoutRouteChildren,
+  )
+
+interface VideosVideoIdLayoutCommentsRouteChildren {
+  VideosVideoIdLayoutCommentsLayoutRoute: typeof VideosVideoIdLayoutCommentsLayoutRouteWithChildren
+}
+
+const VideosVideoIdLayoutCommentsRouteChildren: VideosVideoIdLayoutCommentsRouteChildren =
+  {
+    VideosVideoIdLayoutCommentsLayoutRoute:
+      VideosVideoIdLayoutCommentsLayoutRouteWithChildren,
+  }
+
+const VideosVideoIdLayoutCommentsRouteWithChildren =
+  VideosVideoIdLayoutCommentsRoute._addFileChildren(
+    VideosVideoIdLayoutCommentsRouteChildren,
+  )
+
 interface VideosVideoIdLayoutRouteChildren {
   VideosVideoIdLayoutEditRoute: typeof VideosVideoIdLayoutEditRoute
+  VideosVideoIdLayoutCommentsRoute: typeof VideosVideoIdLayoutCommentsRouteWithChildren
 }
 
 const VideosVideoIdLayoutRouteChildren: VideosVideoIdLayoutRouteChildren = {
   VideosVideoIdLayoutEditRoute: VideosVideoIdLayoutEditRoute,
+  VideosVideoIdLayoutCommentsRoute:
+    VideosVideoIdLayoutCommentsRouteWithChildren,
 }
 
 const VideosVideoIdLayoutRouteWithChildren =
@@ -230,21 +406,32 @@ export interface FileRoutesByFullPath {
   '': typeof LayoutRouteWithChildren
   '/': typeof LayoutIndexRoute
   '/content': typeof LayoutContentContentRouteWithChildren
+  '/playlist/$playlistId': typeof PlaylistPlaylistIdLayoutRouteWithChildren
   '/videos/$videoId': typeof VideosVideoIdLayoutRouteWithChildren
   '/content/playlists': typeof LayoutContentContentPlaylistsRoute
   '/content/shorts': typeof LayoutContentContentShortsRoute
   '/content/videos': typeof LayoutContentContentVideosRoute
+  '/playlist/$playlistId/edit': typeof PlaylistPlaylistIdLayoutEditRoute
   '/videos/$videoId/edit': typeof VideosVideoIdLayoutEditRoute
+  '/videos/$videoId/comments': typeof VideosVideoIdLayoutCommentsLayoutRouteWithChildren
+  '/videos/$videoId/comments/member': typeof VideosVideoIdLayoutCommentsLayoutMemberRoute
+  '/videos/$videoId/comments/un-reply': typeof VideosVideoIdLayoutCommentsLayoutUnReplyRoute
+  '/videos/$videoId/comments/': typeof VideosVideoIdLayoutCommentsLayoutIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof LayoutIndexRoute
   '/content': typeof LayoutContentContentRouteWithChildren
+  '/playlist/$playlistId': typeof PlaylistPlaylistIdLayoutRouteWithChildren
   '/videos/$videoId': typeof VideosVideoIdLayoutRouteWithChildren
   '/content/playlists': typeof LayoutContentContentPlaylistsRoute
   '/content/shorts': typeof LayoutContentContentShortsRoute
   '/content/videos': typeof LayoutContentContentVideosRoute
+  '/playlist/$playlistId/edit': typeof PlaylistPlaylistIdLayoutEditRoute
   '/videos/$videoId/edit': typeof VideosVideoIdLayoutEditRoute
+  '/videos/$videoId/comments': typeof VideosVideoIdLayoutCommentsLayoutIndexRoute
+  '/videos/$videoId/comments/member': typeof VideosVideoIdLayoutCommentsLayoutMemberRoute
+  '/videos/$videoId/comments/un-reply': typeof VideosVideoIdLayoutCommentsLayoutUnReplyRoute
 }
 
 export interface FileRoutesById {
@@ -253,12 +440,20 @@ export interface FileRoutesById {
   '/_layout/': typeof LayoutIndexRoute
   '/_layout/content': typeof LayoutContentRouteWithChildren
   '/_layout/content/_content': typeof LayoutContentContentRouteWithChildren
+  '/playlist/$playlistId': typeof PlaylistPlaylistIdRouteWithChildren
+  '/playlist/$playlistId/_layout': typeof PlaylistPlaylistIdLayoutRouteWithChildren
   '/videos/$videoId': typeof VideosVideoIdRouteWithChildren
   '/videos/$videoId/_layout': typeof VideosVideoIdLayoutRouteWithChildren
   '/_layout/content/_content/playlists': typeof LayoutContentContentPlaylistsRoute
   '/_layout/content/_content/shorts': typeof LayoutContentContentShortsRoute
   '/_layout/content/_content/videos': typeof LayoutContentContentVideosRoute
+  '/playlist/$playlistId/_layout/edit': typeof PlaylistPlaylistIdLayoutEditRoute
   '/videos/$videoId/_layout/edit': typeof VideosVideoIdLayoutEditRoute
+  '/videos/$videoId/_layout/comments': typeof VideosVideoIdLayoutCommentsRouteWithChildren
+  '/videos/$videoId/_layout/comments/_layout': typeof VideosVideoIdLayoutCommentsLayoutRouteWithChildren
+  '/videos/$videoId/_layout/comments/_layout/member': typeof VideosVideoIdLayoutCommentsLayoutMemberRoute
+  '/videos/$videoId/_layout/comments/_layout/un-reply': typeof VideosVideoIdLayoutCommentsLayoutUnReplyRoute
+  '/videos/$videoId/_layout/comments/_layout/': typeof VideosVideoIdLayoutCommentsLayoutIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -267,42 +462,63 @@ export interface FileRouteTypes {
     | ''
     | '/'
     | '/content'
+    | '/playlist/$playlistId'
     | '/videos/$videoId'
     | '/content/playlists'
     | '/content/shorts'
     | '/content/videos'
+    | '/playlist/$playlistId/edit'
     | '/videos/$videoId/edit'
+    | '/videos/$videoId/comments'
+    | '/videos/$videoId/comments/member'
+    | '/videos/$videoId/comments/un-reply'
+    | '/videos/$videoId/comments/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/content'
+    | '/playlist/$playlistId'
     | '/videos/$videoId'
     | '/content/playlists'
     | '/content/shorts'
     | '/content/videos'
+    | '/playlist/$playlistId/edit'
     | '/videos/$videoId/edit'
+    | '/videos/$videoId/comments'
+    | '/videos/$videoId/comments/member'
+    | '/videos/$videoId/comments/un-reply'
   id:
     | '__root__'
     | '/_layout'
     | '/_layout/'
     | '/_layout/content'
     | '/_layout/content/_content'
+    | '/playlist/$playlistId'
+    | '/playlist/$playlistId/_layout'
     | '/videos/$videoId'
     | '/videos/$videoId/_layout'
     | '/_layout/content/_content/playlists'
     | '/_layout/content/_content/shorts'
     | '/_layout/content/_content/videos'
+    | '/playlist/$playlistId/_layout/edit'
     | '/videos/$videoId/_layout/edit'
+    | '/videos/$videoId/_layout/comments'
+    | '/videos/$videoId/_layout/comments/_layout'
+    | '/videos/$videoId/_layout/comments/_layout/member'
+    | '/videos/$videoId/_layout/comments/_layout/un-reply'
+    | '/videos/$videoId/_layout/comments/_layout/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   LayoutRoute: typeof LayoutRouteWithChildren
+  PlaylistPlaylistIdRoute: typeof PlaylistPlaylistIdRouteWithChildren
   VideosVideoIdRoute: typeof VideosVideoIdRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   LayoutRoute: LayoutRouteWithChildren,
+  PlaylistPlaylistIdRoute: PlaylistPlaylistIdRouteWithChildren,
   VideosVideoIdRoute: VideosVideoIdRouteWithChildren,
 }
 
@@ -319,6 +535,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_layout",
+        "/playlist/$playlistId",
         "/videos/$videoId"
       ]
     },
@@ -349,6 +566,19 @@ export const routeTree = rootRoute
         "/_layout/content/_content/videos"
       ]
     },
+    "/playlist/$playlistId": {
+      "filePath": "playlist/$playlistId",
+      "children": [
+        "/playlist/$playlistId/_layout"
+      ]
+    },
+    "/playlist/$playlistId/_layout": {
+      "filePath": "playlist/$playlistId/_layout.tsx",
+      "parent": "/playlist/$playlistId",
+      "children": [
+        "/playlist/$playlistId/_layout/edit"
+      ]
+    },
     "/videos/$videoId": {
       "filePath": "videos/$videoId",
       "children": [
@@ -359,7 +589,8 @@ export const routeTree = rootRoute
       "filePath": "videos/$videoId/_layout.tsx",
       "parent": "/videos/$videoId",
       "children": [
-        "/videos/$videoId/_layout/edit"
+        "/videos/$videoId/_layout/edit",
+        "/videos/$videoId/_layout/comments"
       ]
     },
     "/_layout/content/_content/playlists": {
@@ -374,9 +605,41 @@ export const routeTree = rootRoute
       "filePath": "_layout/content/_content.videos.tsx",
       "parent": "/_layout/content/_content"
     },
+    "/playlist/$playlistId/_layout/edit": {
+      "filePath": "playlist/$playlistId/_layout.edit.tsx",
+      "parent": "/playlist/$playlistId/_layout"
+    },
     "/videos/$videoId/_layout/edit": {
       "filePath": "videos/$videoId/_layout.edit.tsx",
       "parent": "/videos/$videoId/_layout"
+    },
+    "/videos/$videoId/_layout/comments": {
+      "filePath": "videos/$videoId/_layout.comments",
+      "parent": "/videos/$videoId/_layout",
+      "children": [
+        "/videos/$videoId/_layout/comments/_layout"
+      ]
+    },
+    "/videos/$videoId/_layout/comments/_layout": {
+      "filePath": "videos/$videoId/_layout.comments/_layout.tsx",
+      "parent": "/videos/$videoId/_layout/comments",
+      "children": [
+        "/videos/$videoId/_layout/comments/_layout/member",
+        "/videos/$videoId/_layout/comments/_layout/un-reply",
+        "/videos/$videoId/_layout/comments/_layout/"
+      ]
+    },
+    "/videos/$videoId/_layout/comments/_layout/member": {
+      "filePath": "videos/$videoId/_layout.comments/_layout.member.tsx",
+      "parent": "/videos/$videoId/_layout/comments/_layout"
+    },
+    "/videos/$videoId/_layout/comments/_layout/un-reply": {
+      "filePath": "videos/$videoId/_layout.comments/_layout.un-reply.tsx",
+      "parent": "/videos/$videoId/_layout/comments/_layout"
+    },
+    "/videos/$videoId/_layout/comments/_layout/": {
+      "filePath": "videos/$videoId/_layout.comments/_layout.index.tsx",
+      "parent": "/videos/$videoId/_layout/comments/_layout"
     }
   }
 }

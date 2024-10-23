@@ -11,6 +11,7 @@ import com.vibio.video.common.enums.Visibility;
 import com.vibio.video.dto.response.ApiResponse;
 import com.vibio.video.entity.Video;
 import com.vibio.video.repository.VideoRepository;
+import com.vibio.video.service.CloudinaryService;
 import com.vibio.video.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import java.util.List;
 public class GuestVideoController {
     private final VideoService videoService;
     private final VideoRepository videoRepository;
+    private final CloudinaryService cloudinaryService;
 
     @GetMapping("/feeds")
     @ResponseStatus(HttpStatus.OK)
@@ -38,6 +40,12 @@ public class GuestVideoController {
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<?> getVideoById(@PathVariable("videoId") String videoId) {
         return ApiResponse.success(videoService.getVideoByIdGuest(videoId));
+    }
+
+    @GetMapping("/test")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<?> getVideoUrl(@RequestParam("id") String id) {
+        return ApiResponse.success(cloudinaryService.generateSignedVideoUrl(id, 1000));
     }
 
     ///

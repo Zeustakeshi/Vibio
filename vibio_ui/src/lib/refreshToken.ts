@@ -37,8 +37,8 @@ const refreshToken = async () => {
         console.log("Refresh token error " + error);
         clearLocalStorage();
         clearSessionStorage();
-        Cookies.remove(REFRESH_TOKEN_KEY);
-        Cookies.remove(ACCESS_TOKEN_KEY);
+        Cookies.remove(REFRESH_TOKEN_KEY, { domain: ".vibio.com" });
+        Cookies.remove(ACCESS_TOKEN_KEY, { domain: ".vibio.com" });
     }
 };
 

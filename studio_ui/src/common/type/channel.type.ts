@@ -8,3 +8,9 @@ export type Channel = {
     createdAt: Date;
     updatedAt: Date;
 };
+
+export type ChannelBasicInfo = {
+    id: string;
+    name: string;
+    thumbnail: string;
+};

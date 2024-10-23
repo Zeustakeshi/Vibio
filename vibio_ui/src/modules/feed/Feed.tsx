@@ -19,9 +19,9 @@ const Feeds = ({}: Props) => {
                 if (isAuthenticated) return await getFeed(pages);
                 else return await getGuestFeed(pages);
             },
-            getNextPageParam: (lastPage: any, allPages: any[]) => {
+            getNextPageParam: (lastPage: any) => {
                 if (lastPage.last) return undefined;
-                return allPages.length + 1;
+                return lastPage.pageNumber + 1;
             },
             initialPageParam: 0,
             refetchOnWindowFocus: false,

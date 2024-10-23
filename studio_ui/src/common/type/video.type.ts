@@ -1,3 +1,5 @@
+import { Visibility } from "../enum";
+
 export type Video = {
     id: string;
     title: string;
@@ -7,7 +9,7 @@ export type Video = {
     likeCount: number;
     dislikeCount: number;
     commentCount: number;
-    visibility: VideoVisibility;
+    visibility: Visibility;
     createdAt: Date;
     updatedAt: Date;
 };
@@ -18,9 +20,3 @@ export type VideoDetail = {
     uploadStatus: string;
     allowedComment: boolean;
 } & Video;
-
-export enum VideoVisibility {
-    PUBLIC = "PUBLIC",
-    PRIVATE = "PRIVATE",
-    MEMBER = "MEMBER",
-}
