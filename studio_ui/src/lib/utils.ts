@@ -1,4 +1,4 @@
-import { VideoVisibility } from "@/common/type/video.type";
+import { Visibility } from "@/common/enum.ts";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -14,15 +14,15 @@ export function megabytesToBytes(megabytes: number) {
     return megabytes * 1048576; // 1 MB = 1,048,576 bytes
 }
 
-export function convertVisibilityToText(visibility: VideoVisibility) {
+export function convertVisibilityToText(visibility: Visibility) {
     switch (visibility) {
-        case VideoVisibility.PUBLIC: {
+        case Visibility.PUBLIC: {
             return "Công khai";
         }
-        case VideoVisibility.PRIVATE: {
+        case Visibility.PRIVATE: {
             return "Riêng tư";
         }
-        case VideoVisibility.MEMBER: {
+        case Visibility.MEMBER: {
             return "Hội viên";
         }
     }

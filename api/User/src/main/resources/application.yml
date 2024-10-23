@@ -58,6 +58,10 @@ jwt:
 cache:
   redis_url: ${REDIS_URL}
 
+
+services-url:
+  channel: ${CHANNEL_SERVICE_URL}
+
 default:
   account:
     avatar: https://th.bing.com/th/id/R.69b6c7c1419fedc585d4aac2958c5ae4?rik=Ti4lNMU9Co54jg&pid=ImgRaw&r=0

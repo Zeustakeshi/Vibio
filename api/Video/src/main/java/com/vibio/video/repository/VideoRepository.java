@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -24,9 +25,14 @@ public interface VideoRepository extends JpaRepository<Video, String> {
 
     Optional<Video> findByIdAndChannelId(String videoId, String channelId);
 
+    List<Video> findAllByIdIn(List<String> ids);
+
     boolean existsByIdAndChannelId(String videoId, String channelId);
 
     @Query("select count(v) > 0 from Video v where v.id = :videoId and v.ownerId = :accountId")
     boolean isVideoOwner(String videoId, String accountId);
+
+    @Query("select count(v) > 0 from Video  v where v.id = :videoId and v.visibility = 'PUBLIC'")
+    boolean existsAndPublicById(String videoId);
 
 }

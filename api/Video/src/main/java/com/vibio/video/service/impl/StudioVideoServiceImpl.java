@@ -182,7 +182,7 @@ public class StudioVideoServiceImpl implements StudioVideoService {
     }
 
     private ChannelDetailResponse getChannelByAccountId(String accountId) {
-        ApiResponse<ChannelDetailResponse> channelResponse = channelClient.getChannelInfoByAccountId(accountId);
+        ApiResponse<ChannelDetailResponse> channelResponse = channelClient.getChannelDetailByAccountId(accountId);
         return channelResponse.getData();
     }
 

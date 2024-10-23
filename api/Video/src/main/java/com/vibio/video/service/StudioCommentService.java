@@ -6,6 +6,12 @@
 
 package com.vibio.video.service;
 
+import com.vibio.video.dto.response.CommentResponse;
+import com.vibio.video.dto.response.PageableResponse;
+
 public interface StudioCommentService {
-    
+    PageableResponse<CommentResponse> getComments(
+            String videoId, String accountId, String parentId, int page, int limit);
+
+
 }

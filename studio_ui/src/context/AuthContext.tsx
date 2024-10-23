@@ -25,6 +25,7 @@ export interface AuthContext {
     channel: Channel | null;
     isAuthenticated: boolean;
     authLoading: boolean;
+    logout: () => void;
 }
 
 const AuthContext = createContext<AuthContext | null>(null);
@@ -47,8 +48,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsAuthenticated(false);
         clearLocalStorage();
         clearSessionStorage();
-        Cookies.remove(ACCESS_TOKEN_KEY);
-        Cookies.remove(REFRESH_TOKEN_KEY);
+        Cookies.remove(ACCESS_TOKEN_KEY, {
+            domain: ".vibio.com",
+        });
+        Cookies.remove(REFRESH_TOKEN_KEY, {
+            domain: ".vibio.com",
+        });
         window.location.href = "http://vibio.com:5173/auth/login";
     }, []);
 
@@ -75,7 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return (
         <AuthContext.Provider
-            value={{ channel, isAuthenticated, authLoading: false }}
+            value={{ channel, isAuthenticated, authLoading: false, logout }}
         >
             {children}
         </AuthContext.Provider>

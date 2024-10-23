@@ -1,5 +1,5 @@
 import { getVideoById, updateVideo } from "@/api/video";
-import { VideoVisibility } from "@/common/type/video.type";
+import { Visibility } from "@/common/enum.ts";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
     Form,
@@ -110,8 +110,8 @@ function EditVideo() {
                                     <FormItem className="my-4">
                                         <FormLabel>Chế độ hiển thị</FormLabel>
                                         <Select
+                                            value={field.value}
                                             onValueChange={field.onChange}
-                                            defaultValue={field.value}
                                         >
                                             <FormControl>
                                                 <SelectTrigger>
@@ -120,23 +120,17 @@ function EditVideo() {
                                             </FormControl>
                                             <SelectContent>
                                                 <SelectItem
-                                                    value={
-                                                        VideoVisibility.PUBLIC
-                                                    }
+                                                    value={Visibility.PUBLIC}
                                                 >
                                                     Công khai
                                                 </SelectItem>
                                                 <SelectItem
-                                                    value={
-                                                        VideoVisibility.MEMBER
-                                                    }
+                                                    value={Visibility.MEMBER}
                                                 >
                                                     Hội viên
                                                 </SelectItem>
                                                 <SelectItem
-                                                    value={
-                                                        VideoVisibility.PRIVATE
-                                                    }
+                                                    value={Visibility.PRIVATE}
                                                 >
                                                     Riêng tư
                                                 </SelectItem>

@@ -4,7 +4,7 @@
  *  @created 9/29/2024 10:17 PM
  * */
 
-package com.vibio.video.config;
+package com.vibio.channel.config;
 
 import org.springframework.context.annotation.Configuration;
 

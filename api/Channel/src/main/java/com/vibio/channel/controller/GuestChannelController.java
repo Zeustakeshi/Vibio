@@ -7,6 +7,7 @@
 package com.vibio.channel.controller;
 
 import com.vibio.channel.dto.response.ApiResponse;
+import com.vibio.channel.repository.PlaylistRepository;
 import com.vibio.channel.service.ChannelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,11 +17,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("guest")
 @RequiredArgsConstructor
 public class GuestChannelController {
-	private final ChannelService channelService;
+    private final ChannelService channelService;
+    private final PlaylistRepository playlistRepository;
 
-	@GetMapping("{channelId}")
-	@ResponseStatus(HttpStatus.OK)
-	public ApiResponse<?> getChannelById(@PathVariable("channelId") String channelId) {
-		return ApiResponse.success(channelService.getChannelByIdGuest(channelId));
-	}
+    @GetMapping("{channelId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<?> getChannelById(@PathVariable("channelId") String channelId) {
+        return ApiResponse.success(channelService.getChannelByIdGuest(channelId));
+    }
 }

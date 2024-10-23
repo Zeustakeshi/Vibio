@@ -1,5 +1,4 @@
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
-import * as React from "react";
 import Header from "../components/header/Header";
 import Navbar from "../components/navbar/Navbar";
 import MaxWidthWrapper from "../components/wrapper/MaxWidthWrapper";
@@ -11,7 +10,7 @@ interface AppRouterContext {
 
 export const Route = createRootRouteWithContext<AppRouterContext>()({
     component: () => (
-        <React.Fragment>
+        <div className="hidden-scroll">
             <Header></Header>
             <MaxWidthWrapper className="flex w-full ">
                 <Navbar></Navbar>
@@ -19,6 +18,6 @@ export const Route = createRootRouteWithContext<AppRouterContext>()({
                     <Outlet />
                 </div>
             </MaxWidthWrapper>
-        </React.Fragment>
+        </div>
     ),
 });

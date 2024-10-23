@@ -4,9 +4,9 @@
  *  @created 10/3/2024 12:23 PM
  * */
 
-package com.vibio.video.mapper;
+package com.vibio.channel.mapper;
 
-import com.vibio.video.dto.response.PageableResponse;
+import com.vibio.channel.dto.response.PageableResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.data.domain.Page;

@@ -1,12 +1,7 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import {
-    getChannel,
-    getChannelGuest,
-    subscribeChannel,
-    unSubscribeChannel,
-} from "../../api/channel";
+import { subscribeChannel, unSubscribeChannel } from "../../api/channel";
 import { Avatar, AvatarImage } from "../../components/ui/avatar";
 import { Button } from "../../components/ui/button";
 import { useAuth } from "../../context/AuthContext";
@@ -17,36 +12,34 @@ type Props = {};
 
 const ChannelAction = (props: Props) => {
     const [isSubscribe, setIsSubscribe] = useState<boolean>(false);
+    const [subscribeCount, setSubscribeCount] = useState<number>(0);
 
-    const { video } = useWatchVideo();
+    const { video, channel } = useWatchVideo();
     const { isAuthenticated } = useAuth();
     const navigation = useNavigate();
     const { toast } = useToast();
 
     if (!video) return <>loading ....</>;
 
-    const { data } = useQuery({
-        queryKey: ["channel", video.channelId],
-        queryFn: async () => {
-            if (isAuthenticated) return await getChannel(video.channelId);
-            else return await getChannelGuest(video.channelId);
-        },
-        staleTime: 10000,
-    });
-
     useEffect(() => {
-        if (data?.subscribed) {
-            setIsSubscribe(data.subscribed);
+        if (!channel) return;
+        if (channel?.subscribed) {
+            setIsSubscribe(channel.subscribed ?? 0);
         }
-    }, [data]);
+
+        setSubscribeCount(channel.subscribeCount);
+    }, [channel]);
 
     const subscribeMutation = useMutation({
-        mutationKey: ["subscribe-channel", `subscribe-channel-${data?.id}`],
+        mutationKey: ["subscribe-channel", `subscribe-channel-${channel?.id}`],
         mutationFn: (channelId: string) => subscribeChannel(channelId),
     });
 
     const unSubscribeMutation = useMutation({
-        mutationKey: ["unSubscribe-channel", `unSubscribe-channel-${data?.id}`],
+        mutationKey: [
+            "unSubscribe-channel",
+            `unSubscribe-channel-${channel?.id}`,
+        ],
         mutationFn: (channelId: string) => unSubscribeChannel(channelId),
     });
 
@@ -55,11 +48,13 @@ const ChannelAction = (props: Props) => {
             navigation({
                 to: "/auth/login",
             });
+            return;
         }
-        if (!data?.id) return;
+        if (!channel?.id) return;
         try {
-            await subscribeMutation.mutateAsync(data.id);
+            await subscribeMutation.mutateAsync(channel.id);
             setIsSubscribe(true);
+            setSubscribeCount((sub) => sub + 1);
         } catch (error: any) {
             toast({
                 title: "Đăng ký thất bại",
@@ -73,11 +68,13 @@ const ChannelAction = (props: Props) => {
             navigation({
                 to: "/auth/login",
             });
+            return;
         }
-        if (!data?.id) return;
+        if (!channel?.id) return;
         try {
-            await unSubscribeMutation.mutateAsync(data.id);
+            await unSubscribeMutation.mutateAsync(channel.id);
             setIsSubscribe(false);
+            setSubscribeCount((sub) => sub - 1);
         } catch (error: any) {
             toast({
                 title: "Hủy đăng ký thất bại",
@@ -89,12 +86,12 @@ const ChannelAction = (props: Props) => {
     return (
         <div className="flex justify-start items-center gap-2">
             <Avatar>
-                <AvatarImage src={data?.thumbnail}></AvatarImage>
+                <AvatarImage src={channel?.thumbnail}></AvatarImage>
             </Avatar>
             <div>
-                <h4 className="font-semibold text-sm">{data?.name}</h4>
+                <h4 className="font-semibold text-sm">{channel?.name}</h4>
                 <p className="text-xs text-muted-foreground">
-                    3,34 Tr người đăng ký
+                    {subscribeCount} người đăng ký
                 </p>
             </div>
             {isSubscribe ? (

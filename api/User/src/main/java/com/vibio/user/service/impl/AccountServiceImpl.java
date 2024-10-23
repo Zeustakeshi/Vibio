@@ -6,7 +6,10 @@
 
 package com.vibio.user.service.impl;
 
+import com.vibio.user.client.ChannelClient;
 import com.vibio.user.dto.response.AccountResponse;
+import com.vibio.user.dto.response.ApiResponse;
+import com.vibio.user.dto.response.ChannelResponse;
 import com.vibio.user.mapper.AccountMapper;
 import com.vibio.user.model.Account;
 import com.vibio.user.repository.AccountRepository;
@@ -17,11 +20,15 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
-	private final AccountRepository accountRepository;
-	private final AccountMapper accountMapper;
+    private final AccountRepository accountRepository;
+    private final AccountMapper accountMapper;
+    private final ChannelClient channelClient;
 
-	@Override
-	public AccountResponse getAccountInfo(Account account) {
-		return accountMapper.accountToAccountResponse(account);
-	}
+    @Override
+    public AccountResponse getAccountInfo(Account account) {
+        AccountResponse accountResponse = accountMapper.accountToAccountResponse(account);
+        ApiResponse<ChannelResponse> channelResponse = channelClient.getChannelByAccountId(account.getId());
+        accountResponse.setChannel(channelResponse.getData());
+        return accountResponse;
+    }
 }

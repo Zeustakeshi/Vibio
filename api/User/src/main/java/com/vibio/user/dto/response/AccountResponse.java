@@ -12,8 +12,9 @@ import lombok.Data;
 @Data
 @Builder
 public class AccountResponse {
-	private String id;
-	private String email;
-	private String username;
-	private String avatar;
+    private String id;
+    private String email;
+    private String username;
+    private String avatar;
+    private ChannelResponse channel;
 }

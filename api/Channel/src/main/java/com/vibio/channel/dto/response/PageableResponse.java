@@ -1,4 +1,4 @@
-package com.vibio.video.dto.response;
+package com.vibio.channel.dto.response;
 
 import java.util.List;
 import lombok.Data;

@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 @Builder
 public class ChannelResponse {
-	private String id;
-	private String thumbnail;
-	private String name;
+    private String id;
+    private String thumbnail;
+    private String name;
 }

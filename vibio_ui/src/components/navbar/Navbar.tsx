@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { AiOutlineLike } from "react-icons/ai";
 import { FaRegFlag } from "react-icons/fa";
 import { FaChalkboardUser } from "react-icons/fa6";
@@ -15,6 +16,8 @@ import {
 import { RiHistoryLine, RiPlayListAddLine } from "react-icons/ri";
 import { RxVideo } from "react-icons/rx";
 import { useSelector } from "react-redux";
+import { getSubscribedChannels } from "../../api/channel";
+import { useAuth } from "../../context/AuthContext";
 import { selectApp } from "../../store/features/app/appSlice";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Separator } from "../ui/separator";
@@ -24,6 +27,13 @@ type Props = {};
 
 const Navbar = ({}: Props) => {
     const { navState } = useSelector(selectApp);
+    const { isAuthenticated } = useAuth();
+
+    const { data, isLoading } = useQuery({
+        queryKey: ["subscribed-channels"],
+        queryFn: () => getSubscribedChannels(0),
+        enabled: isAuthenticated,
+    });
 
     return (
         <div className=" h-[calc(100svh-62px)] top-[62px] sticky w-max pr-2 py-3 overflow-y-scroll hidden-scroll">
@@ -58,7 +68,7 @@ const Navbar = ({}: Props) => {
                             Video đã xem
                         </NavbarItem>
                         <NavbarItem
-                            to="/feeddsafd/subscriptions"
+                            to="/playlists"
                             icon={<RiPlayListAddLine size={16} />}
                         >
                             Danh sách phát
@@ -84,36 +94,28 @@ const Navbar = ({}: Props) => {
                     </NavbarGroup>
                     <Separator className="my-1" />
                     <NavbarGroup headerLabel="Kênh đã đăng ký">
-                        <NavbarItem
-                            to="/feedd/subsadfcriptions"
-                            icon={
-                                <Avatar className="w-[25px] h-[25px]">
-                                    <AvatarImage src="https://yt3.ggpht.com/uIccVldUrh4DRnd7hRCXnNoMerzgEA7bcr_zArOQctc9qRWgojQKo0hp558dHCstGI7PjC4idfk=s68-c-k-c0x00ffffff-no-rj"></AvatarImage>
-                                </Avatar>
-                            }
-                        >
-                            Phạm Minh Hiếu
-                        </NavbarItem>
-                        <NavbarItem
-                            to="/feedd/subsadfcriptions"
-                            icon={
-                                <Avatar className="w-[25px] h-[25px]">
-                                    <AvatarImage src="https://yt3.ggpht.com/uIccVldUrh4DRnd7hRCXnNoMerzgEA7bcr_zArOQctc9qRWgojQKo0hp558dHCstGI7PjC4idfk=s68-c-k-c0x00ffffff-no-rj"></AvatarImage>
-                                </Avatar>
-                            }
-                        >
-                            Phạm Minh Hiếu
-                        </NavbarItem>
-                        <NavbarItem
-                            to="/feedd/subsadfcriptions"
-                            icon={
-                                <Avatar className="w-[25px] h-[25px]">
-                                    <AvatarImage src="https://yt3.ggpht.com/uIccVldUrh4DRnd7hRCXnNoMerzgEA7bcr_zArOQctc9qRWgojQKo0hp558dHCstGI7PjC4idfk=s68-c-k-c0x00ffffff-no-rj"></AvatarImage>
-                                </Avatar>
-                            }
-                        >
-                            Phạm Minh Hiếu
-                        </NavbarItem>
+                        {isLoading && (
+                            <div className="w-full h-8 flex justify-center items-center">
+                                <span className="size-5 rounded-full border-2 border-primary border-t-transparent animate-spin"></span>
+                            </div>
+                        )}
+                        {data?.content &&
+                            data.content.length > 0 &&
+                            data.content.map((channel, index) => (
+                                <NavbarItem
+                                    key={channel.id ?? index}
+                                    to={`/channel/${channel.id}`}
+                                    icon={
+                                        <Avatar className="w-[25px] h-[25px]">
+                                            <AvatarImage
+                                                src={channel.thumbnail}
+                                            ></AvatarImage>
+                                        </Avatar>
+                                    }
+                                >
+                                    {channel.name}
+                                </NavbarItem>
+                            ))}
                     </NavbarGroup>
                     <Separator className="my-1" />
                     <NavbarGroup headerLabel="Khám phá">

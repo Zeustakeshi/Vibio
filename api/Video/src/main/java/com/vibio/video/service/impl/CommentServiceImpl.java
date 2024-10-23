@@ -27,179 +27,182 @@ import com.vibio.video.repository.CommentRepository;
 import com.vibio.video.repository.VideoRepository;
 import com.vibio.video.service.CommentService;
 import jakarta.transaction.Transactional;
-import java.util.Collections;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
-	private final CommentRepository commentRepository;
-	private final VideoRepository videoRepository;
-	private final CommentReactionRepository commentReactionRepository;
-	private final CommentMapper commentMapper;
-	private final UserClient userClient;
-	private final PageMapper pageMapper;
-	private final CommentEventProducer commentEventProducer;
+    private final CommentRepository commentRepository;
+    private final VideoRepository videoRepository;
+    private final CommentReactionRepository commentReactionRepository;
+    private final CommentMapper commentMapper;
+    private final UserClient userClient;
+    private final PageMapper pageMapper;
+    private final CommentEventProducer commentEventProducer;
 
-	@Override
-	public CommentResponse crateComment(String videoId, String accountId, CommentRequest request) {
-		Video video = videoRepository.findById(videoId).orElseThrow(() -> new NotfoundException("Video not found"));
+    @Override
+    public CommentResponse crateComment(String videoId, String accountId, CommentRequest request) {
+        Video video = videoRepository.findById(videoId).orElseThrow(() -> new NotfoundException("Video not found"));
 
-		if (!video.isAllowedComment()) {
-			throw new ForbiddenException("Video not allow comment");
-		}
+        if (!video.isAllowedComment()) {
+            throw new ForbiddenException("Video not allow comment");
+        }
 
-		// get user by accountId
-		UserResponse user = userClient.getUserByAccountId(accountId).getData();
+        // get user by accountId
+        UserResponse user = userClient.getUserByAccountId(accountId).getData();
 
-		Comment comment = Comment.builder()
-				.content(request.getContent())
-				.userId(user.getId())
-				.video(video)
-				.build();
+        Comment comment = Comment.builder()
+                .content(request.getContent())
+                .userId(user.getId())
+                .video(video)
+                .build();
 
-		if (request.getParentId() != null) {
-			Comment parent = commentRepository
-					.findById(request.getParentId())
-					.orElseThrow(() -> new NotfoundException("Comment not found"));
-			if (parent.isReply()) comment.setParent(parent.getParent());
-			else comment.setParent(parent);
-			comment.setReply(true);
-		}
+        if (request.getParentId() != null) {
+            Comment parent = commentRepository
+                    .findById(request.getParentId())
+                    .orElseThrow(() -> new NotfoundException("Comment not found"));
+            if (parent.isReply()) comment.setParent(parent.getParent());
+            else comment.setParent(parent);
+            comment.setReply(true);
+        }
 
-		Comment newComment = commentRepository.save(comment);
+        Comment newComment = commentRepository.save(comment);
 
-		commentEventProducer.createNewComment(NewCommentEvent.builder()
-				.commentId(newComment.getId())
-				.parentId(request.getParentId())
-				.videoId(videoId)
-				.userId(accountId)
-				.build());
+        commentEventProducer.createNewComment(NewCommentEvent.builder()
+                .commentId(newComment.getId())
+                .parentId(request.getParentId())
+                .videoId(videoId)
+                .userId(accountId)
+                .build());
 
-		CommentResponse commentResponse = commentMapper.commentToCommentResponse(newComment);
+        CommentResponse commentResponse = commentMapper.commentToCommentResponse(newComment);
 
-		commentResponse.setOwner(user);
+        commentResponse.setOwner(user);
 
-		return commentResponse;
-	}
+        return commentResponse;
+    }
 
-	@Override
-	public PageableResponse<CommentResponse> getAllGuestComment(String videoId, String parentId, int page, int limit) {
-		Page<Comment> comments = fetchGuestComments(videoId, parentId, page, limit);
+    @Override
+    public PageableResponse<CommentResponse> getAllGuestComment(String videoId, String parentId, int page, int limit) {
+        Page<Comment> comments = fetchGuestComments(videoId, parentId, page, limit);
 
-		List<UserResponse> users = Collections.emptyList();
+        List<UserResponse> users = Collections.emptyList();
 
-		if (!comments.isEmpty()) users = fetchUsersForComments(comments);
+        if (!comments.isEmpty()) users = fetchUsersForComments(comments);
 
-		return mapCommentsToResponse(comments, users, null);
-	}
+        return mapCommentsToResponse(comments, users, null);
+    }
 
-	@Override
-	public PageableResponse<CommentResponse> getAllComment(
-			String videoId, String accountId, String parentId, int page, int limit) {
-		Page<Comment> comments = fetchComments(videoId, parentId, page, limit);
+    @Override
+    public PageableResponse<CommentResponse> getAllComment(
+            String videoId, String accountId, String parentId, int page, int limit) {
+        Page<Comment> comments = fetchComments(videoId, parentId, page, limit);
 
-		List<UserResponse> users = Collections.emptyList();
+        List<UserResponse> users = Collections.emptyList();
 
-		if (!comments.isEmpty()) users = fetchUsersForComments(comments);
+        if (!comments.isEmpty()) users = fetchUsersForComments(comments);
 
-		return mapCommentsToResponse(comments, users, accountId);
-	}
+        return mapCommentsToResponse(comments, users, accountId);
+    }
 
-	@Override
-	public CommentResponse updateComment(
-			String videoId, String accountId, String commentId, UpdateCommentRequest request) {
-		Comment comment = commentRepository
-				.findByIdAndUserId(commentId, accountId)
-				.orElseThrow(() -> new NotfoundException("Comment not found"));
-		comment.setContent(request.getContent());
-		comment.setUpdated(true);
-		return commentMapper.commentToCommentResponse(commentRepository.save(comment));
-	}
+    @Override
+    public CommentResponse updateComment(
+            String videoId, String accountId, String commentId, UpdateCommentRequest request) {
+        Comment comment = commentRepository
+                .findByIdAndUserId(commentId, accountId)
+                .orElseThrow(() -> new NotfoundException("Comment not found"));
+        comment.setContent(request.getContent());
+        comment.setUpdated(true);
+        return commentMapper.commentToCommentResponse(commentRepository.save(comment));
+    }
 
-	@Override
-	@Transactional
-	public boolean deleteComment(String videoId, String accountId, String commentId) {
-		commentRepository.deleteByIdAndUserIdAndVideoId(commentId, accountId, videoId);
-		return true;
-	}
+    @Override
+    @Transactional
+    public boolean deleteComment(String videoId, String accountId, String commentId) {
+        commentRepository.deleteByIdAndUserIdAndVideoId(commentId, accountId, videoId);
+        return true;
+    }
 
-	@Override
-	public void updateReplyCount(String commentParentId) {
-		Comment comment = commentRepository
-				.findById(commentParentId)
-				.orElseThrow(() -> new NotfoundException("Comment " + commentParentId + " not found"));
+    @Override
+    public void updateReplyCount(String commentParentId) {
+        Comment comment = commentRepository
+                .findById(commentParentId)
+                .orElseThrow(() -> new NotfoundException("Comment " + commentParentId + " not found"));
 
-		comment.setReplyCount(commentRepository.countByParentId(commentParentId));
+        comment.setReplyCount(commentRepository.countByParentId(commentParentId));
 
-		commentRepository.save(comment);
-	}
+        commentRepository.save(comment);
+    }
 
-	@Override
-	public void updateReactionCount(String commentId) {
-		Comment comment = commentRepository
-				.findById(commentId)
-				.orElseThrow(() -> new NotfoundException("Comment " + commentId + " not found"));
+    @Override
+    public void updateReactionCount(String commentId) {
+        Comment comment = commentRepository
+                .findById(commentId)
+                .orElseThrow(() -> new NotfoundException("Comment " + commentId + " not found"));
 
-		comment.setLikeCount(commentReactionRepository.countLikeByCommentId(commentId));
-		comment.setDislikeCount(commentReactionRepository.countDislikeByCommentId(commentId));
+        comment.setLikeCount(commentReactionRepository.countLikeByCommentId(commentId));
+        comment.setDislikeCount(commentReactionRepository.countDislikeByCommentId(commentId));
 
-		commentRepository.save(comment);
-	}
+        commentRepository.save(comment);
+    }
 
-	private Page<Comment> fetchGuestComments(String videoId, String parentId, int page, int limit) {
-		if (parentId == null) {
-			return commentRepository.getAllGuestComment(
-					videoId, PageRequest.of(page, limit, Sort.Direction.DESC, "updatedAt"));
-		} else {
-			return commentRepository.getAllGuestReplies(
-					videoId, parentId, PageRequest.of(page, limit, Sort.Direction.ASC, "createdAt"));
-		}
-	}
+    private Page<Comment> fetchGuestComments(String videoId, String parentId, int page, int limit) {
+        if (parentId == null) {
+            return commentRepository.getAllGuestComment(
+                    videoId, PageRequest.of(page, limit, Sort.Direction.DESC, "updatedAt"));
+        } else {
+            return commentRepository.getAllGuestReplies(
+                    videoId, parentId, PageRequest.of(page, limit, Sort.Direction.ASC, "createdAt"));
+        }
+    }
 
-	private Page<Comment> fetchComments(String videoId, String parentId, int page, int limit) {
-		if (parentId == null) {
-			return commentRepository.getAllComment(
-					videoId, PageRequest.of(page, limit, Sort.Direction.DESC, "updatedAt"));
-		} else {
-			return commentRepository.getAllReplies(
-					videoId, parentId, PageRequest.of(page, limit, Sort.Direction.ASC, "createdAt"));
-		}
-	}
+    private Page<Comment> fetchComments(String videoId, String parentId, int page, int limit) {
+        if (parentId == null) {
+            return commentRepository.getAllComment(
+                    videoId, PageRequest.of(page, limit, Sort.Direction.DESC, "updatedAt"));
+        } else {
+            return commentRepository.getAllReplies(
+                    videoId, parentId, PageRequest.of(page, limit, Sort.Direction.ASC, "createdAt"));
+        }
+    }
 
-	private List<UserResponse> fetchUsersForComments(Page<Comment> comments) {
-		List<String> userIds = comments.map(Comment::getUserId).stream().toList();
-		return userClient
-				.getUsersByIds(FindAccountsByIdsRequest.builder().ids(userIds).build())
-				.getData();
-	}
+    private List<UserResponse> fetchUsersForComments(Page<Comment> comments) {
+        List<String> userIds = comments.map(Comment::getUserId).stream().toList();
+        return userClient
+                .getUsersByIds(FindAccountsByIdsRequest.builder().ids(userIds).build())
+                .getData();
+    }
 
-	private PageableResponse<CommentResponse> mapCommentsToResponse(
-			Page<Comment> comments, List<UserResponse> users, String accountId) {
-		return pageMapper.toPageableResponse(comments.map(comment -> mapCommentToResponse(comment, users, accountId)));
-	}
+    private PageableResponse<CommentResponse> mapCommentsToResponse(
+            Page<Comment> comments, List<UserResponse> users, String accountId) {
+        return pageMapper.toPageableResponse(comments.map(comment -> mapCommentToResponse(comment, users, accountId)));
+    }
 
-	private CommentResponse mapCommentToResponse(Comment comment, List<UserResponse> users, String accountId) {
-		CommentResponse commentResponse = commentMapper.commentToCommentResponse(comment);
-		UserResponse user = users.stream()
-				.filter(u -> u.getId().equals(comment.getUserId()))
-				.findFirst()
-				.orElseThrow(() -> new NotfoundException("User " + comment.getUserId() + " not found"));
+    private CommentResponse mapCommentToResponse(Comment comment, List<UserResponse> users, String accountId) {
+        CommentResponse commentResponse = commentMapper.commentToCommentResponse(comment);
+        UserResponse user = users.stream()
+                .filter(u -> u.getId().equals(comment.getUserId()))
+                .findFirst()
+                .orElseThrow(() -> new NotfoundException("User " + comment.getUserId() + " not found"));
 
-		if (accountId != null) {
-			commentResponse.setLiked(commentReactionRepository.existsByCommentIdAndUserIdAndReactionType(
-					comment.getId(), accountId, ReactionType.LIKE));
-			commentResponse.setDisliked(commentReactionRepository.existsByCommentIdAndUserIdAndReactionType(
-					comment.getId(), accountId, ReactionType.DISLIKE));
-		}
+        if (accountId != null) {
+            commentResponse.setLiked(commentReactionRepository.existsByCommentIdAndUserIdAndReactionType(
+                    comment.getId(), accountId, ReactionType.LIKE));
+            commentResponse.setDisliked(commentReactionRepository.existsByCommentIdAndUserIdAndReactionType(
+                    comment.getId(), accountId, ReactionType.DISLIKE));
+            commentResponse.setLovedByChannel(commentReactionRepository.existsByCommentIdAndUserIdAndReactionType(
+                    comment.getId(), accountId, ReactionType.LOVE));
+        }
 
-		commentResponse.setOwner(user);
+        commentResponse.setOwner(user);
 
-		return commentResponse;
-	}
+        return commentResponse;
+    }
 }

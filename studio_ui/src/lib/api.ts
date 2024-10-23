@@ -18,7 +18,7 @@ api.interceptors.request.use((request) => {
 api.interceptors.response.use(
     (response) => response.data.data,
     async (error) => {
-        if (error.request.status === 401 || error.request.status === 403) {
+        if (error.request.status === 401) {
             await memoizedRefreshToken();
             if (Cookies.get(ACCESS_TOKEN_KEY)) return api(error.config);
         }

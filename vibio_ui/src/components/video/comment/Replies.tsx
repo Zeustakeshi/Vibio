@@ -1,6 +1,9 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
-import { getCommentReplies } from "../../../api/comment";
+import {
+    getCommentReplies,
+    getCommentRepliesGuest,
+} from "../../../api/comment";
 import { Comment } from "../../../common/type/comment";
 import { useAuth } from "../../../context/AuthContext";
 import { useWatchVideo } from "../../../routes/watch/$videoId";
@@ -8,20 +11,6 @@ import { Button } from "../../ui/button";
 import CommentItem from "./CommentItem";
 
 type Props = { parentId: string };
-
-const commentTest: Comment = {
-    content: "hello world",
-    id: "1000",
-    likeCount: 10,
-    replyCount: 2,
-    owner: {
-        avatar: "",
-        id: "",
-        username: "",
-    },
-    updated: false,
-    updatedAt: "",
-};
 
 const Replies = ({ parentId }: Props) => {
     const { video } = useWatchVideo();
@@ -34,7 +23,7 @@ const Replies = ({ parentId }: Props) => {
             queryKey: ["comment-replies", `${parentId}-replies`],
             queryFn: async (pages) => {
                 if (isAuthenticated)
-                    return await getCommentReplies(
+                    return await getCommentRepliesGuest(
                         video.id,
                         pages.pageParam,
                         parentId

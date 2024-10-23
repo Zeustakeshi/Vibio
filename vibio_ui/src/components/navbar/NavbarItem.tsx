@@ -23,12 +23,13 @@ const NavbarItem = ({ children, icon, to }: Props) => {
             )}
             activeProps={{
                 className:
-                    "bg-primary text-white hover:bg-primary hover:text-white",
+                    "bg-primary text-white !hover:bg-primary hover:text-white",
             }}
         >
             <div>{icon}</div>
-
-            {navState === "open" && <div className="text-sm">{children}</div>}
+            {navState === "open" && (
+                <div className="text-sm line-clamp-1 text-left">{children}</div>
+            )}
         </Link>
     );
 };

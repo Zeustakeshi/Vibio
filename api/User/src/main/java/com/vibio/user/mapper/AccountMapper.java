@@ -17,18 +17,19 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface AccountMapper {
-	AccountConfirmation createAccountRequestToAccountConfirmation(CreateAccountRequest request);
+    AccountConfirmation createAccountRequestToAccountConfirmation(CreateAccountRequest request);
 
-	Account accountConfirmationToAccount(AccountConfirmation accountConfirmation);
+    Account accountConfirmationToAccount(AccountConfirmation accountConfirmation);
 
-	AccountMFA accountToAccountMFAConfirmation(Account account);
+    AccountMFA accountToAccountMFAConfirmation(Account account);
 
-	AccountResponse accountToAccountResponse(Account account);
+    @Mapping(target = "channel", ignore = true)
+    AccountResponse accountToAccountResponse(Account account);
 
-	@Mapping(source = "id", target = "accountId")
-	@Mapping(source = "username", target = "name")
-	@Mapping(source = "avatar", target = "defaultAvatar")
-	@Mapping(source = "email", target = "defaultEmail")
-	@Mapping(target = "id", ignore = true)
-	NewChannelEvent accountToNewChannelEvent(Account account);
+    @Mapping(source = "id", target = "accountId")
+    @Mapping(source = "username", target = "name")
+    @Mapping(source = "avatar", target = "defaultAvatar")
+    @Mapping(source = "email", target = "defaultEmail")
+    @Mapping(target = "id", ignore = true)
+    NewChannelEvent accountToNewChannelEvent(Account account);
 }
