@@ -61,7 +61,7 @@ function CreateAccountOtp() {
     const onSubmit = async (value: z.infer<typeof otpSchema>) => {
         try {
             const data: any = await verifyOtpMutation.mutateAsync(value);
-            login(data);
+            await login(data);
         } catch (error: any) {
             toast({
                 title: "Xác thực thất bại",

@@ -1,6 +1,8 @@
+import { useMutation } from "@tanstack/react-query";
 import { ReactNode } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { useInView } from "react-intersection-observer";
+import { joinChannelMember } from "../../api/member";
+import { Channel } from "../../common/type/channel";
+import { useToast } from "../../hooks/use-toast";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import {
@@ -12,18 +14,29 @@ import {
 } from "../ui/dialog";
 
 type Props = {
-    channelId: string;
+    channel: Channel;
     children: ReactNode;
 };
 
-const JoinMemberDialog = ({ children, channelId }: Props) => {
-    const [activePayment, setActivePayment] = useState<boolean>(false);
+const JoinMemberDialog = ({ children, channel }: Props) => {
+    const { mutateAsync, isPending } = useMutation({
+        mutationKey: ["join-channel", channel.id],
+        mutationFn: () => joinChannelMember(channel.id),
+    });
 
-    const [inViewRef, inView] = useInView();
+    const { toast } = useToast();
 
-    useEffect(() => {
-        if (inView) setActivePayment(true);
-    }, [inView]);
+    const handleJoinMember = async () => {
+        try {
+            const { payUrl } = await mutateAsync();
+            window.location.href = payUrl;
+        } catch (error: any) {
+            toast({
+                title: "Tham gia hội viên thất bại",
+                description: JSON.stringify(error),
+            });
+        }
+    };
 
     return (
         <Dialog>
@@ -39,20 +52,23 @@ const JoinMemberDialog = ({ children, channelId }: Props) => {
                             <div className="abs-center w-full h-full bg-slate-900/80"></div>
                             <img
                                 className="w-full h-full object-cover "
-                                src="https://yt3.googleusercontent.com/gJf0-5yiGCW0ojIG-g-e2xsdWUuan7URbyQBKyu84EDkTybY_7l_TsWLSDcCRWhmIARcFXoDHQ=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj"
+                                src={
+                                    channel.background ??
+                                    "https://yt3.googleusercontent.com/gJf0-5yiGCW0ojIG-g-e2xsdWUuan7URbyQBKyu84EDkTybY_7l_TsWLSDcCRWhmIARcFXoDHQ=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj"
+                                }
                                 alt=""
                             />
                         </div>
                         <div className="abs-center w-full h-full p-5">
                             <Avatar className="size-[80px]">
                                 <AvatarImage
-                                    src="https://yt3.googleusercontent.com/nWSdA9GftPmUUpr9p7-uRmzaBpXJPosI-m7anrP040ixXZdMScrMdyordtkR7XBDtewPancSjZo=s160-c-k-c0x00ffffff-no-rj"
+                                    src={channel.thumbnail}
                                     alt="channel-avatar"
                                 ></AvatarImage>
                             </Avatar>
                             <div className="mt-4  text-white">
                                 <p className="text-lg font-semibold ">
-                                    Thỏ bảy màu
+                                    {channel.name}
                                 </p>
                                 <h3 className="text-xl font-semibold">
                                     Tham gia kênh này
@@ -84,14 +100,18 @@ const JoinMemberDialog = ({ children, channelId }: Props) => {
                                 của bạn trong phần bình luận và cuộc trò chuyện
                                 trực tiếp.
                             </li>
-                            <li ref={inViewRef}>
+                            <li>
                                 - Bình luận của bạn sẽ được đọc và trả lời trước
                             </li>
                         </ul>
                     </div>
                 </div>
-                <Button disabled={!activePayment} className="ml-auto mt-2">
-                    Tham gia ngay
+                <Button
+                    onClick={handleJoinMember}
+                    disabled={isPending}
+                    className="ml-auto mt-2"
+                >
+                    {isPending ? "Đang xử lý" : "Tham gia ngay"}
                 </Button>
             </DialogContent>
         </Dialog>

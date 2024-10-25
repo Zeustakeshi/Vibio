@@ -20,6 +20,7 @@ import { Route as WatchVideoIdImport } from './routes/watch/$videoId'
 import { Route as PlaylistsPlaylistIdImport } from './routes/playlists/$playlistId'
 import { Route as ChannelChannelIdImport } from './routes/channel/$channelId'
 import { Route as AuthAuthImport } from './routes/auth/_auth'
+import { Route as PaymentMembershipResultImport } from './routes/payment/membership/result'
 import { Route as AuthOtpOtpImport } from './routes/auth/otp/_otp'
 import { Route as AuthAuthRegisterImport } from './routes/auth/_auth.register'
 import { Route as AuthAuthLoginImport } from './routes/auth/_auth.login'
@@ -76,6 +77,11 @@ const ChannelChannelIdRoute = ChannelChannelIdImport.update({
 const AuthAuthRoute = AuthAuthImport.update({
   id: '/_auth',
   getParentRoute: () => AuthRoute,
+} as any)
+
+const PaymentMembershipResultRoute = PaymentMembershipResultImport.update({
+  path: '/payment/membership/result',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const AuthOtpOtpRoute = AuthOtpOtpImport.update({
@@ -191,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOtpOtpImport
       parentRoute: typeof AuthOtpRoute
     }
+    '/payment/membership/result': {
+      id: '/payment/membership/result'
+      path: '/payment/membership/result'
+      fullPath: '/payment/membership/result'
+      preLoaderRoute: typeof PaymentMembershipResultImport
+      parentRoute: typeof rootRoute
+    }
     '/auth/otp/_otp/mfa': {
       id: '/auth/otp/_otp/mfa'
       path: '/mfa'
@@ -272,6 +285,7 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
   '/auth/otp': typeof AuthOtpOtpRouteWithChildren
+  '/payment/membership/result': typeof PaymentMembershipResultRoute
   '/auth/otp/mfa': typeof AuthOtpOtpMfaRoute
   '/auth/otp/new-account': typeof AuthOtpOtpNewAccountRoute
 }
@@ -287,6 +301,7 @@ export interface FileRoutesByTo {
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
   '/auth/otp': typeof AuthOtpOtpRouteWithChildren
+  '/payment/membership/result': typeof PaymentMembershipResultRoute
   '/auth/otp/mfa': typeof AuthOtpOtpMfaRoute
   '/auth/otp/new-account': typeof AuthOtpOtpNewAccountRoute
 }
@@ -305,6 +320,7 @@ export interface FileRoutesById {
   '/auth/_auth/register': typeof AuthAuthRegisterRoute
   '/auth/otp': typeof AuthOtpRouteWithChildren
   '/auth/otp/_otp': typeof AuthOtpOtpRouteWithChildren
+  '/payment/membership/result': typeof PaymentMembershipResultRoute
   '/auth/otp/_otp/mfa': typeof AuthOtpOtpMfaRoute
   '/auth/otp/_otp/new-account': typeof AuthOtpOtpNewAccountRoute
 }
@@ -322,6 +338,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/auth/otp'
+    | '/payment/membership/result'
     | '/auth/otp/mfa'
     | '/auth/otp/new-account'
   fileRoutesByTo: FileRoutesByTo
@@ -336,6 +353,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/auth/otp'
+    | '/payment/membership/result'
     | '/auth/otp/mfa'
     | '/auth/otp/new-account'
   id:
@@ -352,6 +370,7 @@ export interface FileRouteTypes {
     | '/auth/_auth/register'
     | '/auth/otp'
     | '/auth/otp/_otp'
+    | '/payment/membership/result'
     | '/auth/otp/_otp/mfa'
     | '/auth/otp/_otp/new-account'
   fileRoutesById: FileRoutesById
@@ -365,6 +384,7 @@ export interface RootRouteChildren {
   appIndexRoute: typeof appIndexRoute
   PlaylistsIndexRoute: typeof PlaylistsIndexRoute
   ShortsIndexRoute: typeof ShortsIndexRoute
+  PaymentMembershipResultRoute: typeof PaymentMembershipResultRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -375,6 +395,7 @@ const rootRouteChildren: RootRouteChildren = {
   appIndexRoute: appIndexRoute,
   PlaylistsIndexRoute: PlaylistsIndexRoute,
   ShortsIndexRoute: ShortsIndexRoute,
+  PaymentMembershipResultRoute: PaymentMembershipResultRoute,
 }
 
 export const routeTree = rootRoute
@@ -395,7 +416,8 @@ export const routeTree = rootRoute
         "/watch/$videoId",
         "/",
         "/playlists/",
-        "/shorts/"
+        "/shorts/",
+        "/payment/membership/result"
       ]
     },
     "/auth": {
@@ -453,6 +475,9 @@ export const routeTree = rootRoute
         "/auth/otp/_otp/mfa",
         "/auth/otp/_otp/new-account"
       ]
+    },
+    "/payment/membership/result": {
+      "filePath": "payment/membership/result.tsx"
     },
     "/auth/otp/_otp/mfa": {
       "filePath": "auth/otp/_otp.mfa.tsx",

@@ -24,26 +24,24 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PlaylistServiceImpl implements PlaylistService {
 
-    private final PlaylistRepository playlistRepository;
-    private final PlaylistMapper playlistMapper;
-    private final PageMapper pageMapper;
+	private final PlaylistRepository playlistRepository;
+	private final PlaylistMapper playlistMapper;
+	private final PageMapper pageMapper;
 
+	public PlaylistResponse getPublicPlaylistById(String playlistId) {
+		Playlist playlist = playlistRepository
+				.findPublicById(playlistId)
+				.orElseThrow(() -> new NotfoundException(("Playlist " + playlistId + " not found")));
 
-    public PlaylistResponse getPublicPlaylistById(String playlistId) {
-        Playlist playlist = playlistRepository
-                .findPublicById(playlistId)
-                .orElseThrow(() -> new NotfoundException(("Playlist " + playlistId + " not found")));
+		return playlistMapper.playlistToPlaylistResponse(playlist);
+	}
 
-        return playlistMapper.playlistToPlaylistResponse(playlist);
-    }
+	@Override
+	public PageableResponse<PlaylistResponse> getAllPlaylistPublicByChannelId(String channelId, int page, int limit) {
+		PageRequest request = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "updatedAt"));
 
-    @Override
-    public PageableResponse<PlaylistResponse> getAllPlaylistPublicByChannelId(String channelId, int page, int limit) {
-        PageRequest request = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "updatedAt"));
+		Page<Playlist> playlists = playlistRepository.findAllPublicByChannelId(channelId, request);
 
-        Page<Playlist> playlists = playlistRepository.findAllPublicByChannelId(channelId, request);
-
-        return pageMapper.toPageableResponse(playlists.map(playlistMapper::playlistToPlaylistResponse));
-    }
-
+		return pageMapper.toPageableResponse(playlists.map(playlistMapper::playlistToPlaylistResponse));
+	}
 }

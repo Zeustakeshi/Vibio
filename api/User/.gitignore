@@ -34,3 +34,5 @@ build/
 
 /keys/access_token
 /keys/refresh_token
+
+/src/main/resources/application-dev.yml

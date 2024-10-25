@@ -38,6 +38,8 @@ spring:
       auto-offset-reset: earliest
       properties:
         spring.json.trusted.packages: '*'
+  profiles:
+    active: ${ACTIVE_PROFILE:dev}
 
 server:
   port: 8082

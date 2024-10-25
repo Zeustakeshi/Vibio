@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("guest")
 @RequiredArgsConstructor
 public class GuestChannelController {
-    private final ChannelService channelService;
-    private final PlaylistRepository playlistRepository;
+	private final ChannelService channelService;
+	private final PlaylistRepository playlistRepository;
 
-    @GetMapping("{channelId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> getChannelById(@PathVariable("channelId") String channelId) {
-        return ApiResponse.success(channelService.getChannelByIdGuest(channelId));
-    }
+	@GetMapping("{channelId}")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> getChannelById(@PathVariable("channelId") String channelId) {
+		return ApiResponse.success(channelService.getChannelByIdGuest(channelId));
+	}
 }
