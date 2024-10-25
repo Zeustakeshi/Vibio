@@ -8,10 +8,12 @@ export type Channel = {
     id: string;
     name: string;
     accountId: string;
+    background: string;
     thumbnail: string;
     member: boolean;
     subscribeCount: number;
     subscribed: boolean;
+    description: string;
 };
 
 export type ChannelDetail = {

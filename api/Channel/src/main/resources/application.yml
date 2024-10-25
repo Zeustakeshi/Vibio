@@ -18,6 +18,8 @@ spring:
         show_sql: true
         globally_quoted_identifiers: true
         globally_quoted_identifiers_skip_column_definitions: true
+        jdbc:
+          time_zone: UTC
   jackson:
     default-property-inclusion: non_null
     serialization:
@@ -43,6 +45,12 @@ server:
 services-url:
   user: ${USER_SERVICE_URL}
   video: ${VIDEO_SERVICE_URL}
+  payment: ${PAYMENT_SERVICE_URL}
+
+config:
+  membership:
+    expiredIn: 30 # 30 days
+
 
 assets:
   default-playlist-thumbnail: ${PLAYLIST_DEFAULT_THUMBNAIL}

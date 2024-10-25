@@ -82,10 +82,19 @@ spring:
             - StripPrefix=2
             - RewritePath=/notification(?<segment>/?.*), /notification${segment}
             - AuthorizationFilter
-
+        #============================  Payment route ============================#
+        - id: payment_route
+          uri: ${services.payment-service}
+          predicates:
+            - Path= ${api.prefix}/payment/**
+          filters:
+            - StripPrefix=2
+            - RewritePath=/payment(?<segment>/?.*), /payment${segment}
+            - AuthorizationFilter
 
 services:
-  user-service: ${USER_SERVICE_URL}
-  channel-service: ${CHANNEL_SERVICE_URL}
-  video-service: ${VIDEO_SERVICE_URL}
-  notification-service: ${NOTIFICATION_SERVICE}
+  user-service: ${USER_SERVICE_URL:http://localhost:8082}
+  channel-service: ${CHANNEL_SERVICE_URL:http://localhost:8084}
+  video-service: ${VIDEO_SERVICE_URL:http://localhost:8086}
+  notification-service: ${NOTIFICATION_SERVICE:http://localhost:8088}
+  payment-service: ${PAYMENT_SERVICE:http://localhost:8098}

@@ -17,36 +17,30 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/guest")
 @RequiredArgsConstructor
 public class PlaylistController {
-    private final PlaylistService playlistService;
-    private final PlaylistVideoService playlistVideoService;
+	private final PlaylistService playlistService;
+	private final PlaylistVideoService playlistVideoService;
 
-    @GetMapping("{channelId}/playlists")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> getAllPlaylistByChannelId(
-            @PathVariable("channelId") String channelId,
-            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-            @RequestParam(value = "limit", required = false, defaultValue = "5") int limit
-    ) {
-        return ApiResponse.success(playlistService.getAllPlaylistPublicByChannelId(channelId, page, limit));
-    }
+	@GetMapping("{channelId}/playlists")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> getAllPlaylistByChannelId(
+			@PathVariable("channelId") String channelId,
+			@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+			@RequestParam(value = "limit", required = false, defaultValue = "5") int limit) {
+		return ApiResponse.success(playlistService.getAllPlaylistPublicByChannelId(channelId, page, limit));
+	}
 
-    @GetMapping("/playlists/{playlistId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> getPublicPlaylistById(
-            @PathVariable("playlistId") String playlistId) {
-        return ApiResponse.success(playlistService.getPublicPlaylistById(playlistId));
-    }
+	@GetMapping("/playlists/{playlistId}")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> getPublicPlaylistById(@PathVariable("playlistId") String playlistId) {
+		return ApiResponse.success(playlistService.getPublicPlaylistById(playlistId));
+	}
 
-
-    @GetMapping("/playlists/{playlistId}/videos")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> getAllPlaylistVideo(
-            @PathVariable("playlistId") String playlistId,
-            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-            @RequestParam(value = "limit", required = false, defaultValue = "0") int limit
-    ) {
-        return ApiResponse.success(playlistVideoService.getAllPlaylistVideo(playlistId, page, limit));
-    }
-
-
+	@GetMapping("/playlists/{playlistId}/videos")
+	@ResponseStatus(HttpStatus.OK)
+	public ApiResponse<?> getAllPlaylistVideo(
+			@PathVariable("playlistId") String playlistId,
+			@RequestParam(value = "page", required = false, defaultValue = "0") int page,
+			@RequestParam(value = "limit", required = false, defaultValue = "0") int limit) {
+		return ApiResponse.success(playlistVideoService.getAllPlaylistVideo(playlistId, page, limit));
+	}
 }

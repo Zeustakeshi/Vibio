@@ -10,5 +10,5 @@ import com.vibio.channel.dto.response.PageableResponse;
 import com.vibio.channel.dto.response.PlaylistVideoResponse;
 
 public interface PlaylistVideoService {
-    PageableResponse<PlaylistVideoResponse> getAllPlaylistVideo(String playlistId, int page, int limit);
+	PageableResponse<PlaylistVideoResponse> getAllPlaylistVideo(String playlistId, int page, int limit);
 }

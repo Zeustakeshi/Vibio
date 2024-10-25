@@ -42,7 +42,7 @@ function WatchVideo() {
     });
 
     const { data: channel } = useQuery({
-        queryKey: ["channel", video],
+        queryKey: ["channel", video?.channelId],
         queryFn: async () => {
             if (!video?.channelId) return;
             if (isAuthenticated) return await getChannel(video.channelId);

@@ -10,8 +10,7 @@ import com.vibio.channel.dto.response.PageableResponse;
 import com.vibio.channel.dto.response.PlaylistResponse;
 
 public interface PlaylistService {
-    PlaylistResponse getPublicPlaylistById(String playlistId);
+	PlaylistResponse getPublicPlaylistById(String playlistId);
 
-    PageableResponse<PlaylistResponse> getAllPlaylistPublicByChannelId(String channelId, int page, int limit);
-
+	PageableResponse<PlaylistResponse> getAllPlaylistPublicByChannelId(String channelId, int page, int limit);
 }

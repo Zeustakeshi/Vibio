@@ -12,11 +12,12 @@ import com.vibio.channel.dto.response.PlaylistVideoResponse;
 
 public interface StudioPlaylistVideoService {
 
-    PageableResponse<PlaylistVideoResponse> getAllPlaylistVideo(String accountId, String playlistId, int page, int limit);
+	PageableResponse<PlaylistVideoResponse> getAllPlaylistVideo(
+			String accountId, String playlistId, int page, int limit);
 
-    Integer addVideoToPlaylist(String accountId, String playlistId, String videoId);
+	Integer addVideoToPlaylist(String accountId, String playlistId, String videoId);
 
-    Integer updateVideoOrder(String accountId, String playlistId, UpdatePlaylistVideoOrderRequest request);
+	Integer updateVideoOrder(String accountId, String playlistId, UpdatePlaylistVideoOrderRequest request);
 
-    void deleteVideoPlaylist(String accountId, String playlistId, String videoId);
+	void deleteVideoPlaylist(String accountId, String playlistId, String videoId);
 }

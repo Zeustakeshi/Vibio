@@ -4,7 +4,6 @@
  *  @created 10/20/2024 1:01 AM
  * */
 
-
 package com.vibio.channel.service.impl;
 
 import com.vibio.channel.client.VideoClient;
@@ -26,122 +25,126 @@ import com.vibio.channel.repository.PlaylistVideoRepository;
 import com.vibio.channel.service.ChannelService;
 import com.vibio.channel.service.StudioPlaylistVideoService;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class StudioPlaylistVideoServiceImpl implements StudioPlaylistVideoService {
 
-    private final ChannelService channelService;
-    private final PlaylistRepository playlistRepository;
-    private final PlaylistVideoRepository playlistVideoRepository;
-    private final VideoClient videoClient;
-    private final PageMapper pageMapper;
-    private final PlaylistMapper playlistMapper;
+	private final ChannelService channelService;
+	private final PlaylistRepository playlistRepository;
+	private final PlaylistVideoRepository playlistVideoRepository;
+	private final VideoClient videoClient;
+	private final PageMapper pageMapper;
+	private final PlaylistMapper playlistMapper;
 
-    @Override
-    public PageableResponse<PlaylistVideoResponse> getAllPlaylistVideo(String accountId, String playlistId, int page, int limit) {
-        PageRequest request = PageRequest.of(page, limit, Sort.by(Sort.Direction.ASC, "order"));
+	@Override
+	public PageableResponse<PlaylistVideoResponse> getAllPlaylistVideo(
+			String accountId, String playlistId, int page, int limit) {
+		PageRequest request = PageRequest.of(page, limit, Sort.by(Sort.Direction.ASC, "order"));
 
-        Page<PlaylistVideo> playlistVideos = playlistVideoRepository.findByPlaylistIdAndAccountId(playlistId, accountId, request);
+		Page<PlaylistVideo> playlistVideos =
+				playlistVideoRepository.findByPlaylistIdAndAccountId(playlistId, accountId, request);
 
-        List<String> videoIds = playlistVideos.map(PlaylistVideo::getVideoId).stream().toList();
+		List<String> videoIds =
+				playlistVideos.map(PlaylistVideo::getVideoId).stream().toList();
 
-        List<VideoResponse> videoResponses = videoClient.findVideosByIds(FindVideosByIdsRequest.builder().ids(videoIds).build()).getData();
+		List<VideoResponse> videoResponses = videoClient
+				.findVideosByIds(FindVideosByIdsRequest.builder().ids(videoIds).build())
+				.getData();
 
-        return pageMapper.toPageableResponse(playlistVideos.map(playlistVideo -> {
-            VideoResponse videoResponse = videoResponses.stream().filter(v -> v.getId().equals(playlistVideo.getVideoId()))
-                    .findFirst()
-                    .orElseThrow(() -> new NotfoundException("video " + playlistVideo.getVideoId() + " not found"));
-            PlaylistVideoResponse playlistVideoResponse = playlistMapper.videoResponseToPlaylistVideoResponse(videoResponse);
-            playlistVideoResponse.setOrder(playlistVideo.getOrder());
-            return playlistVideoResponse;
-        }));
-    }
+		return pageMapper.toPageableResponse(playlistVideos.map(playlistVideo -> {
+			VideoResponse videoResponse = videoResponses.stream()
+					.filter(v -> v.getId().equals(playlistVideo.getVideoId()))
+					.findFirst()
+					.orElseThrow(() -> new NotfoundException("video " + playlistVideo.getVideoId() + " not found"));
+			PlaylistVideoResponse playlistVideoResponse =
+					playlistMapper.videoResponseToPlaylistVideoResponse(videoResponse);
+			playlistVideoResponse.setOrder(playlistVideo.getOrder());
+			return playlistVideoResponse;
+		}));
+	}
 
-    @Override
-    public Integer addVideoToPlaylist(String accountId, String playlistId, String videoId) {
+	@Override
+	public Integer addVideoToPlaylist(String accountId, String playlistId, String videoId) {
 
-        Channel channel = channelService.findByAccountId(accountId);
+		Channel channel = channelService.findByAccountId(accountId);
 
+		Playlist playlist = playlistRepository
+				.findByIdAndChannelId(playlistId, channel.getId())
+				.orElseThrow(() -> new NotfoundException("Playlist " + playlistId + " not found."));
 
-        Playlist playlist = playlistRepository
-                .findByIdAndChannelId(playlistId, channel.getId())
-                .orElseThrow(() -> new NotfoundException("Playlist " + playlistId + " not found."));
+		if (playlistVideoRepository.existsByPlaylistIdAndVideoId(playlistId, videoId)) {
+			throw new ConflictException("Video already existed in playlist");
+		}
 
+		if (!videoClient.introspectVideo(videoId).getData()) {
+			throw new BadRequestException("Invalid videoId " + videoId);
+		}
 
-        if (playlistVideoRepository.existsByPlaylistIdAndVideoId(playlistId, videoId)) {
-            throw new ConflictException("Video already existed in playlist");
-        }
+		Integer videoCount = playlistVideoRepository.countByPlaylistId(playlistId);
+		Integer order = videoCount + 1;
 
-        if (!videoClient.introspectVideo(videoId).getData()) {
-            throw new BadRequestException("Invalid videoId " + videoId);
-        }
+		PlaylistVideo playlistVideo = PlaylistVideo.builder()
+				.order(order)
+				.playlist(playlist)
+				.videoId(videoId)
+				.build();
 
-        Integer videoCount = playlistVideoRepository.countByPlaylistId(playlistId);
-        Integer order = videoCount + 1;
+		playlist.setVideoCount(videoCount + 1);
 
-        PlaylistVideo playlistVideo = PlaylistVideo.builder()
-                .order(order)
-                .playlist(playlist)
-                .videoId(videoId)
-                .build();
+		playlistVideoRepository.save(playlistVideo);
+		playlistRepository.save(playlist);
+		return order;
+	}
 
-        playlist.setVideoCount(videoCount + 1);
+	@Override
+	@Transactional
+	public Integer updateVideoOrder(String accountId, String playlistId, UpdatePlaylistVideoOrderRequest request) {
 
-        playlistVideoRepository.save(playlistVideo);
-        playlistRepository.save(playlist);
-        return order;
-    }
+		channelService.findByAccountId(accountId);
 
-    @Override
-    @Transactional
-    public Integer updateVideoOrder(String accountId, String playlistId, UpdatePlaylistVideoOrderRequest request) {
+		PlaylistVideo playlistVideo = playlistVideoRepository
+				.findByPlaylistIdAndVideoId(playlistId, request.getVideoId())
+				.orElseThrow(() -> new NotfoundException("Video not existed in playlist"));
 
-        channelService.findByAccountId(accountId);
+		int start = playlistVideo.getOrder();
+		int end = Math.min(request.getNewOrder(), playlistVideoRepository.countByPlaylistId(playlistId));
 
-        PlaylistVideo playlistVideo = playlistVideoRepository.findByPlaylistIdAndVideoId(playlistId, request.getVideoId())
-                .orElseThrow(() -> new NotfoundException("Video not existed in playlist"));
+		if (start == end) return start;
 
+		if (start > end) playlistVideoRepository.increasePlaylistVideoOrderInRange(playlistId, end, start - 1);
+		else playlistVideoRepository.decreasePlaylistVideoOrderInRange(playlistId, start + 1, end);
 
-        int start = playlistVideo.getOrder();
-        int end = Math.min(request.getNewOrder(), playlistVideoRepository.countByPlaylistId(playlistId));
+		playlistVideo.setOrder(end);
+		playlistVideoRepository.save(playlistVideo);
 
-        if (start == end) return start;
+		return end;
+	}
 
-        if (start > end) playlistVideoRepository.increasePlaylistVideoOrderInRange(playlistId, end, start - 1);
-        else playlistVideoRepository.decreasePlaylistVideoOrderInRange(playlistId, start + 1, end);
+	@Override
+	@Transactional
+	public void deleteVideoPlaylist(String accountId, String playlistId, String videoId) {
+		Channel channel = channelService.findByAccountId(accountId);
 
-        playlistVideo.setOrder(end);
-        playlistVideoRepository.save(playlistVideo);
+		PlaylistVideo playlistVideo = playlistVideoRepository
+				.findByPlaylistIdAndVideoId(playlistId, videoId)
+				.orElseThrow(() -> new NotfoundException("Video not existed in playlist"));
 
-        return end;
-    }
+		Playlist playlist = playlistRepository
+				.findByIdAndChannelId(playlistId, channel.getId())
+				.orElseThrow(() -> new NotfoundException("Playlist " + playlistId + " not found."));
 
-    @Override
-    @Transactional
-    public void deleteVideoPlaylist(String accountId, String playlistId, String videoId) {
-        Channel channel = channelService.findByAccountId(accountId);
+		Integer videoCount = playlistVideoRepository.countByPlaylistId(playlistId);
 
-        PlaylistVideo playlistVideo = playlistVideoRepository.findByPlaylistIdAndVideoId(playlistId, videoId)
-                .orElseThrow(() -> new NotfoundException("Video not existed in playlist"));
-
-
-        Playlist playlist = playlistRepository
-                .findByIdAndChannelId(playlistId, channel.getId())
-                .orElseThrow(() -> new NotfoundException("Playlist " + playlistId + " not found."));
-
-        Integer videoCount = playlistVideoRepository.countByPlaylistId(playlistId);
-
-        playlist.setVideoCount(Math.max(videoCount - 1, 0));
-        playlistVideoRepository.decreasePlaylistVideoOrderInRange(playlistId, playlistVideo.getOrder(), videoCount);
-        playlistVideoRepository.delete(playlistVideo);
-        playlistRepository.save(playlist);
-    }
+		playlist.setVideoCount(Math.max(videoCount - 1, 0));
+		playlistVideoRepository.decreasePlaylistVideoOrderInRange(playlistId, playlistVideo.getOrder(), videoCount);
+		playlistVideoRepository.delete(playlistVideo);
+		playlistRepository.save(playlist);
+	}
 }

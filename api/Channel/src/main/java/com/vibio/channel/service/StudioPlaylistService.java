@@ -13,14 +13,13 @@ import com.vibio.channel.dto.response.PlaylistResponse;
 
 public interface StudioPlaylistService {
 
-    PageableResponse<PlaylistResponse> getAllByAccountId(String accountId, int page, int limit);
+	PageableResponse<PlaylistResponse> getAllByAccountId(String accountId, int page, int limit);
 
-    PlaylistResponse createPlaylist(String accountId, PlaylistRequest request);
+	PlaylistResponse createPlaylist(String accountId, PlaylistRequest request);
 
-    PlaylistResponse getPlaylistById(String accountId, String playlistId);
+	PlaylistResponse getPlaylistById(String accountId, String playlistId);
 
-    PlaylistResponse updatePlaylist(String accountId, String playlistId, UpdatePlaylistRequest request);
+	PlaylistResponse updatePlaylist(String accountId, String playlistId, UpdatePlaylistRequest request);
 
-    void deletePlaylist(String accountId, String playlistId);
-
+	void deletePlaylist(String accountId, String playlistId);
 }

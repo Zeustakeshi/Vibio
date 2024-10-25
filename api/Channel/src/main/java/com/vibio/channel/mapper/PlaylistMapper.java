@@ -14,8 +14,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface PlaylistMapper {
-    PlaylistResponse playlistToPlaylistResponse(Playlist playlist);
+	PlaylistResponse playlistToPlaylistResponse(Playlist playlist);
 
-    PlaylistVideoResponse videoResponseToPlaylistVideoResponse(VideoResponse videoResponse);
-
+	PlaylistVideoResponse videoResponseToPlaylistVideoResponse(VideoResponse videoResponse);
 }

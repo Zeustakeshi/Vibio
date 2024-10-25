@@ -50,6 +50,8 @@ spring:
             enable: true
             required: true
     default-encoding: UTF-8
+  profiles:
+    active: ${ACTIVE_PROFILE:dev}
 
 
 server:

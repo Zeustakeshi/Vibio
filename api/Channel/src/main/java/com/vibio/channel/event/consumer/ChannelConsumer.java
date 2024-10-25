@@ -18,8 +18,10 @@ public class ChannelConsumer {
 
     private final ChannelService channelService;
 
+
     @KafkaListener(topics = "new_channel", groupId = "${spring.kafka.consumer.group-id}")
     public void NewChannelListener(NewChannelEvent event) {
         channelService.createChannel(event);
     }
+
 }
