@@ -2,32 +2,28 @@ import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { subscribeChannel, unSubscribeChannel } from "../../api/channel";
-import { Avatar, AvatarImage } from "../../components/ui/avatar";
+import { Channel } from "../../common/type/channel";
+import JoinMemberDialog from "../../components/dialog/JoinMemberDialog";
+import MemberInfoDialog from "../../components/dialog/MemberInfoDialog";
 import { Button } from "../../components/ui/button";
 import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../hooks/use-toast";
-import { useWatchVideo } from "../../routes/watch/$videoId";
 
-type Props = {};
+type Props = { channel: Channel };
 
-const ChannelAction = (props: Props) => {
+const ChannelAction = ({ channel }: Props) => {
     const [isSubscribe, setIsSubscribe] = useState<boolean>(false);
-    const [subscribeCount, setSubscribeCount] = useState<number>(0);
 
-    const { video, channel } = useWatchVideo();
-    const { isAuthenticated } = useAuth();
     const navigation = useNavigate();
     const { toast } = useToast();
 
-    if (!video) return <>loading ....</>;
+    const { isAuthenticated } = useAuth();
 
     useEffect(() => {
         if (!channel) return;
         if (channel?.subscribed) {
             setIsSubscribe(channel.subscribed ?? 0);
         }
-
-        setSubscribeCount(channel.subscribeCount);
     }, [channel]);
 
     const subscribeMutation = useMutation({
@@ -54,7 +50,6 @@ const ChannelAction = (props: Props) => {
         try {
             await subscribeMutation.mutateAsync(channel.id);
             setIsSubscribe(true);
-            setSubscribeCount((sub) => sub + 1);
         } catch (error: any) {
             toast({
                 title: "Đăng ký thất bại",
@@ -74,7 +69,6 @@ const ChannelAction = (props: Props) => {
         try {
             await unSubscribeMutation.mutateAsync(channel.id);
             setIsSubscribe(false);
-            setSubscribeCount((sub) => sub - 1);
         } catch (error: any) {
             toast({
                 title: "Hủy đăng ký thất bại",
@@ -82,34 +76,12 @@ const ChannelAction = (props: Props) => {
             });
         }
     };
-
     return (
-        <div className="flex justify-start items-center gap-2">
-            <div
-                onClick={() => {
-                    if (!channel) return;
-                    navigation({
-                        to: "/channel/$channelId",
-                        params: { channelId: channel?.id },
-                    });
-                }}
-                className="flex justify-start items-center gap-2 mr-3 cursor-pointer"
-            >
-                <Avatar>
-                    <AvatarImage src={channel?.thumbnail}></AvatarImage>
-                </Avatar>
-                <div>
-                    <h4 className="font-semibold text-sm">{channel?.name}</h4>
-                    <p className="text-xs text-muted-foreground">
-                        {subscribeCount} người đăng ký
-                    </p>
-                </div>
-            </div>
+        <div className="flex justify-start items-center gap-2 mt-2">
             {isSubscribe ? (
                 <Button
                     onClick={handleUnSubscribeChannel}
-                    variant="secondary"
-                    className="rounded-full"
+                    variant="outline"
                     disabled={unSubscribeMutation.isPending}
                 >
                     {unSubscribeMutation.isPending ? "Đang hủy" : "Hủy đăng ký"}
@@ -117,11 +89,20 @@ const ChannelAction = (props: Props) => {
             ) : (
                 <Button
                     onClick={handleSubscribeChannel}
-                    className="rounded-full"
                     disabled={subscribeMutation.isPending}
                 >
                     {subscribeMutation.isPending ? "Đang đăng ký" : "đăng ký"}
                 </Button>
+            )}
+            {channel && !channel.member && (
+                <JoinMemberDialog channel={channel}>
+                    <Button variant="outline">Tham gia hội viên</Button>
+                </JoinMemberDialog>
+            )}
+            {channel && channel.member && (
+                <MemberInfoDialog channel={channel}>
+                    <Button variant="outline">Thông tin hội viên</Button>
+                </MemberInfoDialog>
             )}
         </div>
     );

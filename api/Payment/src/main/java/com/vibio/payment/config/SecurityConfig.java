@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request.requestMatchers("/internal/**")
                         .permitAll()
                         .anyRequest()
-                        .permitAll())
+                        .authenticated())
                 .oauth2ResourceServer(
                         oauth -> oauth.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)));
 

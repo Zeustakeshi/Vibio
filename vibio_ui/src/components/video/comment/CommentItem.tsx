@@ -37,6 +37,8 @@ const CommentItem = ({ comment, isReply }: Props, ref: any) => {
                         className={cn("font-semibold ", {
                             "px-2 py-1 rounded-md bg-primary text-white font-semibold":
                                 channel?.accountId === comment.owner.id,
+                            "px-2 py-1 rounded-md bg-yellow-500 text-white font-semibold":
+                                channel?.member,
                         })}
                     >
                         {comment.owner.username}

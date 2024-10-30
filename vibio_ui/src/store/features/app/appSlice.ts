@@ -10,7 +10,7 @@ interface AppState {
 
 // Define the initial state using that type
 const initialState: AppState = {
-    navState: "half-open",
+    navState: "open",
 };
 
 export const appSlice = createSlice({

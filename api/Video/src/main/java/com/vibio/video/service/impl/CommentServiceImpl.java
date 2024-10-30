@@ -6,8 +6,10 @@
 
 package com.vibio.video.service.impl;
 
+import com.vibio.video.client.ChannelClient;
 import com.vibio.video.client.UserClient;
 import com.vibio.video.common.enums.ReactionType;
+import com.vibio.video.dto.request.CheckMembershipRequest;
 import com.vibio.video.dto.request.CommentRequest;
 import com.vibio.video.dto.request.FindAccountsByIdsRequest;
 import com.vibio.video.dto.request.UpdateCommentRequest;
@@ -46,6 +48,7 @@ public class CommentServiceImpl implements CommentService {
     private final UserClient userClient;
     private final PageMapper pageMapper;
     private final CommentEventProducer commentEventProducer;
+    private final ChannelClient channelClient;
 
     @Override
     public CommentResponse crateComment(String videoId, String accountId, CommentRequest request) {
@@ -95,9 +98,18 @@ public class CommentServiceImpl implements CommentService {
 
         List<UserResponse> users = Collections.emptyList();
 
-        if (!comments.isEmpty()) users = fetchUsersForComments(comments);
+        List<String> members = Collections.emptyList();
 
-        return mapCommentsToResponse(comments, users, null);
+        if (!comments.isEmpty()) {
+            users = fetchUsersForComments(comments);
+
+            String channelId = videoRepository.getChannelIdByVideoId(videoId).orElseThrow();
+
+            members = fetchMemberForComments(channelId, users.stream().map(UserResponse::getId).toList());
+        }
+
+
+        return mapCommentsToResponse(comments, users, members, null);
     }
 
     @Override
@@ -107,9 +119,17 @@ public class CommentServiceImpl implements CommentService {
 
         List<UserResponse> users = Collections.emptyList();
 
-        if (!comments.isEmpty()) users = fetchUsersForComments(comments);
+        List<String> members = Collections.emptyList();
 
-        return mapCommentsToResponse(comments, users, accountId);
+        if (!comments.isEmpty()) {
+            users = fetchUsersForComments(comments);
+
+            String channelId = videoRepository.getChannelIdByVideoId(videoId).orElseThrow();
+
+            members = fetchMemberForComments(channelId, users.stream().map(UserResponse::getId).toList());
+        }
+
+        return mapCommentsToResponse(comments, users, members, accountId);
     }
 
     @Override
@@ -180,12 +200,20 @@ public class CommentServiceImpl implements CommentService {
                 .getData();
     }
 
-    private PageableResponse<CommentResponse> mapCommentsToResponse(
-            Page<Comment> comments, List<UserResponse> users, String accountId) {
-        return pageMapper.toPageableResponse(comments.map(comment -> mapCommentToResponse(comment, users, accountId)));
+    private List<String> fetchMemberForComments(String channelId, List<String> userIds) {
+        return channelClient.checkMembershipStatus(new CheckMembershipRequest(channelId, userIds)).getData();
     }
 
-    private CommentResponse mapCommentToResponse(Comment comment, List<UserResponse> users, String accountId) {
+    private PageableResponse<CommentResponse> mapCommentsToResponse(
+            Page<Comment> comments, List<UserResponse> users, List<String> members, String accountId) {
+
+        return pageMapper.toPageableResponse(comments.map(comment -> {
+            boolean isMember = members.contains(comment.getUserId());
+            return mapCommentToResponse(comment, users, isMember, accountId);
+        }));
+    }
+
+    private CommentResponse mapCommentToResponse(Comment comment, List<UserResponse> users, boolean isMember, String accountId) {
         CommentResponse commentResponse = commentMapper.commentToCommentResponse(comment);
         UserResponse user = users.stream()
                 .filter(u -> u.getId().equals(comment.getUserId()))
@@ -202,6 +230,7 @@ public class CommentServiceImpl implements CommentService {
         }
 
         commentResponse.setOwner(user);
+        commentResponse.setMember(isMember);
 
         return commentResponse;
     }
