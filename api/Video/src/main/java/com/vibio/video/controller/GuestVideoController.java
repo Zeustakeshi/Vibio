@@ -42,12 +42,6 @@ public class GuestVideoController {
         return ApiResponse.success(videoService.getVideoByIdGuest(videoId));
     }
 
-    @GetMapping("/test")
-    @ResponseStatus(HttpStatus.OK)
-    public ApiResponse<?> getVideoUrl(@RequestParam("id") String id) {
-        return ApiResponse.success(cloudinaryService.generateSignedVideoUrl(id, 1000));
-    }
-
     ///
     @GetMapping("/test-video")
     @ResponseStatus(HttpStatus.OK)
@@ -58,8 +52,8 @@ public class GuestVideoController {
             videos.add(Video.builder()
                     .title("video_" + (i + 1))
                     .description("test video -----")
-                    .channelId("K_7eJM__WQOS6Fk_hmeRu")
-                    .ownerId("7s2y3zHOfSJgSlspkhRhC")
+                    .channelId("GuSzItb2xwFOdXZU2Tfqi")
+                    .ownerId("Yq4PXydce6VtxzSwBx3JA")
                     .allowedComment(true)
                     .uploadStatus(UploadStatus.SUCCESS)
                     .url(

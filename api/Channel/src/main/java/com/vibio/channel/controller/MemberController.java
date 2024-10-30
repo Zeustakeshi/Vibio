@@ -23,6 +23,15 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
     private final MemberService memberService;
 
+    @GetMapping("/info")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<?> getMemberInfo(
+            @PathVariable("channelId") String channelId,
+            @AuthenticationPrincipal AuthenticatedUser user
+    ) {
+        return ApiResponse.success(memberService.getMemberInfo(channelId, user.getId()));
+    }
+
     @PostMapping()
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<?> joinMember(

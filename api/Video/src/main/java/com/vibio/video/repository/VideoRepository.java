@@ -35,4 +35,7 @@ public interface VideoRepository extends JpaRepository<Video, String> {
     @Query("select count(v) > 0 from Video  v where v.id = :videoId and v.visibility = 'PUBLIC'")
     boolean existsAndPublicById(String videoId);
 
+
+    @Query("select v.channelId from Video v where v.id = :videoId")
+    Optional<String> getChannelIdByVideoId(String videoId);
 }

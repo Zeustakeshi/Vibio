@@ -26,6 +26,8 @@ public class CommentResponse {
 
     private boolean isDisliked;
 
+    private boolean isMember;
+
     private boolean isLovedByChannel;
 
     @Builder.Default
