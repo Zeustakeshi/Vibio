@@ -51,6 +51,7 @@ server:
 services-url:
   user: ${USER_SERVICE_URL}
   channel: ${CHANNEL_SERVICE_URL}
+  search: ${SEARCH_SERVICE_URL}
 
 cloudinary:
   cloud-name: ${CLOUDINARY_NAME}

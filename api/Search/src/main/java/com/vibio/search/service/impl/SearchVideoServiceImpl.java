@@ -80,7 +80,7 @@ public class SearchVideoServiceImpl implements SearchVideoService {
         var multiMatchQuery = QueryBuilders.multiMatch()
                 .query(query)
                 .type(TextQueryType.BestFields)
-                .fields("keyword^3", "title^2", "tags^2")
+                .fields("title^3", "keyword^2", "tags^2")
                 .fuzziness("AUTO")
                 .build();
 
@@ -91,8 +91,8 @@ public class SearchVideoServiceImpl implements SearchVideoService {
                 .build();
 
         var boolQuery = QueryBuilders.bool()
-                .should(q -> q.multiMatch(multiMatchQuery))
                 .should(q -> q.match(matchChannelNameQuery))
+                .should(q -> q.multiMatch(multiMatchQuery))
                 .build();
 
         Pageable pageable = PageRequest.of(
