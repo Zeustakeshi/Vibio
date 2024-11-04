@@ -6,12 +6,13 @@ import { getPlaylistById, getPublicPlaylistById } from "../../api/playlist";
 import { getVideoDetail, getVideoDetailGuest } from "../../api/video";
 import { Channel } from "../../common/type/channel";
 import { VideoDetail } from "../../common/type/video";
+import { Skeleton } from "../../components/ui/skeleton";
 import Comment from "../../components/video/comment/Comment";
 import VideoPlayer from "../../components/video/VideoPlayer";
 import { useAuth } from "../../context/AuthContext";
 import { usePlaylistControl } from "../../context/PlaylistControlContext";
 import ChannelAction from "../../modules/watch/ChannelAction";
-import RecommendVideo from "../../modules/watch/RecommendVideo";
+import RelatedVideo from "../../modules/watch/RelatedVideo";
 import VideoAction from "../../modules/watch/VideoAction";
 import VideoDescription from "../../modules/watch/VideoDescription";
 
@@ -84,7 +85,28 @@ function WatchVideo() {
 
     if (error) return <div>{JSON.stringify(error)}</div>;
 
-    if (!video) return <></>;
+    if (!video)
+        return (
+            <div className="p-4 flex w-full h-full items-start gap-5">
+                <div className="flex-1">
+                    {/* video player loading */}
+                    <Skeleton className="w-full h-full aspect-video"></Skeleton>
+                    {/* video title loading */}
+                    <Skeleton className="w-[80%] h-4 rounded-full my-3"></Skeleton>
+                    <div className="flex justify-between items-center gap-2">
+                        {/* channel action loading */}
+                        <div className="flex justify-start items-center gap-2">
+                            <Skeleton className="size-[40px] rounded-full"></Skeleton>
+                            <Skeleton className="w-[300px] h-8 rounded-xl"></Skeleton>
+                        </div>
+                        {/* video action loading */}
+                        <Skeleton className="w-[300px] h-8 rounded-xl"></Skeleton>
+                    </div>
+                </div>
+                {/* relative video loading */}
+                <Skeleton className="xl:block hidden w-[28%] h-full"></Skeleton>
+            </div>
+        );
 
     return (
         <WatchVideoContext.Provider value={{ video, isLoading, channel }}>
@@ -99,10 +121,14 @@ function WatchVideo() {
                         <VideoAction></VideoAction>
                     </div>
                     <VideoDescription></VideoDescription>
-                    <Comment></Comment>
+                    {video.allowedComment ? (
+                        <Comment></Comment>
+                    ) : (
+                        <p>Tính năng bình luận bị tắt trên</p>
+                    )}
                 </div>
                 <div className="xl:block hidden w-[28%] h-full">
-                    <RecommendVideo></RecommendVideo>
+                    <RelatedVideo></RelatedVideo>
                 </div>
             </div>
         </WatchVideoContext.Provider>

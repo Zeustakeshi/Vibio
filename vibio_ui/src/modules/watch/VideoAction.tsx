@@ -21,10 +21,10 @@ const VideoAction = ({}: Props) => {
         liked: boolean;
         disliked: boolean;
     }>({
-        liked: video.liked,
-        disliked: video.disliked,
+        liked: video?.liked || false,
+        disliked: video?.disliked || false,
     });
-    const [likeCount, setLikeCount] = useState<number>(video.likeCount);
+    const [likeCount, setLikeCount] = useState<number>(video?.likeCount);
 
     const reactionVideoMutation = useMutation({
         mutationKey: [

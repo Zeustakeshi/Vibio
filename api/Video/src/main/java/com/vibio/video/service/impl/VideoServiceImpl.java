@@ -17,7 +17,6 @@ import com.vibio.video.mapper.VideoMapper;
 import com.vibio.video.repository.CommentRepository;
 import com.vibio.video.repository.VideoReactionRepository;
 import com.vibio.video.repository.VideoRepository;
-import com.vibio.video.service.VideoReactionService;
 import com.vibio.video.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -37,7 +36,6 @@ public class VideoServiceImpl implements VideoService {
     private final ChannelClient channelClient;
     private final VideoReactionRepository videoReactionRepository;
     private final CommentRepository commentRepository;
-    private final VideoReactionService videoReactionService;
 
     @Override
     public PageableResponse<VideoResponse> getFeeds(String accountId, int page, int limit) {
