@@ -13,8 +13,9 @@ import com.vibio.video.common.enums.Visibility;
 import com.vibio.video.dto.request.UpdateVideoRequest;
 import com.vibio.video.dto.response.*;
 import com.vibio.video.entity.Video;
-import com.vibio.video.event.eventModel.UploadThumbnailEvent;
+import com.vibio.video.event.eventModel.UpdateMetadataEvent;
 import com.vibio.video.event.eventModel.UploadVideoEvent;
+import com.vibio.video.event.eventModel.UploadVideoThumbnailEvent;
 import com.vibio.video.event.producer.VideoEventProducer;
 import com.vibio.video.exception.BadRequestException;
 import com.vibio.video.exception.NotfoundException;
@@ -111,7 +112,20 @@ public class StudioVideoServiceImpl implements StudioVideoService {
             video.setUploadStatus(UploadStatus.FAILED);
             // TODO: send notify video upload failed to user (accountId)
         }
-        videoRepository.save(video);
+        Video updatedVideo = videoRepository.save(video);
+        videoEventProducer.updateMetadata(UpdateMetadataEvent
+                .builder()
+                .videoId(videoId)
+                .tags(updatedVideo.getTags())
+                .channel(ChannelResponse.builder()
+                        .name(channel.getName())
+                        .thumbnail(channel.getThumbnail())
+                        .id(channel.getId())
+                        .build())
+                .visibility(updatedVideo.getVisibility())
+                .thumbnail(updatedVideo.getThumbnail())
+                .title(updatedVideo.getTitle())
+                .build());
     }
 
     @Override
@@ -158,6 +172,20 @@ public class StudioVideoServiceImpl implements StudioVideoService {
 
         Video updatedVideo = videoRepository.save(video);
 
+        videoEventProducer.updateMetadata(UpdateMetadataEvent
+                .builder()
+                .videoId(videoId)
+                .tags(updatedVideo.getTags())
+                .channel(ChannelResponse.builder()
+                        .name(channel.getName())
+                        .thumbnail(channel.getThumbnail())
+                        .id(channel.getId())
+                        .build())
+                .visibility(updatedVideo.getVisibility())
+                .thumbnail(updatedVideo.getThumbnail())
+                .title(updatedVideo.getTitle())
+                .build());
+
         return videoMapper.videoToStudioVideoDetailResponse(updatedVideo);
     }
 
@@ -170,7 +198,7 @@ public class StudioVideoServiceImpl implements StudioVideoService {
             throw new NotfoundException("Video not found");
         }
 
-        UploadThumbnailEvent event = UploadThumbnailEvent.builder()
+        UploadVideoThumbnailEvent event = UploadVideoThumbnailEvent.builder()
                 .channelId(channel.getId())
                 .videoId(videoId)
                 .thumbnail(thumbnail.getInputStream().readAllBytes())

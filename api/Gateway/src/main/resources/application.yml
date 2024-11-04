@@ -91,6 +91,14 @@ spring:
             - StripPrefix=2
             - RewritePath=/payment(?<segment>/?.*), /payment${segment}
             - AuthorizationFilter
+        #============================  Search route ============================#
+        - id: search_route
+          uri: ${services.search-service}
+          predicates:
+            - Path= ${api.prefix}/search/**
+          filters:
+            - StripPrefix=2
+            - RewritePath=/search(?<segment>/?.*), /search${segment}
 
 services:
   user-service: ${USER_SERVICE_URL:http://localhost:8082}
@@ -98,3 +106,4 @@ services:
   video-service: ${VIDEO_SERVICE_URL:http://localhost:8086}
   notification-service: ${NOTIFICATION_SERVICE:http://localhost:8088}
   payment-service: ${PAYMENT_SERVICE:http://localhost:8098}
+  search-service: ${SEARCH_SERVICE:http://localhost:8088}

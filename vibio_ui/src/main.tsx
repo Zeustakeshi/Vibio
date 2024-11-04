@@ -9,7 +9,6 @@ import { Toaster } from "./components/ui/toaster";
 import { AuthProvider } from "./context/AuthContext";
 import "./index.css";
 import { store } from "./store/store";
-
 // Create a client
 const queryClient = new QueryClient();
 

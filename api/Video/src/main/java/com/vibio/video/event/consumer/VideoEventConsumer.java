@@ -7,8 +7,8 @@
 package com.vibio.video.event.consumer;
 
 import com.vibio.video.event.eventModel.ReactionVideoEvent;
-import com.vibio.video.event.eventModel.UploadThumbnailEvent;
 import com.vibio.video.event.eventModel.UploadVideoEvent;
+import com.vibio.video.event.eventModel.UploadVideoThumbnailEvent;
 import com.vibio.video.service.StudioVideoService;
 import com.vibio.video.service.VideoService;
 import lombok.RequiredArgsConstructor;
@@ -20,23 +20,23 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class VideoEventConsumer {
 
-	private final StudioVideoService studioVideoService;
-	private final VideoService videoService;
+    private final StudioVideoService studioVideoService;
+    private final VideoService videoService;
 
-	@EventListener
-	public void handleUploadVideoEvent(UploadVideoEvent event) {
-		studioVideoService.uploadVideoAsync(
-				event.getVideoId(), event.getChannel(), event.getAccountId(), event.getVideo());
-	}
+    @EventListener
+    public void handleUploadVideoEvent(UploadVideoEvent event) {
+        studioVideoService.uploadVideoAsync(
+                event.getVideoId(), event.getChannel(), event.getAccountId(), event.getVideo());
+    }
 
-	@EventListener
-	public void handleUploadThumbnailEvent(UploadThumbnailEvent event) {
-		studioVideoService.uploadThumbnailAsync(
-				event.getVideoId(), event.getChannelId(), event.getAccountId(), event.getThumbnail());
-	}
+    @EventListener
+    public void handleUploadVideoThumbnail(UploadVideoThumbnailEvent event) {
+        studioVideoService.uploadThumbnailAsync(
+                event.getVideoId(), event.getChannelId(), event.getAccountId(), event.getThumbnail());
+    }
 
-	@KafkaListener(topics = "video_reaction", groupId = "${spring.kafka.consumer.group-id}")
-	public void handleReactionVideoEvent(ReactionVideoEvent event) {
-		videoService.updateVideoReactionCount(event.getVideoId());
-	}
+    @KafkaListener(topics = "video_reaction", groupId = "${spring.kafka.consumer.group-id}")
+    public void reactionVideoEventListener(ReactionVideoEvent event) {
+        videoService.updateVideoReactionCount(event.getVideoId());
+    }
 }

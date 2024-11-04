@@ -14,6 +14,7 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as ShortsIndexImport } from './routes/shorts/index'
+import { Route as SearchIndexImport } from './routes/search/index'
 import { Route as PlaylistsIndexImport } from './routes/playlists/index'
 import { Route as appIndexImport } from './routes/(app)/index'
 import { Route as WatchVideoIdImport } from './routes/watch/$videoId'
@@ -46,6 +47,11 @@ const AuthOtpRoute = AuthOtpImport.update({
 
 const ShortsIndexRoute = ShortsIndexImport.update({
   path: '/shorts/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const SearchIndexRoute = SearchIndexImport.update({
+  path: '/search/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -160,6 +166,13 @@ declare module '@tanstack/react-router' {
       path: '/playlists'
       fullPath: '/playlists'
       preLoaderRoute: typeof PlaylistsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/search/': {
+      id: '/search/'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchIndexImport
       parentRoute: typeof rootRoute
     }
     '/shorts/': {
@@ -281,6 +294,7 @@ export interface FileRoutesByFullPath {
   '/watch/$videoId': typeof WatchVideoIdRoute
   '/': typeof appIndexRoute
   '/playlists': typeof PlaylistsIndexRoute
+  '/search': typeof SearchIndexRoute
   '/shorts': typeof ShortsIndexRoute
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
@@ -297,6 +311,7 @@ export interface FileRoutesByTo {
   '/watch/$videoId': typeof WatchVideoIdRoute
   '/': typeof appIndexRoute
   '/playlists': typeof PlaylistsIndexRoute
+  '/search': typeof SearchIndexRoute
   '/shorts': typeof ShortsIndexRoute
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
@@ -315,6 +330,7 @@ export interface FileRoutesById {
   '/watch/$videoId': typeof WatchVideoIdRoute
   '/': typeof appIndexRoute
   '/playlists/': typeof PlaylistsIndexRoute
+  '/search/': typeof SearchIndexRoute
   '/shorts/': typeof ShortsIndexRoute
   '/auth/_auth/login': typeof AuthAuthLoginRoute
   '/auth/_auth/register': typeof AuthAuthRegisterRoute
@@ -334,6 +350,7 @@ export interface FileRouteTypes {
     | '/watch/$videoId'
     | '/'
     | '/playlists'
+    | '/search'
     | '/shorts'
     | '/auth/login'
     | '/auth/register'
@@ -349,6 +366,7 @@ export interface FileRouteTypes {
     | '/watch/$videoId'
     | '/'
     | '/playlists'
+    | '/search'
     | '/shorts'
     | '/auth/login'
     | '/auth/register'
@@ -365,6 +383,7 @@ export interface FileRouteTypes {
     | '/watch/$videoId'
     | '/'
     | '/playlists/'
+    | '/search/'
     | '/shorts/'
     | '/auth/_auth/login'
     | '/auth/_auth/register'
@@ -383,6 +402,7 @@ export interface RootRouteChildren {
   WatchVideoIdRoute: typeof WatchVideoIdRoute
   appIndexRoute: typeof appIndexRoute
   PlaylistsIndexRoute: typeof PlaylistsIndexRoute
+  SearchIndexRoute: typeof SearchIndexRoute
   ShortsIndexRoute: typeof ShortsIndexRoute
   PaymentMembershipResultRoute: typeof PaymentMembershipResultRoute
 }
@@ -394,6 +414,7 @@ const rootRouteChildren: RootRouteChildren = {
   WatchVideoIdRoute: WatchVideoIdRoute,
   appIndexRoute: appIndexRoute,
   PlaylistsIndexRoute: PlaylistsIndexRoute,
+  SearchIndexRoute: SearchIndexRoute,
   ShortsIndexRoute: ShortsIndexRoute,
   PaymentMembershipResultRoute: PaymentMembershipResultRoute,
 }
@@ -416,6 +437,7 @@ export const routeTree = rootRoute
         "/watch/$videoId",
         "/",
         "/playlists/",
+        "/search/",
         "/shorts/",
         "/payment/membership/result"
       ]
@@ -449,6 +471,9 @@ export const routeTree = rootRoute
     },
     "/playlists/": {
       "filePath": "playlists/index.tsx"
+    },
+    "/search/": {
+      "filePath": "search/index.tsx"
     },
     "/shorts/": {
       "filePath": "shorts/index.tsx"

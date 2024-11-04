@@ -1,0 +1,41 @@
+spring:
+  elasticsearch:
+    restclient:
+      ssl:
+        bundle:
+  application:
+    name: search-service
+  profiles:
+    active: ${ACTIVE_PROFILE:dev}
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      fail-on-empty-beans: false
+      close-closeable: true
+      flush-after-write-value: true
+      write-date-keys-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+  kafka:
+    producer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}
+      group-id: search_group
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: '*'
+
+server:
+  port: 8088
+  servlet:
+    context-path: /search
+services-url:
+  user: ${USER_SERVICE_URL}
+  channel: ${CHANNEL_SERVICE_URL}
+
+elasticsearch:
+  url: ${ELASTICSEARCH_URL}
+  apiKey: ${ELASTICSEARCH_API_KEY}

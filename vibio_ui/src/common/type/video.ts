@@ -9,17 +9,28 @@ export type Video = {
     views: number;
 };
 
-export type videoDetail = {
+export type VideoDetail = {
     id: string;
     channelId: string;
+    url: string;
     title: string;
     description: string;
     viewCount: number;
     likeCount: number;
+    thumbnail: string;
     commentCount: number;
     liked: boolean;
     disliked: boolean;
     allowedComment: boolean;
     createdAt: string;
     updatedAt: string;
+};
+
+export type SearchVideo = {
+    id: string;
+    title: string;
+    thumbnail: string;
+    channel: ChannelBasicInfo;
+    updatedAt: string;
+    createdAt: string;
 };

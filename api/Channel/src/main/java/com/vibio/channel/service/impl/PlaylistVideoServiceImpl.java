@@ -17,44 +17,51 @@ import com.vibio.channel.mapper.PlaylistMapper;
 import com.vibio.channel.model.PlaylistVideo;
 import com.vibio.channel.repository.PlaylistVideoRepository;
 import com.vibio.channel.service.PlaylistVideoService;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PlaylistVideoServiceImpl implements PlaylistVideoService {
-	private final PlaylistVideoRepository playlistVideoRepository;
-	private final VideoClient videoClient;
-	private final PageMapper pageMapper;
-	private final PlaylistMapper playlistMapper;
+    private final PlaylistVideoRepository playlistVideoRepository;
+    private final VideoClient videoClient;
+    private final PageMapper pageMapper;
+    private final PlaylistMapper playlistMapper;
 
-	@Override
-	public PageableResponse<PlaylistVideoResponse> getAllPlaylistVideo(String playlistId, int page, int limit) {
+    @Override
+    public PageableResponse<PlaylistVideoResponse> getAllPlaylistVideo(String playlistId, int page, int limit) {
 
-		PageRequest request = PageRequest.of(page, limit, Sort.by(Sort.Direction.ASC, "order"));
+        PageRequest request = PageRequest.of(page, limit, Sort.by(Sort.Direction.ASC, "order"));
 
-		Page<PlaylistVideo> playlistVideos = playlistVideoRepository.findAllByPublicPlaylistId(playlistId, request);
+        Page<PlaylistVideo> playlistVideos = playlistVideoRepository.findAllByPublicPlaylistId(playlistId, request);
 
-		List<String> videoIds =
-				playlistVideos.map(PlaylistVideo::getVideoId).stream().toList();
+        List<String> videoIds =
+                playlistVideos.map(PlaylistVideo::getVideoId).stream().toList();
 
-		List<VideoResponse> videoResponses = videoClient
-				.findVideosByIds(FindVideosByIdsRequest.builder().ids(videoIds).build())
-				.getData();
+        List<VideoResponse> videoResponses;
+        if (!videoIds.isEmpty()) {
+            videoResponses = videoClient
+                    .findVideosByIds(FindVideosByIdsRequest.builder().ids(videoIds).build())
+                    .getData();
+        } else {
+            videoResponses = new ArrayList<>();
+        }
 
-		return pageMapper.toPageableResponse(playlistVideos.map(playlistVideo -> {
-			VideoResponse videoResponse = videoResponses.stream()
-					.filter(v -> v.getId().equals(playlistVideo.getVideoId()))
-					.findFirst()
-					.orElseThrow(() -> new NotfoundException("video " + playlistVideo.getVideoId() + " not found"));
-			PlaylistVideoResponse playlistVideoResponse =
-					playlistMapper.videoResponseToPlaylistVideoResponse(videoResponse);
-			playlistVideoResponse.setOrder(playlistVideo.getOrder());
-			return playlistVideoResponse;
-		}));
-	}
+        return pageMapper.toPageableResponse(playlistVideos.map(playlistVideo -> {
+            VideoResponse videoResponse = videoResponses.stream()
+                    .filter(v -> v.getId().equals(playlistVideo.getVideoId()))
+                    .findFirst()
+                    .orElseThrow(() -> new NotfoundException("video " + playlistVideo.getVideoId() + " not found"));
+            PlaylistVideoResponse playlistVideoResponse =
+                    playlistMapper.videoResponseToPlaylistVideoResponse(videoResponse);
+            playlistVideoResponse.setOrder(playlistVideo.getOrder());
+            return playlistVideoResponse;
+        }));
+    }
 }
