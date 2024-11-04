@@ -1,24 +1,31 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { getChannel, getChannelGuest } from "../../api/channel";
+import { getPlaylistById, getPublicPlaylistById } from "../../api/playlist";
 import { getVideoDetail, getVideoDetailGuest } from "../../api/video";
 import { Channel } from "../../common/type/channel";
-import { videoDetail } from "../../common/type/video";
+import { VideoDetail } from "../../common/type/video";
 import Comment from "../../components/video/comment/Comment";
 import VideoPlayer from "../../components/video/VideoPlayer";
 import { useAuth } from "../../context/AuthContext";
+import { usePlaylistControl } from "../../context/PlaylistControlContext";
 import ChannelAction from "../../modules/watch/ChannelAction";
 import RecommendVideo from "../../modules/watch/RecommendVideo";
 import VideoAction from "../../modules/watch/VideoAction";
 import VideoDescription from "../../modules/watch/VideoDescription";
 
 export const Route = createFileRoute("/watch/$videoId")({
+    validateSearch: (search) => {
+        return {
+            list: (search.list as string) || "",
+        };
+    },
     component: WatchVideo,
 });
 
 export interface WatchVideoContext {
-    video: videoDetail;
+    video: VideoDetail;
     isLoading: boolean;
     channel?: Channel;
 }
@@ -27,7 +34,17 @@ const WatchVideoContext = createContext<WatchVideoContext | null>(null);
 
 function WatchVideo() {
     const { videoId } = Route.useParams();
+    const { list: playlistId } = Route.useSearch();
     const { isAuthenticated } = useAuth();
+    const { setPlaylist, setPlayingVideo } = usePlaylistControl();
+
+    const { mutateAsync: loadPlaylist } = useMutation({
+        mutationKey: ["playlist-detail", playlistId],
+        mutationFn: () => {
+            if (isAuthenticated) return getPlaylistById(playlistId);
+            else return getPublicPlaylistById(playlistId);
+        },
+    });
 
     const {
         data: video,
@@ -51,6 +68,19 @@ function WatchVideo() {
         staleTime: 10000,
         enabled: !!video,
     });
+
+    useEffect(() => {
+        if (!video) return;
+        setPlayingVideo(video);
+    }, [video]);
+
+    useEffect(() => {
+        if (!playlistId) return;
+        (async () => {
+            const playlist = await loadPlaylist();
+            setPlaylist(playlist);
+        })();
+    }, [playlistId]);
 
     if (error) return <div>{JSON.stringify(error)}</div>;
 

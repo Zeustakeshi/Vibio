@@ -15,8 +15,8 @@ import lombok.EqualsAndHashCode;
 @Builder
 @EqualsAndHashCode(callSuper = true)
 public class UploadVideoEvent extends Event {
-	private byte[] video;
-	private String videoId;
-	private ChannelDetailResponse channel;
-	private String accountId;
+    private byte[] video;
+    private String videoId;
+    private ChannelDetailResponse channel;
+    private String accountId;
 }

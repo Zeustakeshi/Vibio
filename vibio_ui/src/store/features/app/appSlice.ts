@@ -14,7 +14,7 @@ const initialState: AppState = {
 };
 
 export const appSlice = createSlice({
-    name: "counter",
+    name: "app",
     // `createSlice` will infer the state type from the `initialState` argument
     initialState,
     reducers: {

@@ -1,9 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { BiDislike, BiLike } from "react-icons/bi";
 import { reactionComment, unReactionComment } from "../../../api/comment";
 import { ReactionType } from "../../../common/enum";
 import { Comment } from "../../../common/type/comment";
+import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../hooks/use-toast";
 import { cn } from "../../../lib/utils";
 import { useWatchVideo } from "../../../routes/watch/$videoId";
@@ -15,6 +17,7 @@ type Props = {
 };
 
 const CommentAction = ({ comment }: Props) => {
+    const { isAuthenticated } = useAuth();
     const { video } = useWatchVideo();
     const [isReply, setIsReply] = useState<boolean>(false);
     const [reaction, setReaction] = useState<{
@@ -49,8 +52,13 @@ const CommentAction = ({ comment }: Props) => {
     });
 
     const { toast } = useToast();
+    const navigation = useNavigate();
 
     const handleReactionComment = async (reactionType: ReactionType) => {
+        if (!isAuthenticated) {
+            navigation({ to: "/auth/login" });
+            return;
+        }
         try {
             await reactionMutation.mutateAsync(reactionType);
             if (reactionType === ReactionType.LIKE) {
@@ -85,6 +93,10 @@ const CommentAction = ({ comment }: Props) => {
     };
 
     const handleUnReactionComment = async (reactionType: ReactionType) => {
+        if (!isAuthenticated) {
+            navigation({ to: "/auth/login" });
+            return;
+        }
         try {
             await unReactionMutation.mutateAsync(reactionType);
 
@@ -149,13 +161,15 @@ const CommentAction = ({ comment }: Props) => {
                     <span className="mx-3">{reactionCount.dislike}</span>
                     <BiDislike size={18} />
                 </Button>
-                <Button
-                    onClick={() => setIsReply((prev) => !prev)}
-                    size="sm"
-                    variant="ghost"
-                >
-                    Phản hồi
-                </Button>
+                {isAuthenticated && (
+                    <Button
+                        onClick={() => setIsReply((prev) => !prev)}
+                        size="sm"
+                        variant="ghost"
+                    >
+                        Phản hồi
+                    </Button>
+                )}
             </div>
             {isReply && (
                 <div>

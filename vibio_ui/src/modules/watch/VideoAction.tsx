@@ -1,4 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { BiDislike, BiLike } from "react-icons/bi";
 import { IoMdMore } from "react-icons/io";
@@ -7,6 +8,7 @@ import { TbShare3 } from "react-icons/tb";
 import { reactionVideo, unReactionVideo } from "../../api/video";
 import { ReactionType } from "../../common/enum";
 import { Button } from "../../components/ui/button";
+import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../hooks/use-toast";
 import { cn } from "../../lib/utils";
 import { useWatchVideo } from "../../routes/watch/$videoId";
@@ -14,7 +16,7 @@ type Props = {};
 
 const VideoAction = ({}: Props) => {
     const { video } = useWatchVideo();
-
+    const { isAuthenticated } = useAuth();
     const [reaction, setReaction] = useState<{
         liked: boolean;
         disliked: boolean;
@@ -45,8 +47,13 @@ const VideoAction = ({}: Props) => {
     });
 
     const { toast } = useToast();
+    const navigation = useNavigate();
 
     const handleReactionVideo = async (reactionType: ReactionType) => {
+        if (!isAuthenticated) {
+            navigation({ to: "/auth/login" });
+            return;
+        }
         try {
             await reactionVideoMutation.mutateAsync(reactionType);
 
@@ -72,6 +79,10 @@ const VideoAction = ({}: Props) => {
     };
 
     const handleUnReactionVideo = async (reactionType: ReactionType) => {
+        if (!isAuthenticated) {
+            navigation({ to: "/auth/login" });
+            return;
+        }
         try {
             await unReactionVideoMutation.mutateAsync(reactionType);
             setLikeCount((likeCount) => likeCount - 1);

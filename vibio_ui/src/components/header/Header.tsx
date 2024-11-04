@@ -3,10 +3,10 @@ import { TbMenu2 } from "react-icons/tb";
 import { useDispatch } from "react-redux";
 import { useAuth } from "../../context/AuthContext";
 import { toggleNav } from "../../store/features/app/appSlice";
+import GlobalSearch from "../search/GlobalSearch";
 import { Button } from "../ui/button";
 import Logo from "../ui/logo";
 import MaxWidthWrapper from "../wrapper/MaxWidthWrapper";
-import GlobalSearch from "./GolbalSearch";
 import Notification from "./Notification";
 import Profile from "./Profile";
 

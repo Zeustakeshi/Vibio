@@ -1,0 +1,17 @@
+{
+  "query": {
+    "dis_max": {
+      "queries": [
+        "multi_match": {
+          "query": "css and html",
+          "type": "bool_prefix",
+          "fields": [
+            "title",
+            "title._2gram",
+            "title._3gram"
+          ]
+        }
+      ]
+    }
+  }
+}

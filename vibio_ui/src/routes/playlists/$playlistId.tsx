@@ -1,5 +1,5 @@
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { FaShare } from "react-icons/fa";
 import { TbMessageReportFilled } from "react-icons/tb";
@@ -23,6 +23,7 @@ function PlaylistDetailPage() {
     const { playlistId } = Route.useParams();
     const { isAuthenticated } = useAuth();
     const [ref, inView] = useInView();
+    const navigation = useNavigate();
 
     const { data: playlist } = useQuery({
         queryKey: ["playlist-detail", playlistId],
@@ -92,7 +93,22 @@ function PlaylistDetailPage() {
                         )}
                     </div>
                     <div className="flex justify-start items-center gap-3 my-2 w-full">
-                        <Button variant="secondary" className="flex-1">
+                        <Button
+                            onClick={() => {
+                                const firstVideo = data?.pages.flatMap(
+                                    ({ content }: any) => content ?? []
+                                )?.[0];
+
+                                if (!firstVideo) return;
+                                navigation({
+                                    to: "/watch/$videoId",
+                                    params: { videoId: firstVideo.id },
+                                    search: { list: playlist?.id ?? "" },
+                                });
+                            }}
+                            variant="secondary"
+                            className="flex-1"
+                        >
                             Phát tất cả
                         </Button>
                         <div className="flex justify-end items-center gap-2 ">
@@ -127,12 +143,14 @@ function PlaylistDetailPage() {
                                         ref={ref}
                                         key={index}
                                         video={video}
+                                        playlistId={playlistId}
                                     ></PlaylistVideoItem>
                                 );
                             return (
                                 <PlaylistVideoItem
                                     key={index}
                                     video={video}
+                                    playlistId={playlistId}
                                 ></PlaylistVideoItem>
                             );
                         })}

@@ -15,9 +15,9 @@ type Props = {
 };
 
 const CommentItem = ({ comment, isReply }: Props, ref: any) => {
-    const { video, channel } = useWatchVideo();
+    const { channel } = useWatchVideo();
     const [isCollapse, setCollapse] = useState<boolean>(true);
-    const { user } = useAuth();
+    const { isAuthenticated } = useAuth();
 
     return (
         <div
@@ -35,13 +35,15 @@ const CommentItem = ({ comment, isReply }: Props, ref: any) => {
                 <div className="flex justify-start items-center gap-2 text-xs text-muted-foreground">
                     <span
                         className={cn("font-semibold ", {
+                            "px-2 py-1 rounded-md bg-yellow-500 text-white font-semibold":
+                                comment.member,
                             "px-2 py-1 rounded-md bg-primary text-white font-semibold":
                                 channel?.accountId === comment.owner.id,
-                            "px-2 py-1 rounded-md bg-yellow-500 text-white font-semibold":
-                                channel?.member,
                         })}
                     >
-                        {comment.owner.username}
+                        {channel?.accountId === comment.owner.id
+                            ? channel.name
+                            : comment.owner.username}
                     </span>
                     <span>{moment(comment.updatedAt).toNow()}</span>
                 </div>
@@ -62,7 +64,9 @@ const CommentItem = ({ comment, isReply }: Props, ref: any) => {
                         {isCollapse ? "Đọc thêm" : "Ẩn bớt"}
                     </Button>
                 )}
+
                 <CommentAction comment={comment}></CommentAction>
+
                 {!isReply && comment.replyCount > 0 && (
                     <CommentReplies
                         commentId={comment.id}
