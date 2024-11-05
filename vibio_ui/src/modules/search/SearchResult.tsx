@@ -44,7 +44,7 @@ const SearchResult = ({ query }: Props) => {
         return (
             <div className="w-full h-full flex flex-col justify-center items-center">
                 <RandomImage className="size-[400px]"></RandomImage>
-                <p className="text-muted-foreground font-semibold">
+                <p className="text-muted-foreground">
                     Nhập từ khóa để tìm kiếm video bạn muốn xem
                 </p>
             </div>
@@ -55,8 +55,9 @@ const SearchResult = ({ query }: Props) => {
         return (
             <div className="w-full h-full flex flex-col justify-center items-center">
                 <RandomImage className="size-[400px]"></RandomImage>
-                <p className="text-muted-foreground font-semibold">
-                    Đang tìm kiếm video cho bạn .....
+                <p className="text-muted-foreground ">
+                    Đang tìm kiếm từ khóa{" "}
+                    <span className="font-semibold text-primary">{query}</span>
                 </p>
             </div>
         );
