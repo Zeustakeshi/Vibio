@@ -17,8 +17,9 @@ const FeedItem = ({ video }: Props, ref: any) => {
             <Link
                 to="/watch/$videoId"
                 params={{ videoId: video?.id }}
+                search={{ list: "" }}
                 ref={ref}
-                className="inline-block rounded-md overflow-hidden"
+                className="inline-block rounded-md overflow-hidden aspect-video "
             >
                 <img
                     className="w-full h-full object-cover"
