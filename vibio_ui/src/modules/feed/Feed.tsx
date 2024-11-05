@@ -5,6 +5,7 @@ import { getFeed, getGuestFeed } from "../../api/video";
 import { Video } from "../../common/type/video";
 import { useAuth } from "../../context/AuthContext";
 import FeedItem from "./FeedItem";
+import FeedLoading from "./FeedLoading";
 
 type Props = {};
 
@@ -12,26 +13,34 @@ const Feeds = ({}: Props) => {
     const { isAuthenticated } = useAuth();
     const [ref, inView] = useInView();
 
-    const { data, fetchNextPage, isFetchingNextPage, hasNextPage, status } =
-        useInfiniteQuery({
-            queryKey: ["feeds"],
-            queryFn: async (pages) => {
-                if (isAuthenticated) return await getFeed(pages);
-                else return await getGuestFeed(pages);
-            },
-            getNextPageParam: (lastPage: any) => {
-                if (lastPage.last) return undefined;
-                return lastPage.pageNumber + 1;
-            },
-            initialPageParam: 0,
-            refetchOnWindowFocus: false,
-        });
+    const {
+        data,
+        fetchNextPage,
+        isFetchingNextPage,
+        hasNextPage,
+        status,
+        isLoading,
+    } = useInfiniteQuery({
+        queryKey: ["feeds"],
+        queryFn: async (pages) => {
+            if (isAuthenticated) return await getFeed(pages);
+            else return await getGuestFeed(pages);
+        },
+        getNextPageParam: (lastPage: any) => {
+            if (lastPage.last) return undefined;
+            return lastPage.pageNumber + 1;
+        },
+        initialPageParam: 0,
+        refetchOnWindowFocus: false,
+    });
 
     useEffect(() => {
         if (inView && hasNextPage) {
             fetchNextPage();
         }
     }, [inView]);
+
+    if (isLoading) return <FeedLoading></FeedLoading>;
 
     return (
         <div className="grid gap-4 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))]">
@@ -50,7 +59,7 @@ const Feeds = ({}: Props) => {
                             );
                         return <FeedItem key={index} video={video}></FeedItem>;
                     })}
-            {isFetchingNextPage && <p>đang tải....</p>}
+            {isFetchingNextPage && <FeedLoading></FeedLoading>}
 
             {!hasNextPage && status !== "pending" && <p>Hết rồi</p>}
         </div>
