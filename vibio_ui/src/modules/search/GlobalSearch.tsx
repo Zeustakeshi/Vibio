@@ -3,11 +3,12 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { IoSearch } from "react-icons/io5";
 import { searchVideoAutoComplete } from "../../api/search";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
 import useClickOutSide from "../../hooks/useClickOutSide";
 import useDebounce from "../../hooks/userDebounce";
 import { cn } from "../../lib/utils";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+import VoiceSearch from "./VoiceSearch";
 
 type Props = {};
 
@@ -41,18 +42,22 @@ const GlobalSearch = (props: Props) => {
         })();
     }, [searchValueDebounce]);
 
+    const handleSearch = (searchValue: string) => {
+        navigation({
+            to: "/search",
+            search: {
+                query: searchValue,
+            },
+        });
+    };
+
     return (
-        <div ref={searchRef}>
+        <div ref={searchRef} className="flex gap-x-5">
             <form
                 className="flex relative group"
                 onSubmit={(e) => {
                     e.preventDefault();
-                    navigation({
-                        to: "/search",
-                        search: {
-                            query: searchValue,
-                        },
-                    });
+                    handleSearch(searchValue);
                 }}
             >
                 <Input
@@ -95,6 +100,8 @@ const GlobalSearch = (props: Props) => {
                     ))}
                 </div>
             </form>
+
+            <VoiceSearch handleSearch={handleSearch}></VoiceSearch>
         </div>
     );
 };
