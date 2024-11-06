@@ -28,6 +28,7 @@ public class GuestVideoController {
     private final VideoRepository videoRepository;
     private final CloudinaryService cloudinaryService;
 
+
     @GetMapping("/feeds")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<?> getFeeds(
@@ -36,13 +37,24 @@ public class GuestVideoController {
         return ApiResponse.success(videoService.getGuestFeeds(page, limit));
     }
 
+    @GetMapping("/channel/{channelId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<?> getAllVideoByChannelId(
+            @PathVariable("channelId") String channelId,
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "limit", required = false, defaultValue = "10") int limit
+    ) {
+        return ApiResponse.success(videoService.getAllPublicVideoByChannelId(channelId, page, limit));
+    }
+
+
     @GetMapping("{videoId}")
     @ResponseStatus(HttpStatus.OK)
     public ApiResponse<?> getVideoById(@PathVariable("videoId") String videoId) {
         return ApiResponse.success(videoService.getVideoByIdGuest(videoId));
     }
 
-  
+
     ///
     @GetMapping("/test-video")
     @ResponseStatus(HttpStatus.OK)
