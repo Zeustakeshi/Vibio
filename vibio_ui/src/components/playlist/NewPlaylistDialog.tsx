@@ -6,14 +6,16 @@ import { z } from "zod";
 import { createNewPlaylist } from "../../api/playlist";
 import { Visibility } from "../../common/enum";
 import { Playlist } from "../../common/type/playlist";
-import { Button } from "../../components/ui/button";
+import { useToast } from "../../hooks/use-toast";
+import { newPlaylistSchema } from "../../schema/playlist.schema";
+import { Button } from "../ui/button";
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-} from "../../components/ui/dialog";
+} from "../ui/dialog";
 import {
     Form,
     FormControl,
@@ -21,17 +23,15 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "../../components/ui/form";
-import { Input } from "../../components/ui/input";
+} from "../ui/form";
+import { Input } from "../ui/input";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "../../components/ui/select";
-import { useToast } from "../../hooks/use-toast";
-import { newPlaylistSchema } from "../../schema/playlist.schema";
+} from "../ui/select";
 
 type Props = {
     onSaveSuccess?: (playlist: Playlist) => void;

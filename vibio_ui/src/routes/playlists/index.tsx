@@ -4,10 +4,10 @@ import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
 import { getAllPlaylistByChannelId } from "../../api/playlist";
 import { Playlist } from "../../common/type/playlist";
+import NewPlaylistDialog from "../../components/playlist/NewPlaylistDialog";
+import PlaylistItem from "../../components/playlist/PlaylistItem";
 import { Button } from "../../components/ui/button";
 import { useAuth } from "../../context/AuthContext";
-import NewPlaylistDialog from "../../modules/playlist/NewPlaylistDialog";
-import PlaylistItem from "../../modules/playlist/PlaylistItem";
 
 export const Route = createFileRoute("/playlists/")({
     component: PlaylistPage,

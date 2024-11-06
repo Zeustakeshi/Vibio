@@ -8,14 +8,19 @@ import {
     getAllVideoByPlaylistId,
     getAllVideoPublicByPlaylistId,
     getPlaylistById,
+    getPublicPlaylistById,
 } from "../../api/playlist";
 import { PlaylistVideo } from "../../common/type/playlist";
+import PlaylistVideoItem from "../../components/playlist/PlaylistVideoItem";
 import { Button } from "../../components/ui/button";
+import RandomImage from "../../components/ui/randomImage";
 import { useAuth } from "../../context/AuthContext";
 import { convertVisibilityToLabel } from "../../lib/utils";
-import PlaylistVideoItem from "../../modules/playlist/PlaylistVideoItem";
 
 export const Route = createFileRoute("/playlists/$playlistId")({
+    validateSearch: (search) => {
+        return { channelId: search.channelId as string | undefined };
+    },
     component: PlaylistDetailPage,
 });
 
@@ -25,9 +30,18 @@ function PlaylistDetailPage() {
     const [ref, inView] = useInView();
     const navigation = useNavigate();
 
-    const { data: playlist } = useQuery({
+    const { channelId } = Route.useSearch();
+
+    const {
+        data: playlist,
+        isLoading,
+        isLoadingError,
+    } = useQuery({
         queryKey: ["playlist-detail", playlistId],
-        queryFn: () => getPlaylistById(playlistId),
+        queryFn: async () => {
+            if (channelId) return await getPublicPlaylistById(playlistId);
+            return await getPlaylistById(playlistId);
+        },
         refetchInterval: false,
         refetchIntervalInBackground: false,
     });
@@ -60,6 +74,24 @@ function PlaylistDetailPage() {
             fetchNextPage();
         }
     }, [inView]);
+
+    if (isLoading)
+        return (
+            <div className="w-full h-full flex flex-col justify-center items-center">
+                <RandomImage className="size-[400px]"></RandomImage>
+                <p>Đang tải ....</p>
+            </div>
+        );
+
+    if (isLoadingError)
+        return (
+            <div className="w-full h-full flex flex-col justify-center items-center">
+                <RandomImage className="size-[400px]"></RandomImage>
+                <p className="text-muted-foreground ">
+                    Không tìm thấy danh sách phát này
+                </p>
+            </div>
+        );
 
     return (
         <div className="p-4 flex items-start h-full w-full  gap-2">

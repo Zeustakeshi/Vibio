@@ -7,9 +7,10 @@ import { Playlist } from "../../common/type/playlist";
 
 type Props = {
     playlist: Playlist;
+    channelId?: string;
 };
 
-const PlaylistItem = ({ playlist }: Props, ref: any) => {
+const PlaylistItem = ({ playlist, channelId }: Props, ref: any) => {
     return (
         <div ref={ref} className="w-auto overflow-hidden rounded-md p-1">
             <div className="relative group rounded-md overflow-hidden h-[160px] bg-slate-200">
@@ -49,6 +50,9 @@ const PlaylistItem = ({ playlist }: Props, ref: any) => {
                     to="/playlists/$playlistId"
                     params={{
                         playlistId: playlist.id,
+                    }}
+                    search={{
+                        channelId: channelId,
                     }}
                 >
                     Xem toàn bộ danh sách
