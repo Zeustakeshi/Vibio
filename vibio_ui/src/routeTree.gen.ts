@@ -19,24 +19,35 @@ import { Route as PlaylistsIndexImport } from './routes/playlists/index'
 import { Route as appIndexImport } from './routes/(app)/index'
 import { Route as WatchVideoIdImport } from './routes/watch/$videoId'
 import { Route as PlaylistsPlaylistIdImport } from './routes/playlists/$playlistId'
-import { Route as ChannelChannelIdImport } from './routes/channel/$channelId'
 import { Route as AuthAuthImport } from './routes/auth/_auth'
 import { Route as PaymentMembershipResultImport } from './routes/payment/membership/result'
+import { Route as ChannelChannelIdLayoutImport } from './routes/channel/$channelId/_layout'
 import { Route as AuthOtpOtpImport } from './routes/auth/otp/_otp'
 import { Route as AuthAuthRegisterImport } from './routes/auth/_auth.register'
 import { Route as AuthAuthLoginImport } from './routes/auth/_auth.login'
+import { Route as ChannelChannelIdLayoutIndexImport } from './routes/channel/$channelId/_layout.index'
+import { Route as ChannelChannelIdLayoutVideosImport } from './routes/channel/$channelId/_layout.videos'
+import { Route as ChannelChannelIdLayoutShortsImport } from './routes/channel/$channelId/_layout.shorts'
+import { Route as ChannelChannelIdLayoutPlaylistsImport } from './routes/channel/$channelId/_layout.playlists'
+import { Route as ChannelChannelIdLayoutCommunityImport } from './routes/channel/$channelId/_layout.community'
 import { Route as AuthOtpOtpNewAccountImport } from './routes/auth/otp/_otp.new-account'
 import { Route as AuthOtpOtpMfaImport } from './routes/auth/otp/_otp.mfa'
 
 // Create Virtual Routes
 
 const AuthImport = createFileRoute('/auth')()
+const ChannelChannelIdImport = createFileRoute('/channel/$channelId')()
 const AuthOtpImport = createFileRoute('/auth/otp')()
 
 // Create/Update Routes
 
 const AuthRoute = AuthImport.update({
   path: '/auth',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ChannelChannelIdRoute = ChannelChannelIdImport.update({
+  path: '/channel/$channelId',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -75,11 +86,6 @@ const PlaylistsPlaylistIdRoute = PlaylistsPlaylistIdImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const ChannelChannelIdRoute = ChannelChannelIdImport.update({
-  path: '/channel/$channelId',
-  getParentRoute: () => rootRoute,
-} as any)
-
 const AuthAuthRoute = AuthAuthImport.update({
   id: '/_auth',
   getParentRoute: () => AuthRoute,
@@ -88,6 +94,11 @@ const AuthAuthRoute = AuthAuthImport.update({
 const PaymentMembershipResultRoute = PaymentMembershipResultImport.update({
   path: '/payment/membership/result',
   getParentRoute: () => rootRoute,
+} as any)
+
+const ChannelChannelIdLayoutRoute = ChannelChannelIdLayoutImport.update({
+  id: '/_layout',
+  getParentRoute: () => ChannelChannelIdRoute,
 } as any)
 
 const AuthOtpOtpRoute = AuthOtpOtpImport.update({
@@ -104,6 +115,36 @@ const AuthAuthLoginRoute = AuthAuthLoginImport.update({
   path: '/login',
   getParentRoute: () => AuthAuthRoute,
 } as any)
+
+const ChannelChannelIdLayoutIndexRoute =
+  ChannelChannelIdLayoutIndexImport.update({
+    path: '/',
+    getParentRoute: () => ChannelChannelIdLayoutRoute,
+  } as any)
+
+const ChannelChannelIdLayoutVideosRoute =
+  ChannelChannelIdLayoutVideosImport.update({
+    path: '/videos',
+    getParentRoute: () => ChannelChannelIdLayoutRoute,
+  } as any)
+
+const ChannelChannelIdLayoutShortsRoute =
+  ChannelChannelIdLayoutShortsImport.update({
+    path: '/shorts',
+    getParentRoute: () => ChannelChannelIdLayoutRoute,
+  } as any)
+
+const ChannelChannelIdLayoutPlaylistsRoute =
+  ChannelChannelIdLayoutPlaylistsImport.update({
+    path: '/playlists',
+    getParentRoute: () => ChannelChannelIdLayoutRoute,
+  } as any)
+
+const ChannelChannelIdLayoutCommunityRoute =
+  ChannelChannelIdLayoutCommunityImport.update({
+    path: '/community',
+    getParentRoute: () => ChannelChannelIdLayoutRoute,
+  } as any)
 
 const AuthOtpOtpNewAccountRoute = AuthOtpOtpNewAccountImport.update({
   path: '/new-account',
@@ -132,13 +173,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth'
       preLoaderRoute: typeof AuthAuthImport
       parentRoute: typeof AuthRoute
-    }
-    '/channel/$channelId': {
-      id: '/channel/$channelId'
-      path: '/channel/$channelId'
-      fullPath: '/channel/$channelId'
-      preLoaderRoute: typeof ChannelChannelIdImport
-      parentRoute: typeof rootRoute
     }
     '/playlists/$playlistId': {
       id: '/playlists/$playlistId'
@@ -210,6 +244,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthOtpOtpImport
       parentRoute: typeof AuthOtpRoute
     }
+    '/channel/$channelId': {
+      id: '/channel/$channelId'
+      path: '/channel/$channelId'
+      fullPath: '/channel/$channelId'
+      preLoaderRoute: typeof ChannelChannelIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/channel/$channelId/_layout': {
+      id: '/channel/$channelId/_layout'
+      path: '/channel/$channelId'
+      fullPath: '/channel/$channelId'
+      preLoaderRoute: typeof ChannelChannelIdLayoutImport
+      parentRoute: typeof ChannelChannelIdRoute
+    }
     '/payment/membership/result': {
       id: '/payment/membership/result'
       path: '/payment/membership/result'
@@ -230,6 +278,41 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/otp/new-account'
       preLoaderRoute: typeof AuthOtpOtpNewAccountImport
       parentRoute: typeof AuthOtpOtpImport
+    }
+    '/channel/$channelId/_layout/community': {
+      id: '/channel/$channelId/_layout/community'
+      path: '/community'
+      fullPath: '/channel/$channelId/community'
+      preLoaderRoute: typeof ChannelChannelIdLayoutCommunityImport
+      parentRoute: typeof ChannelChannelIdLayoutImport
+    }
+    '/channel/$channelId/_layout/playlists': {
+      id: '/channel/$channelId/_layout/playlists'
+      path: '/playlists'
+      fullPath: '/channel/$channelId/playlists'
+      preLoaderRoute: typeof ChannelChannelIdLayoutPlaylistsImport
+      parentRoute: typeof ChannelChannelIdLayoutImport
+    }
+    '/channel/$channelId/_layout/shorts': {
+      id: '/channel/$channelId/_layout/shorts'
+      path: '/shorts'
+      fullPath: '/channel/$channelId/shorts'
+      preLoaderRoute: typeof ChannelChannelIdLayoutShortsImport
+      parentRoute: typeof ChannelChannelIdLayoutImport
+    }
+    '/channel/$channelId/_layout/videos': {
+      id: '/channel/$channelId/_layout/videos'
+      path: '/videos'
+      fullPath: '/channel/$channelId/videos'
+      preLoaderRoute: typeof ChannelChannelIdLayoutVideosImport
+      parentRoute: typeof ChannelChannelIdLayoutImport
+    }
+    '/channel/$channelId/_layout/': {
+      id: '/channel/$channelId/_layout/'
+      path: '/'
+      fullPath: '/channel/$channelId/'
+      preLoaderRoute: typeof ChannelChannelIdLayoutIndexImport
+      parentRoute: typeof ChannelChannelIdLayoutImport
     }
   }
 }
@@ -287,9 +370,41 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface ChannelChannelIdLayoutRouteChildren {
+  ChannelChannelIdLayoutCommunityRoute: typeof ChannelChannelIdLayoutCommunityRoute
+  ChannelChannelIdLayoutPlaylistsRoute: typeof ChannelChannelIdLayoutPlaylistsRoute
+  ChannelChannelIdLayoutShortsRoute: typeof ChannelChannelIdLayoutShortsRoute
+  ChannelChannelIdLayoutVideosRoute: typeof ChannelChannelIdLayoutVideosRoute
+  ChannelChannelIdLayoutIndexRoute: typeof ChannelChannelIdLayoutIndexRoute
+}
+
+const ChannelChannelIdLayoutRouteChildren: ChannelChannelIdLayoutRouteChildren =
+  {
+    ChannelChannelIdLayoutCommunityRoute: ChannelChannelIdLayoutCommunityRoute,
+    ChannelChannelIdLayoutPlaylistsRoute: ChannelChannelIdLayoutPlaylistsRoute,
+    ChannelChannelIdLayoutShortsRoute: ChannelChannelIdLayoutShortsRoute,
+    ChannelChannelIdLayoutVideosRoute: ChannelChannelIdLayoutVideosRoute,
+    ChannelChannelIdLayoutIndexRoute: ChannelChannelIdLayoutIndexRoute,
+  }
+
+const ChannelChannelIdLayoutRouteWithChildren =
+  ChannelChannelIdLayoutRoute._addFileChildren(
+    ChannelChannelIdLayoutRouteChildren,
+  )
+
+interface ChannelChannelIdRouteChildren {
+  ChannelChannelIdLayoutRoute: typeof ChannelChannelIdLayoutRouteWithChildren
+}
+
+const ChannelChannelIdRouteChildren: ChannelChannelIdRouteChildren = {
+  ChannelChannelIdLayoutRoute: ChannelChannelIdLayoutRouteWithChildren,
+}
+
+const ChannelChannelIdRouteWithChildren =
+  ChannelChannelIdRoute._addFileChildren(ChannelChannelIdRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/auth': typeof AuthAuthRouteWithChildren
-  '/channel/$channelId': typeof ChannelChannelIdRoute
   '/playlists/$playlistId': typeof PlaylistsPlaylistIdRoute
   '/watch/$videoId': typeof WatchVideoIdRoute
   '/': typeof appIndexRoute
@@ -299,14 +414,19 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
   '/auth/otp': typeof AuthOtpOtpRouteWithChildren
+  '/channel/$channelId': typeof ChannelChannelIdLayoutRouteWithChildren
   '/payment/membership/result': typeof PaymentMembershipResultRoute
   '/auth/otp/mfa': typeof AuthOtpOtpMfaRoute
   '/auth/otp/new-account': typeof AuthOtpOtpNewAccountRoute
+  '/channel/$channelId/community': typeof ChannelChannelIdLayoutCommunityRoute
+  '/channel/$channelId/playlists': typeof ChannelChannelIdLayoutPlaylistsRoute
+  '/channel/$channelId/shorts': typeof ChannelChannelIdLayoutShortsRoute
+  '/channel/$channelId/videos': typeof ChannelChannelIdLayoutVideosRoute
+  '/channel/$channelId/': typeof ChannelChannelIdLayoutIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/auth': typeof AuthAuthRouteWithChildren
-  '/channel/$channelId': typeof ChannelChannelIdRoute
   '/playlists/$playlistId': typeof PlaylistsPlaylistIdRoute
   '/watch/$videoId': typeof WatchVideoIdRoute
   '/': typeof appIndexRoute
@@ -316,16 +436,20 @@ export interface FileRoutesByTo {
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
   '/auth/otp': typeof AuthOtpOtpRouteWithChildren
+  '/channel/$channelId': typeof ChannelChannelIdLayoutIndexRoute
   '/payment/membership/result': typeof PaymentMembershipResultRoute
   '/auth/otp/mfa': typeof AuthOtpOtpMfaRoute
   '/auth/otp/new-account': typeof AuthOtpOtpNewAccountRoute
+  '/channel/$channelId/community': typeof ChannelChannelIdLayoutCommunityRoute
+  '/channel/$channelId/playlists': typeof ChannelChannelIdLayoutPlaylistsRoute
+  '/channel/$channelId/shorts': typeof ChannelChannelIdLayoutShortsRoute
+  '/channel/$channelId/videos': typeof ChannelChannelIdLayoutVideosRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/auth': typeof AuthRouteWithChildren
   '/auth/_auth': typeof AuthAuthRouteWithChildren
-  '/channel/$channelId': typeof ChannelChannelIdRoute
   '/playlists/$playlistId': typeof PlaylistsPlaylistIdRoute
   '/watch/$videoId': typeof WatchVideoIdRoute
   '/': typeof appIndexRoute
@@ -336,16 +460,22 @@ export interface FileRoutesById {
   '/auth/_auth/register': typeof AuthAuthRegisterRoute
   '/auth/otp': typeof AuthOtpRouteWithChildren
   '/auth/otp/_otp': typeof AuthOtpOtpRouteWithChildren
+  '/channel/$channelId': typeof ChannelChannelIdRouteWithChildren
+  '/channel/$channelId/_layout': typeof ChannelChannelIdLayoutRouteWithChildren
   '/payment/membership/result': typeof PaymentMembershipResultRoute
   '/auth/otp/_otp/mfa': typeof AuthOtpOtpMfaRoute
   '/auth/otp/_otp/new-account': typeof AuthOtpOtpNewAccountRoute
+  '/channel/$channelId/_layout/community': typeof ChannelChannelIdLayoutCommunityRoute
+  '/channel/$channelId/_layout/playlists': typeof ChannelChannelIdLayoutPlaylistsRoute
+  '/channel/$channelId/_layout/shorts': typeof ChannelChannelIdLayoutShortsRoute
+  '/channel/$channelId/_layout/videos': typeof ChannelChannelIdLayoutVideosRoute
+  '/channel/$channelId/_layout/': typeof ChannelChannelIdLayoutIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/auth'
-    | '/channel/$channelId'
     | '/playlists/$playlistId'
     | '/watch/$videoId'
     | '/'
@@ -355,13 +485,18 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/auth/otp'
+    | '/channel/$channelId'
     | '/payment/membership/result'
     | '/auth/otp/mfa'
     | '/auth/otp/new-account'
+    | '/channel/$channelId/community'
+    | '/channel/$channelId/playlists'
+    | '/channel/$channelId/shorts'
+    | '/channel/$channelId/videos'
+    | '/channel/$channelId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
-    | '/channel/$channelId'
     | '/playlists/$playlistId'
     | '/watch/$videoId'
     | '/'
@@ -371,14 +506,18 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/register'
     | '/auth/otp'
+    | '/channel/$channelId'
     | '/payment/membership/result'
     | '/auth/otp/mfa'
     | '/auth/otp/new-account'
+    | '/channel/$channelId/community'
+    | '/channel/$channelId/playlists'
+    | '/channel/$channelId/shorts'
+    | '/channel/$channelId/videos'
   id:
     | '__root__'
     | '/auth'
     | '/auth/_auth'
-    | '/channel/$channelId'
     | '/playlists/$playlistId'
     | '/watch/$videoId'
     | '/'
@@ -389,33 +528,40 @@ export interface FileRouteTypes {
     | '/auth/_auth/register'
     | '/auth/otp'
     | '/auth/otp/_otp'
+    | '/channel/$channelId'
+    | '/channel/$channelId/_layout'
     | '/payment/membership/result'
     | '/auth/otp/_otp/mfa'
     | '/auth/otp/_otp/new-account'
+    | '/channel/$channelId/_layout/community'
+    | '/channel/$channelId/_layout/playlists'
+    | '/channel/$channelId/_layout/shorts'
+    | '/channel/$channelId/_layout/videos'
+    | '/channel/$channelId/_layout/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
-  ChannelChannelIdRoute: typeof ChannelChannelIdRoute
   PlaylistsPlaylistIdRoute: typeof PlaylistsPlaylistIdRoute
   WatchVideoIdRoute: typeof WatchVideoIdRoute
   appIndexRoute: typeof appIndexRoute
   PlaylistsIndexRoute: typeof PlaylistsIndexRoute
   SearchIndexRoute: typeof SearchIndexRoute
   ShortsIndexRoute: typeof ShortsIndexRoute
+  ChannelChannelIdRoute: typeof ChannelChannelIdRouteWithChildren
   PaymentMembershipResultRoute: typeof PaymentMembershipResultRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
-  ChannelChannelIdRoute: ChannelChannelIdRoute,
   PlaylistsPlaylistIdRoute: PlaylistsPlaylistIdRoute,
   WatchVideoIdRoute: WatchVideoIdRoute,
   appIndexRoute: appIndexRoute,
   PlaylistsIndexRoute: PlaylistsIndexRoute,
   SearchIndexRoute: SearchIndexRoute,
   ShortsIndexRoute: ShortsIndexRoute,
+  ChannelChannelIdRoute: ChannelChannelIdRouteWithChildren,
   PaymentMembershipResultRoute: PaymentMembershipResultRoute,
 }
 
@@ -432,13 +578,13 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/auth",
-        "/channel/$channelId",
         "/playlists/$playlistId",
         "/watch/$videoId",
         "/",
         "/playlists/",
         "/search/",
         "/shorts/",
+        "/channel/$channelId",
         "/payment/membership/result"
       ]
     },
@@ -456,9 +602,6 @@ export const routeTree = rootRoute
         "/auth/_auth/login",
         "/auth/_auth/register"
       ]
-    },
-    "/channel/$channelId": {
-      "filePath": "channel/$channelId.tsx"
     },
     "/playlists/$playlistId": {
       "filePath": "playlists/$playlistId.tsx"
@@ -501,6 +644,23 @@ export const routeTree = rootRoute
         "/auth/otp/_otp/new-account"
       ]
     },
+    "/channel/$channelId": {
+      "filePath": "channel/$channelId",
+      "children": [
+        "/channel/$channelId/_layout"
+      ]
+    },
+    "/channel/$channelId/_layout": {
+      "filePath": "channel/$channelId/_layout.tsx",
+      "parent": "/channel/$channelId",
+      "children": [
+        "/channel/$channelId/_layout/community",
+        "/channel/$channelId/_layout/playlists",
+        "/channel/$channelId/_layout/shorts",
+        "/channel/$channelId/_layout/videos",
+        "/channel/$channelId/_layout/"
+      ]
+    },
     "/payment/membership/result": {
       "filePath": "payment/membership/result.tsx"
     },
@@ -511,6 +671,26 @@ export const routeTree = rootRoute
     "/auth/otp/_otp/new-account": {
       "filePath": "auth/otp/_otp.new-account.tsx",
       "parent": "/auth/otp/_otp"
+    },
+    "/channel/$channelId/_layout/community": {
+      "filePath": "channel/$channelId/_layout.community.tsx",
+      "parent": "/channel/$channelId/_layout"
+    },
+    "/channel/$channelId/_layout/playlists": {
+      "filePath": "channel/$channelId/_layout.playlists.tsx",
+      "parent": "/channel/$channelId/_layout"
+    },
+    "/channel/$channelId/_layout/shorts": {
+      "filePath": "channel/$channelId/_layout.shorts.tsx",
+      "parent": "/channel/$channelId/_layout"
+    },
+    "/channel/$channelId/_layout/videos": {
+      "filePath": "channel/$channelId/_layout.videos.tsx",
+      "parent": "/channel/$channelId/_layout"
+    },
+    "/channel/$channelId/_layout/": {
+      "filePath": "channel/$channelId/_layout.index.tsx",
+      "parent": "/channel/$channelId/_layout"
     }
   }
 }

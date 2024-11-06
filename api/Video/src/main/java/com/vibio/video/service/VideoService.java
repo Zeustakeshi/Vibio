@@ -15,6 +15,8 @@ public interface VideoService {
 
     PageableResponse<VideoResponse> getGuestFeeds(int page, int limit);
 
+    PageableResponse<VideoResponse> getAllPublicVideoByChannelId(String channelId, int page, int limit);
+
     VideoDetailResponse getVideoById(String videoId, String accountId);
 
     VideoDetailResponse getVideoByIdGuest(String videoId);

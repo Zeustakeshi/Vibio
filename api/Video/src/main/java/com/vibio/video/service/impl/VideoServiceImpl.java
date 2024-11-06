@@ -25,7 +25,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,27 +41,21 @@ public class VideoServiceImpl implements VideoService {
         PageRequest pageRequest = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Video> videos = videoRepository.findAllPublicVideo(pageRequest);
 
-        ApiResponse<List<ChannelResponse>> channelResponses =
-                channelClient.findChannelByIdInIds(FindChannelByIdsRequest.builder()
-                        .ids(videos.map(Video::getChannelId).stream().toList())
-                        .build());
+        List<ChannelResponse> channels = findChannelByChannelIds(videos.map(Video::getChannelId).toList());
 
-        List<ChannelResponse> channels = channelResponses.getData();
-
-        return pageMapper.toPageableResponse(videos.map(v -> {
-            VideoResponse videoResponse = videoMapper.videoToVideoResponse(v);
-            ChannelResponse channel = channels.stream()
-                    .filter(c -> c.getId().equals(v.getChannelId()))
-                    .findFirst()
-                    .orElse(ChannelResponse.builder()
-                            .id("not-found")
-                            .thumbnail("")
-                            .name("not-found")
-                            .build());
-            videoResponse.setChannel(channel);
-            return videoResponse;
-        }));
+        return pageVideoToPageVideoResponse(videos, channels);
     }
+
+    @Override
+    public PageableResponse<VideoResponse> getAllPublicVideoByChannelId(String channelId, int page, int limit) {
+        PageRequest pageRequest = PageRequest.of(page, limit, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<Video> videos = videoRepository.findAllPublicByChannelId(channelId, pageRequest);
+
+        List<ChannelResponse> channels = findChannelByChannelIds(videos.map(Video::getChannelId).toList());
+
+        return pageVideoToPageVideoResponse(videos, channels);
+    }
+
 
     @Override
     public PageableResponse<VideoResponse> getGuestFeeds(int page, int limit) {
@@ -80,14 +73,7 @@ public class VideoServiceImpl implements VideoService {
 
         List<ChannelResponse> channels = channelResponses.getData();
 
-        return pageMapper.toPageableResponse(videos.map(v -> {
-            VideoResponse videoResponse = videoMapper.videoToVideoResponse(v);
-            Optional<ChannelResponse> channelInfoOptional = channels.stream()
-                    .filter(c -> c.getId().equals(v.getChannelId()))
-                    .findFirst();
-            channelInfoOptional.ifPresent(videoResponse::setChannel);
-            return videoResponse;
-        }));
+        return pageVideoToPageVideoResponse(videos, channels);
     }
 
     @Override
@@ -128,4 +114,27 @@ public class VideoServiceImpl implements VideoService {
         video.setDislikeCount(videoReactionRepository.countDislikeByVideoId(videoId));
         videoRepository.save(video);
     }
+
+    private List<ChannelResponse> findChannelByChannelIds(List<String> channelIds) {
+        return channelClient.findChannelByIdInIds(FindChannelByIdsRequest.builder()
+                .ids(channelIds)
+                .build()).getData();
+    }
+
+    private PageableResponse<VideoResponse> pageVideoToPageVideoResponse(Page<Video> videos, List<ChannelResponse> channels) {
+        return pageMapper.toPageableResponse(videos.map(v -> {
+            VideoResponse videoResponse = videoMapper.videoToVideoResponse(v);
+            ChannelResponse channel = channels.stream()
+                    .filter(c -> c.getId().equals(v.getChannelId()))
+                    .findFirst()
+                    .orElse(ChannelResponse.builder()
+                            .id("not-found")
+                            .thumbnail("")
+                            .name("not-found")
+                            .build());
+            videoResponse.setChannel(channel);
+            return videoResponse;
+        }));
+    }
+
 }

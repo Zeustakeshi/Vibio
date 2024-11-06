@@ -1,17 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { getChannel, getChannelGuest } from "../../api/channel";
-import { useAuth } from "../../context/AuthContext";
-import { useToast } from "../../hooks/use-toast";
-import ChanneBanner from "../../modules/channel/ChanneBanner";
-import ChannelInfomation from "../../modules/channel/ChannelInfomation";
-import MemberList from "../../modules/channel/MemberList";
+import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import { getChannel, getChannelGuest } from "../../../api/channel";
+import { useAuth } from "../../../context/AuthContext";
+import { useToast } from "../../../hooks/use-toast";
+import ChanneBanner from "../../../modules/channel/ChanneBanner";
+import ChannelInfomation from "../../../modules/channel/ChannelInfomation";
+import ChannelNav from "../../../modules/channel/ChannelNav";
+import MemberList from "../../../modules/channel/MemberList";
 
-export const Route = createFileRoute("/channel/$channelId")({
-    component: ChannelDetail,
+export const Route = createFileRoute("/channel/$channelId/_layout")({
+    component: ChannelProfileLayout,
 });
 
-function ChannelDetail() {
+function ChannelProfileLayout() {
     const { channelId } = Route.useParams();
     const { isAuthenticated } = useAuth();
 
@@ -42,7 +43,7 @@ function ChannelDetail() {
     }
 
     if (isLoading) {
-        return <div>loading</div>;
+        return <div>loading....</div>;
     }
 
     if (!channel) {
@@ -55,6 +56,12 @@ function ChannelDetail() {
             <ChannelInfomation channel={channel}></ChannelInfomation>
             <div className="w-full">
                 <MemberList channelId={channel?.id}></MemberList>
+            </div>
+
+            <ChannelNav channelId={channel.id}></ChannelNav>
+
+            <div className="w-full h-full my-5">
+                <Outlet></Outlet>
             </div>
         </div>
     );

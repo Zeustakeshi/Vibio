@@ -1,18 +1,19 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import { getFeed, getGuestFeed } from "../../api/video";
-import { Video } from "../../common/type/video";
-import VideoItem from "../../components/video/VideoItem";
-import { useAuth } from "../../context/AuthContext";
-import FeedLoading from "./FeedLoading";
+import { getAllVideoByChannelId } from "../../../api/video";
+import { Video } from "../../../common/type/video";
+import VideoItem from "../../../components/video/VideoItem";
+import FeedLoading from "../../../modules/feed/FeedLoading";
 
-type Props = {};
+export const Route = createFileRoute("/channel/$channelId/_layout/videos")({
+    component: ChannelVideoPage,
+});
 
-const Feeds = ({}: Props) => {
-    const { isAuthenticated } = useAuth();
+function ChannelVideoPage() {
+    const { channelId } = Route.useParams();
     const [ref, inView] = useInView();
-
     const {
         data,
         fetchNextPage,
@@ -21,11 +22,9 @@ const Feeds = ({}: Props) => {
         status,
         isLoading,
     } = useInfiniteQuery({
-        queryKey: ["feeds"],
-        queryFn: async (pages) => {
-            if (isAuthenticated) return await getFeed(pages);
-            else return await getGuestFeed(pages);
-        },
+        queryKey: ["channel-videos", channelId],
+        queryFn: async (pages) =>
+            getAllVideoByChannelId(channelId, pages.pageParam),
         getNextPageParam: (lastPage: any) => {
             if (lastPage.last) return undefined;
             return lastPage.pageNumber + 1;
@@ -39,6 +38,8 @@ const Feeds = ({}: Props) => {
             fetchNextPage();
         }
     }, [inView]);
+
+    console.log(JSON.stringify(data));
 
     if (isLoading) return <FeedLoading></FeedLoading>;
 
@@ -66,6 +67,4 @@ const Feeds = ({}: Props) => {
             {!hasNextPage && status !== "pending" && <p>Hết rồi</p>}
         </div>
     );
-};
-
-export default Feeds;
+}

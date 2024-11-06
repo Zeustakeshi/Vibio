@@ -23,6 +23,9 @@ public interface VideoRepository extends JpaRepository<Video, String> {
     @Query("select v from Video v where v.visibility = 'PUBLIC'")
     Page<Video> findAllPublicVideo(Pageable pageable);
 
+    @Query("select v from Video v where v.channelId = :channelId and v.visibility != 'PRIVATE'")
+    Page<Video> findAllPublicByChannelId(String channelId, Pageable pageable);
+
     Optional<Video> findByIdAndChannelId(String videoId, String channelId);
 
     List<Video> findAllByIdIn(List<String> ids);

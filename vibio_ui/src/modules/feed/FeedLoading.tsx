@@ -6,7 +6,7 @@ const FeedLoading = (props: Props) => {
     return (
         <div className="w-full h-full grid gap-4 grid-cols-[repeat(auto-fill,_minmax(250px,_1fr))]">
             {new Array(8).fill(0).map((_, index) => (
-                <div className="w-auto">
+                <div className="w-auto" key={index}>
                     <Skeleton
                         key={index}
                         className="aspect-video w-full"

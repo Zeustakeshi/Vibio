@@ -41,3 +41,12 @@ export const unReactionVideo = async (videoId: string, type: ReactionType) => {
         reactionType: type,
     });
 };
+
+export const getAllVideoByChannelId = async (
+    channelId: string,
+    page: number
+) => {
+    return await api.get(`/videos/guest/channel/${channelId}`, {
+        params: { page, limit: 10 },
+    });
+};
