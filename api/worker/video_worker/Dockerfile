@@ -19,8 +19,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 FROM python:3.9-alpine
 
 # Copy necessary binaries and Python packages from the build stage
-COPY --from=builder /usr/local/bin/ffmpeg /usr/local/bin/
-COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY --from=builder /usr/bin/ffmpeg /usr/local/bin/
+COPY --from=builder /usr/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
 
 # Set the work directory
 WORKDIR /app
