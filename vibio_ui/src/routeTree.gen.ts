@@ -20,24 +20,34 @@ import { Route as appIndexImport } from './routes/(app)/index'
 import { Route as WatchVideoIdImport } from './routes/watch/$videoId'
 import { Route as PlaylistsPlaylistIdImport } from './routes/playlists/$playlistId'
 import { Route as AuthAuthImport } from './routes/auth/_auth'
+import { Route as discoverySportIndexImport } from './routes/(discovery)/sport/index'
+import { Route as discoveryNewsIndexImport } from './routes/(discovery)/news/index'
+import { Route as discoveryMusicIndexImport } from './routes/(discovery)/music/index'
+import { Route as discoveryGamingIndexImport } from './routes/(discovery)/gaming/index'
 import { Route as PaymentMembershipResultImport } from './routes/payment/membership/result'
 import { Route as ChannelChannelIdLayoutImport } from './routes/channel/$channelId/_layout'
 import { Route as AuthOtpOtpImport } from './routes/auth/otp/_otp'
 import { Route as AuthAuthRegisterImport } from './routes/auth/_auth.register'
 import { Route as AuthAuthLoginImport } from './routes/auth/_auth.login'
+import { Route as discoveryTrendingTrendingImport } from './routes/(discovery)/trending/_trending'
 import { Route as ChannelChannelIdLayoutIndexImport } from './routes/channel/$channelId/_layout.index'
+import { Route as discoveryTrendingTrendingIndexImport } from './routes/(discovery)/trending/_trending.index'
 import { Route as ChannelChannelIdLayoutVideosImport } from './routes/channel/$channelId/_layout.videos'
 import { Route as ChannelChannelIdLayoutShortsImport } from './routes/channel/$channelId/_layout.shorts'
 import { Route as ChannelChannelIdLayoutPlaylistsImport } from './routes/channel/$channelId/_layout.playlists'
 import { Route as ChannelChannelIdLayoutCommunityImport } from './routes/channel/$channelId/_layout.community'
 import { Route as AuthOtpOtpNewAccountImport } from './routes/auth/otp/_otp.new-account'
 import { Route as AuthOtpOtpMfaImport } from './routes/auth/otp/_otp.mfa'
+import { Route as discoveryTrendingTrendingMusicImport } from './routes/(discovery)/trending/_trending.music'
+import { Route as discoveryTrendingTrendingMovieImport } from './routes/(discovery)/trending/_trending.movie'
+import { Route as discoveryTrendingTrendingGamingImport } from './routes/(discovery)/trending/_trending.gaming'
 
 // Create Virtual Routes
 
 const AuthImport = createFileRoute('/auth')()
 const ChannelChannelIdImport = createFileRoute('/channel/$channelId')()
 const AuthOtpImport = createFileRoute('/auth/otp')()
+const discoveryTrendingImport = createFileRoute('/(discovery)/trending')()
 
 // Create/Update Routes
 
@@ -54,6 +64,11 @@ const ChannelChannelIdRoute = ChannelChannelIdImport.update({
 const AuthOtpRoute = AuthOtpImport.update({
   path: '/otp',
   getParentRoute: () => AuthRoute,
+} as any)
+
+const discoveryTrendingRoute = discoveryTrendingImport.update({
+  path: '/trending',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const ShortsIndexRoute = ShortsIndexImport.update({
@@ -91,6 +106,26 @@ const AuthAuthRoute = AuthAuthImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
+const discoverySportIndexRoute = discoverySportIndexImport.update({
+  path: '/sport/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const discoveryNewsIndexRoute = discoveryNewsIndexImport.update({
+  path: '/news/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const discoveryMusicIndexRoute = discoveryMusicIndexImport.update({
+  path: '/music/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const discoveryGamingIndexRoute = discoveryGamingIndexImport.update({
+  path: '/gaming/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const PaymentMembershipResultRoute = PaymentMembershipResultImport.update({
   path: '/payment/membership/result',
   getParentRoute: () => rootRoute,
@@ -116,10 +151,21 @@ const AuthAuthLoginRoute = AuthAuthLoginImport.update({
   getParentRoute: () => AuthAuthRoute,
 } as any)
 
+const discoveryTrendingTrendingRoute = discoveryTrendingTrendingImport.update({
+  id: '/_trending',
+  getParentRoute: () => discoveryTrendingRoute,
+} as any)
+
 const ChannelChannelIdLayoutIndexRoute =
   ChannelChannelIdLayoutIndexImport.update({
     path: '/',
     getParentRoute: () => ChannelChannelIdLayoutRoute,
+  } as any)
+
+const discoveryTrendingTrendingIndexRoute =
+  discoveryTrendingTrendingIndexImport.update({
+    path: '/',
+    getParentRoute: () => discoveryTrendingTrendingRoute,
   } as any)
 
 const ChannelChannelIdLayoutVideosRoute =
@@ -155,6 +201,24 @@ const AuthOtpOtpMfaRoute = AuthOtpOtpMfaImport.update({
   path: '/mfa',
   getParentRoute: () => AuthOtpOtpRoute,
 } as any)
+
+const discoveryTrendingTrendingMusicRoute =
+  discoveryTrendingTrendingMusicImport.update({
+    path: '/music',
+    getParentRoute: () => discoveryTrendingTrendingRoute,
+  } as any)
+
+const discoveryTrendingTrendingMovieRoute =
+  discoveryTrendingTrendingMovieImport.update({
+    path: '/movie',
+    getParentRoute: () => discoveryTrendingTrendingRoute,
+  } as any)
+
+const discoveryTrendingTrendingGamingRoute =
+  discoveryTrendingTrendingGamingImport.update({
+    path: '/gaming',
+    getParentRoute: () => discoveryTrendingTrendingRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -216,6 +280,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShortsIndexImport
       parentRoute: typeof rootRoute
     }
+    '/(discovery)/trending': {
+      id: '/trending'
+      path: '/trending'
+      fullPath: '/trending'
+      preLoaderRoute: typeof discoveryTrendingImport
+      parentRoute: typeof rootRoute
+    }
+    '/(discovery)/trending/_trending': {
+      id: '/trending/_trending'
+      path: '/trending'
+      fullPath: '/trending'
+      preLoaderRoute: typeof discoveryTrendingTrendingImport
+      parentRoute: typeof discoveryTrendingRoute
+    }
     '/auth/_auth/login': {
       id: '/auth/_auth/login'
       path: '/login'
@@ -265,6 +343,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PaymentMembershipResultImport
       parentRoute: typeof rootRoute
     }
+    '/(discovery)/gaming/': {
+      id: '/gaming/'
+      path: '/gaming'
+      fullPath: '/gaming'
+      preLoaderRoute: typeof discoveryGamingIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/(discovery)/music/': {
+      id: '/music/'
+      path: '/music'
+      fullPath: '/music'
+      preLoaderRoute: typeof discoveryMusicIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/(discovery)/news/': {
+      id: '/news/'
+      path: '/news'
+      fullPath: '/news'
+      preLoaderRoute: typeof discoveryNewsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/(discovery)/sport/': {
+      id: '/sport/'
+      path: '/sport'
+      fullPath: '/sport'
+      preLoaderRoute: typeof discoverySportIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/(discovery)/trending/_trending/gaming': {
+      id: '/trending/_trending/gaming'
+      path: '/gaming'
+      fullPath: '/trending/gaming'
+      preLoaderRoute: typeof discoveryTrendingTrendingGamingImport
+      parentRoute: typeof discoveryTrendingTrendingImport
+    }
+    '/(discovery)/trending/_trending/movie': {
+      id: '/trending/_trending/movie'
+      path: '/movie'
+      fullPath: '/trending/movie'
+      preLoaderRoute: typeof discoveryTrendingTrendingMovieImport
+      parentRoute: typeof discoveryTrendingTrendingImport
+    }
+    '/(discovery)/trending/_trending/music': {
+      id: '/trending/_trending/music'
+      path: '/music'
+      fullPath: '/trending/music'
+      preLoaderRoute: typeof discoveryTrendingTrendingMusicImport
+      parentRoute: typeof discoveryTrendingTrendingImport
+    }
     '/auth/otp/_otp/mfa': {
       id: '/auth/otp/_otp/mfa'
       path: '/mfa'
@@ -306,6 +433,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/channel/$channelId/videos'
       preLoaderRoute: typeof ChannelChannelIdLayoutVideosImport
       parentRoute: typeof ChannelChannelIdLayoutImport
+    }
+    '/(discovery)/trending/_trending/': {
+      id: '/trending/_trending/'
+      path: '/'
+      fullPath: '/trending/'
+      preLoaderRoute: typeof discoveryTrendingTrendingIndexImport
+      parentRoute: typeof discoveryTrendingTrendingImport
     }
     '/channel/$channelId/_layout/': {
       id: '/channel/$channelId/_layout/'
@@ -370,6 +504,37 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface discoveryTrendingTrendingRouteChildren {
+  discoveryTrendingTrendingGamingRoute: typeof discoveryTrendingTrendingGamingRoute
+  discoveryTrendingTrendingMovieRoute: typeof discoveryTrendingTrendingMovieRoute
+  discoveryTrendingTrendingMusicRoute: typeof discoveryTrendingTrendingMusicRoute
+  discoveryTrendingTrendingIndexRoute: typeof discoveryTrendingTrendingIndexRoute
+}
+
+const discoveryTrendingTrendingRouteChildren: discoveryTrendingTrendingRouteChildren =
+  {
+    discoveryTrendingTrendingGamingRoute: discoveryTrendingTrendingGamingRoute,
+    discoveryTrendingTrendingMovieRoute: discoveryTrendingTrendingMovieRoute,
+    discoveryTrendingTrendingMusicRoute: discoveryTrendingTrendingMusicRoute,
+    discoveryTrendingTrendingIndexRoute: discoveryTrendingTrendingIndexRoute,
+  }
+
+const discoveryTrendingTrendingRouteWithChildren =
+  discoveryTrendingTrendingRoute._addFileChildren(
+    discoveryTrendingTrendingRouteChildren,
+  )
+
+interface discoveryTrendingRouteChildren {
+  discoveryTrendingTrendingRoute: typeof discoveryTrendingTrendingRouteWithChildren
+}
+
+const discoveryTrendingRouteChildren: discoveryTrendingRouteChildren = {
+  discoveryTrendingTrendingRoute: discoveryTrendingTrendingRouteWithChildren,
+}
+
+const discoveryTrendingRouteWithChildren =
+  discoveryTrendingRoute._addFileChildren(discoveryTrendingRouteChildren)
+
 interface ChannelChannelIdLayoutRouteChildren {
   ChannelChannelIdLayoutCommunityRoute: typeof ChannelChannelIdLayoutCommunityRoute
   ChannelChannelIdLayoutPlaylistsRoute: typeof ChannelChannelIdLayoutPlaylistsRoute
@@ -411,17 +576,26 @@ export interface FileRoutesByFullPath {
   '/playlists': typeof PlaylistsIndexRoute
   '/search': typeof SearchIndexRoute
   '/shorts': typeof ShortsIndexRoute
+  '/trending': typeof discoveryTrendingTrendingRouteWithChildren
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
   '/auth/otp': typeof AuthOtpOtpRouteWithChildren
   '/channel/$channelId': typeof ChannelChannelIdLayoutRouteWithChildren
   '/payment/membership/result': typeof PaymentMembershipResultRoute
+  '/gaming': typeof discoveryGamingIndexRoute
+  '/music': typeof discoveryMusicIndexRoute
+  '/news': typeof discoveryNewsIndexRoute
+  '/sport': typeof discoverySportIndexRoute
+  '/trending/gaming': typeof discoveryTrendingTrendingGamingRoute
+  '/trending/movie': typeof discoveryTrendingTrendingMovieRoute
+  '/trending/music': typeof discoveryTrendingTrendingMusicRoute
   '/auth/otp/mfa': typeof AuthOtpOtpMfaRoute
   '/auth/otp/new-account': typeof AuthOtpOtpNewAccountRoute
   '/channel/$channelId/community': typeof ChannelChannelIdLayoutCommunityRoute
   '/channel/$channelId/playlists': typeof ChannelChannelIdLayoutPlaylistsRoute
   '/channel/$channelId/shorts': typeof ChannelChannelIdLayoutShortsRoute
   '/channel/$channelId/videos': typeof ChannelChannelIdLayoutVideosRoute
+  '/trending/': typeof discoveryTrendingTrendingIndexRoute
   '/channel/$channelId/': typeof ChannelChannelIdLayoutIndexRoute
 }
 
@@ -433,11 +607,19 @@ export interface FileRoutesByTo {
   '/playlists': typeof PlaylistsIndexRoute
   '/search': typeof SearchIndexRoute
   '/shorts': typeof ShortsIndexRoute
+  '/trending': typeof discoveryTrendingTrendingIndexRoute
   '/auth/login': typeof AuthAuthLoginRoute
   '/auth/register': typeof AuthAuthRegisterRoute
   '/auth/otp': typeof AuthOtpOtpRouteWithChildren
   '/channel/$channelId': typeof ChannelChannelIdLayoutIndexRoute
   '/payment/membership/result': typeof PaymentMembershipResultRoute
+  '/gaming': typeof discoveryGamingIndexRoute
+  '/music': typeof discoveryMusicIndexRoute
+  '/news': typeof discoveryNewsIndexRoute
+  '/sport': typeof discoverySportIndexRoute
+  '/trending/gaming': typeof discoveryTrendingTrendingGamingRoute
+  '/trending/movie': typeof discoveryTrendingTrendingMovieRoute
+  '/trending/music': typeof discoveryTrendingTrendingMusicRoute
   '/auth/otp/mfa': typeof AuthOtpOtpMfaRoute
   '/auth/otp/new-account': typeof AuthOtpOtpNewAccountRoute
   '/channel/$channelId/community': typeof ChannelChannelIdLayoutCommunityRoute
@@ -456,6 +638,8 @@ export interface FileRoutesById {
   '/playlists/': typeof PlaylistsIndexRoute
   '/search/': typeof SearchIndexRoute
   '/shorts/': typeof ShortsIndexRoute
+  '/trending': typeof discoveryTrendingRouteWithChildren
+  '/trending/_trending': typeof discoveryTrendingTrendingRouteWithChildren
   '/auth/_auth/login': typeof AuthAuthLoginRoute
   '/auth/_auth/register': typeof AuthAuthRegisterRoute
   '/auth/otp': typeof AuthOtpRouteWithChildren
@@ -463,12 +647,20 @@ export interface FileRoutesById {
   '/channel/$channelId': typeof ChannelChannelIdRouteWithChildren
   '/channel/$channelId/_layout': typeof ChannelChannelIdLayoutRouteWithChildren
   '/payment/membership/result': typeof PaymentMembershipResultRoute
+  '/gaming/': typeof discoveryGamingIndexRoute
+  '/music/': typeof discoveryMusicIndexRoute
+  '/news/': typeof discoveryNewsIndexRoute
+  '/sport/': typeof discoverySportIndexRoute
+  '/trending/_trending/gaming': typeof discoveryTrendingTrendingGamingRoute
+  '/trending/_trending/movie': typeof discoveryTrendingTrendingMovieRoute
+  '/trending/_trending/music': typeof discoveryTrendingTrendingMusicRoute
   '/auth/otp/_otp/mfa': typeof AuthOtpOtpMfaRoute
   '/auth/otp/_otp/new-account': typeof AuthOtpOtpNewAccountRoute
   '/channel/$channelId/_layout/community': typeof ChannelChannelIdLayoutCommunityRoute
   '/channel/$channelId/_layout/playlists': typeof ChannelChannelIdLayoutPlaylistsRoute
   '/channel/$channelId/_layout/shorts': typeof ChannelChannelIdLayoutShortsRoute
   '/channel/$channelId/_layout/videos': typeof ChannelChannelIdLayoutVideosRoute
+  '/trending/_trending/': typeof discoveryTrendingTrendingIndexRoute
   '/channel/$channelId/_layout/': typeof ChannelChannelIdLayoutIndexRoute
 }
 
@@ -482,17 +674,26 @@ export interface FileRouteTypes {
     | '/playlists'
     | '/search'
     | '/shorts'
+    | '/trending'
     | '/auth/login'
     | '/auth/register'
     | '/auth/otp'
     | '/channel/$channelId'
     | '/payment/membership/result'
+    | '/gaming'
+    | '/music'
+    | '/news'
+    | '/sport'
+    | '/trending/gaming'
+    | '/trending/movie'
+    | '/trending/music'
     | '/auth/otp/mfa'
     | '/auth/otp/new-account'
     | '/channel/$channelId/community'
     | '/channel/$channelId/playlists'
     | '/channel/$channelId/shorts'
     | '/channel/$channelId/videos'
+    | '/trending/'
     | '/channel/$channelId/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -503,11 +704,19 @@ export interface FileRouteTypes {
     | '/playlists'
     | '/search'
     | '/shorts'
+    | '/trending'
     | '/auth/login'
     | '/auth/register'
     | '/auth/otp'
     | '/channel/$channelId'
     | '/payment/membership/result'
+    | '/gaming'
+    | '/music'
+    | '/news'
+    | '/sport'
+    | '/trending/gaming'
+    | '/trending/movie'
+    | '/trending/music'
     | '/auth/otp/mfa'
     | '/auth/otp/new-account'
     | '/channel/$channelId/community'
@@ -524,6 +733,8 @@ export interface FileRouteTypes {
     | '/playlists/'
     | '/search/'
     | '/shorts/'
+    | '/trending'
+    | '/trending/_trending'
     | '/auth/_auth/login'
     | '/auth/_auth/register'
     | '/auth/otp'
@@ -531,12 +742,20 @@ export interface FileRouteTypes {
     | '/channel/$channelId'
     | '/channel/$channelId/_layout'
     | '/payment/membership/result'
+    | '/gaming/'
+    | '/music/'
+    | '/news/'
+    | '/sport/'
+    | '/trending/_trending/gaming'
+    | '/trending/_trending/movie'
+    | '/trending/_trending/music'
     | '/auth/otp/_otp/mfa'
     | '/auth/otp/_otp/new-account'
     | '/channel/$channelId/_layout/community'
     | '/channel/$channelId/_layout/playlists'
     | '/channel/$channelId/_layout/shorts'
     | '/channel/$channelId/_layout/videos'
+    | '/trending/_trending/'
     | '/channel/$channelId/_layout/'
   fileRoutesById: FileRoutesById
 }
@@ -549,8 +768,13 @@ export interface RootRouteChildren {
   PlaylistsIndexRoute: typeof PlaylistsIndexRoute
   SearchIndexRoute: typeof SearchIndexRoute
   ShortsIndexRoute: typeof ShortsIndexRoute
+  discoveryTrendingRoute: typeof discoveryTrendingRouteWithChildren
   ChannelChannelIdRoute: typeof ChannelChannelIdRouteWithChildren
   PaymentMembershipResultRoute: typeof PaymentMembershipResultRoute
+  discoveryGamingIndexRoute: typeof discoveryGamingIndexRoute
+  discoveryMusicIndexRoute: typeof discoveryMusicIndexRoute
+  discoveryNewsIndexRoute: typeof discoveryNewsIndexRoute
+  discoverySportIndexRoute: typeof discoverySportIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -561,8 +785,13 @@ const rootRouteChildren: RootRouteChildren = {
   PlaylistsIndexRoute: PlaylistsIndexRoute,
   SearchIndexRoute: SearchIndexRoute,
   ShortsIndexRoute: ShortsIndexRoute,
+  discoveryTrendingRoute: discoveryTrendingRouteWithChildren,
   ChannelChannelIdRoute: ChannelChannelIdRouteWithChildren,
   PaymentMembershipResultRoute: PaymentMembershipResultRoute,
+  discoveryGamingIndexRoute: discoveryGamingIndexRoute,
+  discoveryMusicIndexRoute: discoveryMusicIndexRoute,
+  discoveryNewsIndexRoute: discoveryNewsIndexRoute,
+  discoverySportIndexRoute: discoverySportIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -584,8 +813,13 @@ export const routeTree = rootRoute
         "/playlists/",
         "/search/",
         "/shorts/",
+        "/trending",
         "/channel/$channelId",
-        "/payment/membership/result"
+        "/payment/membership/result",
+        "/gaming/",
+        "/music/",
+        "/news/",
+        "/sport/"
       ]
     },
     "/auth": {
@@ -620,6 +854,22 @@ export const routeTree = rootRoute
     },
     "/shorts/": {
       "filePath": "shorts/index.tsx"
+    },
+    "/trending": {
+      "filePath": "(discovery)/trending",
+      "children": [
+        "/trending/_trending"
+      ]
+    },
+    "/trending/_trending": {
+      "filePath": "(discovery)/trending/_trending.tsx",
+      "parent": "/trending",
+      "children": [
+        "/trending/_trending/gaming",
+        "/trending/_trending/movie",
+        "/trending/_trending/music",
+        "/trending/_trending/"
+      ]
     },
     "/auth/_auth/login": {
       "filePath": "auth/_auth.login.tsx",
@@ -664,6 +914,30 @@ export const routeTree = rootRoute
     "/payment/membership/result": {
       "filePath": "payment/membership/result.tsx"
     },
+    "/gaming/": {
+      "filePath": "(discovery)/gaming/index.tsx"
+    },
+    "/music/": {
+      "filePath": "(discovery)/music/index.tsx"
+    },
+    "/news/": {
+      "filePath": "(discovery)/news/index.tsx"
+    },
+    "/sport/": {
+      "filePath": "(discovery)/sport/index.tsx"
+    },
+    "/trending/_trending/gaming": {
+      "filePath": "(discovery)/trending/_trending.gaming.tsx",
+      "parent": "/trending/_trending"
+    },
+    "/trending/_trending/movie": {
+      "filePath": "(discovery)/trending/_trending.movie.tsx",
+      "parent": "/trending/_trending"
+    },
+    "/trending/_trending/music": {
+      "filePath": "(discovery)/trending/_trending.music.tsx",
+      "parent": "/trending/_trending"
+    },
     "/auth/otp/_otp/mfa": {
       "filePath": "auth/otp/_otp.mfa.tsx",
       "parent": "/auth/otp/_otp"
@@ -687,6 +961,10 @@ export const routeTree = rootRoute
     "/channel/$channelId/_layout/videos": {
       "filePath": "channel/$channelId/_layout.videos.tsx",
       "parent": "/channel/$channelId/_layout"
+    },
+    "/trending/_trending/": {
+      "filePath": "(discovery)/trending/_trending.index.tsx",
+      "parent": "/trending/_trending"
     },
     "/channel/$channelId/_layout/": {
       "filePath": "channel/$channelId/_layout.index.tsx",

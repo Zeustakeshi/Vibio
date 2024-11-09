@@ -1,0 +1,8 @@
+requests
+kafka-python-ng
+openai-whisper
+ffmpeg-python
+googletrans==4.0.0-rc1
+python-dotenv
+redis
+cloudinary

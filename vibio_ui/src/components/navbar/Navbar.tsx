@@ -56,13 +56,13 @@ const Navbar = ({}: Props) => {
                     <Separator className="my-1" />
                     <NavbarGroup headerLabel="Cá nhân">
                         <NavbarItem
-                            to="/asd"
+                            to="http://studio.vibio.com:5174"
                             icon={<FaChalkboardUser size={16} />}
                         >
                             Kênh của bạn
                         </NavbarItem>
                         <NavbarItem
-                            to="/sdasdfhorts"
+                            to="/history"
                             icon={<RiHistoryLine size={20} />}
                         >
                             Video đã xem
@@ -74,19 +74,19 @@ const Navbar = ({}: Props) => {
                             Danh sách phát
                         </NavbarItem>
                         <NavbarItem
-                            to="/feedddasf/subscriptions"
+                            to="http://studio.vibio.com:5174"
                             icon={<GoVideo size={16} />}
                         >
                             Video của bạn
                         </NavbarItem>
                         <NavbarItem
-                            to="/feedd/subscriasdfptions"
+                            to="/playlists/watch-later"
                             icon={<LuClock size={16} />}
                         >
                             Xem sau
                         </NavbarItem>
                         <NavbarItem
-                            to="/feedd/subsadfcriptions"
+                            to="/playlists/liked"
                             icon={<AiOutlineLike size={16} />}
                         >
                             Video đã thích
@@ -120,31 +120,31 @@ const Navbar = ({}: Props) => {
                     <Separator className="my-1" />
                     <NavbarGroup headerLabel="Khám phá">
                         <NavbarItem
-                            to="/asd"
+                            to="/trending"
                             icon={<HiOutlineFire size={20} />}
                         >
                             Thịnh hành
                         </NavbarItem>
                         <NavbarItem
-                            to="/asd"
+                            to="/music"
                             icon={<MdOutlineMusicNote size={20} />}
                         >
                             Âm nhạc
                         </NavbarItem>
                         <NavbarItem
-                            to="/asd"
+                            to="/gaming"
                             icon={<IoNewspaperOutline size={20} />}
                         >
                             Trò chơi
                         </NavbarItem>
                         <NavbarItem
-                            to="/asd"
+                            to="/news"
                             icon={<FaChalkboardUser size={20} />}
                         >
                             Tin tức
                         </NavbarItem>
                         <NavbarItem
-                            to="/asd"
+                            to="/sport"
                             icon={<MdSportsScore size={20} />}
                         >
                             Thể thao
@@ -153,21 +153,27 @@ const Navbar = ({}: Props) => {
                     <Separator className="my-1" />
                     <NavbarGroup headerLabel="Khám phá">
                         <NavbarItem
-                            to="/asd"
+                            to="/settings"
                             icon={<IoSettingsOutline size={20} />}
                         >
                             Cài đặt
                         </NavbarItem>
-                        <NavbarItem to="/asd" icon={<FaRegFlag size={16} />}>
+                        <NavbarItem
+                            to="/reports"
+                            icon={<FaRegFlag size={16} />}
+                        >
                             Nhật ký báo cáo
                         </NavbarItem>
                         <NavbarItem
-                            to="/asd"
+                            to="/help-center"
                             icon={<MdHelpOutline size={20} />}
                         >
                             Trợ giúp
                         </NavbarItem>
-                        <NavbarItem to="/asd" icon={<GoReport size={20} />}>
+                        <NavbarItem
+                            to="/feedback"
+                            icon={<GoReport size={20} />}
+                        >
                             Phản hồi
                         </NavbarItem>
                     </NavbarGroup>

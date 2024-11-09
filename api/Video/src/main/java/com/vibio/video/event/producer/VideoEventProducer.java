@@ -33,7 +33,7 @@ public class VideoEventProducer {
         videoTemplate.send("video_reaction", event);
 
     }
-
+    
     public void updateMetadata(UpdateMetadataEvent event) {
         videoTemplate.send("update_video_metadata", event);
     }

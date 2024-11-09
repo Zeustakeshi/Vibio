@@ -100,7 +100,6 @@ public class StudioVideoServiceImpl implements StudioVideoService {
                 .orElseThrow(() -> new NotfoundException("Video with id " + videoId + " not found"));
         try {
             ResourceUploaderResponse uploadResponse = resourceService.uploadVideo(file, videoId, "/");
-            video.setUploadStatus(UploadStatus.SUCCESS);
             video.setUrl(uploadResponse.getUrl());
             video.setAllowedComment(true);
 
