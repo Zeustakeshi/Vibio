@@ -4,7 +4,7 @@ on:
     branches:
       - worker
     paths:
-      - 'api/worker/video_worker'
+      - 'api/worker/video_worker/**'
 jobs:
   build:
     runs-on: ubuntu-latest
