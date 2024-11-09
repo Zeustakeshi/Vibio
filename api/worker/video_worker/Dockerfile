@@ -6,6 +6,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends ffmpeg gcc libpq-dev && \
     rm -rf /var/lib/apt/lists/*
 
+RUN which ffmpeg 
+
 # Set work directory and copy requirements for installation
 WORKDIR /app
 COPY requirements.txt /app/
