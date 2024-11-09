@@ -24,7 +24,7 @@ COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python
 WORKDIR /app
 
 # Copy the application source code
-COPY . /app
+COPY ./app /app
 
 # Define command to run the application
 CMD ["python", "main.py"]

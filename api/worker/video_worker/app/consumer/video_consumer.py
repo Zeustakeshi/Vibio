@@ -6,7 +6,7 @@ from lib.video_processing import handle_video_processing
 from event.video_processing_event import Video_processing_event
 
 def listenVideoProcessingEvent ():
-    print("start listen video processing topic: ")
+    print("start listen video processing:::: ")
 
     consumer = KafkaConsumer(
         'video_processing',

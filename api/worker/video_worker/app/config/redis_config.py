@@ -2,7 +2,7 @@ import redis
 import os 
 from config.app_config import load_dotenv
 
-redis_client = redis.from_url("redis://default:fGcQSwQeoVFKgkEEjUjxoJTCXBnDWczx@junction.proxy.rlwy.net:41899")
+redis_client = redis.from_url(os.getenv("REDIS_URL"))
 
 def connect_redis ():
     try:
