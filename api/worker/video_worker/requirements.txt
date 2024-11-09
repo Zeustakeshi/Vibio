@@ -1,5 +1,6 @@
 requests
 kafka-python-ng
+torch==1.13.1+cpu
 openai-whisper
 ffmpeg-python
 googletrans==4.0.0-rc1
