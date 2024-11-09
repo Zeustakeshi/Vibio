@@ -1,6 +1,7 @@
 requests
 kafka-python-ng
 -f https://download.pytorch.org/whl/cpu
+numpy<2
 torch==1.13.1
 openai-whisper
 ffmpeg-python
