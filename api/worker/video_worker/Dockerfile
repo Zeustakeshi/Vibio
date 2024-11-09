@@ -6,7 +6,6 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends ffmpeg gcc libpq-dev && \
     rm -rf /var/lib/apt/lists/*
 
-RUN which ffmpeg 
 
 # Set work directory and copy requirements for installation
 WORKDIR /app
@@ -17,7 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Final stage - lightweight Alpine image
 FROM python:3.9-alpine
-RUN python3 -c "import site; print(site.getsitepackages())"
+
 # Copy necessary binaries and Python packages from the build stage
 COPY --from=builder /usr/bin/ffmpeg /usr/local/bin/
 COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
